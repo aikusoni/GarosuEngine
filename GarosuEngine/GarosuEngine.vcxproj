@@ -72,15 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -147,6 +151,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GarosuGraphics\GarosuGraphics.vcxproj">
+      <Project>{e78f61d9-9e6b-42aa-a049-a9314b39d4c7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuPhysics\GarosuPhysics.vcxproj">
+      <Project>{4eee5445-1a40-4458-942b-a711a681778b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuScheduler\GarosuScheduler.vcxproj">
+      <Project>{4a209743-d7e0-44be-82d2-c5b1db7f1041}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuUtils\GarosuUtils.vcxproj">
+      <Project>{905585fd-c0e8-4ffc-9f7a-8b1107e2279b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TestMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
