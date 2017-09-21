@@ -15,30 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\Logger.h">
+    <ClInclude Include="header\GarosuTimer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\StringUtils.h">
+    <ClInclude Include="header\GarosuThread.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\Thread.h">
+    <ClInclude Include="header\GarosuStringUtils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\Timer.h">
+    <ClInclude Include="header\GarosuLog.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Logger.cpp">
+    <ClCompile Include="source\GarosuTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\StringUtils.cpp">
+    <ClCompile Include="source\GarosuThread.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\Thread.cpp">
+    <ClCompile Include="source\GarosuStringUtils.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="source\Timer.cpp">
+    <ClCompile Include="source\GarosuLog.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

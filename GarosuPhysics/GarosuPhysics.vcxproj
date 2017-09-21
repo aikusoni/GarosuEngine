@@ -151,10 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="header\Physics.h" />
+    <ClInclude Include="header\GarosuPhysics.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Physics.cpp" />
+    <ClCompile Include="source\GarosuPhysics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

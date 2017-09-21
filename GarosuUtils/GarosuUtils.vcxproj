@@ -151,16 +151,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="header\Logger.h" />
-    <ClInclude Include="header\StringUtils.h" />
-    <ClInclude Include="header\Thread.h" />
-    <ClInclude Include="header\Timer.h" />
+    <ClInclude Include="header\GarosuLog.h" />
+    <ClInclude Include="header\GarosuStringUtils.h" />
+    <ClInclude Include="header\GarosuThread.h" />
+    <ClInclude Include="header\GarosuTimer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Logger.cpp" />
-    <ClCompile Include="source\StringUtils.cpp" />
-    <ClCompile Include="source\Thread.cpp" />
-    <ClCompile Include="source\Timer.cpp" />
+    <ClCompile Include="source\GarosuLog.cpp" />
+    <ClCompile Include="source\GarosuStringUtils.cpp" />
+    <ClCompile Include="source\GarosuThread.cpp" />
+    <ClCompile Include="source\GarosuTimer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

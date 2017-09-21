@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\Graphics.h">
+    <ClInclude Include="header\GarosuGraphics.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Graphics.cpp">
+    <ClCompile Include="source\GarosuGraphics.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
