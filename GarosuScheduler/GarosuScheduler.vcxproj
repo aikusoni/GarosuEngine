@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}</ProjectGuid>
+    <ProjectGuid>{ECBE375E-7BE4-41FF-A204-228892BEED58}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GarosuUtils</RootNamespace>
+    <RootNamespace>GarosuScheduler</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header;$(ProjectDir)..\GarosuUtils\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header;$(ProjectDir)..\GarosuUtils\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header;$(ProjectDir)..\GarosuUtils\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\header;$(ProjectDir)..\GarosuUtils\header</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -151,18 +151,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="header\GarosuLog.h" />
-    <ClInclude Include="header\GarosuStringUtils.h" />
-    <ClInclude Include="header\GarosuThread.h" />
-    <ClInclude Include="header\GarosuTimer.h" />
-    <ClInclude Include="header\GarosuSignal.h" />
-    <ClInclude Include="source\GarosuSignal.cpp" />
+    <ClInclude Include="header\GarosuWorker.h" />
+    <ClInclude Include="header\GarosuScheduler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\GarosuLog.cpp" />
-    <ClCompile Include="source\GarosuStringUtils.cpp" />
-    <ClCompile Include="source\GarosuThread.cpp" />
-    <ClCompile Include="source\GarosuTimer.cpp" />
+    <ClCompile Include="source\GarosuWorker.cpp" />
+    <ClCompile Include="source\GarosuScheduler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GarosuUtils\GarosuUtils.vcxproj">
+      <Project>{905585fd-c0e8-4ffc-9f7a-8b1107e2279b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

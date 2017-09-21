@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuPhysics", "GarosuPhys
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuUtils", "GarosuUtils\GarosuUtils.vcxproj", "{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuScheduler", "GarosuScheduler\GarosuScheduler.vcxproj", "{ECBE375E-7BE4-41FF-A204-228892BEED58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}.Release|x64.Build.0 = Release|x64
 		{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}.Release|x86.ActiveCfg = Release|Win32
 		{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}.Release|x86.Build.0 = Release|Win32
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Debug|x64.ActiveCfg = Debug|x64
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Debug|x64.Build.0 = Debug|x64
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Debug|x86.ActiveCfg = Debug|Win32
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Debug|x86.Build.0 = Debug|Win32
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Release|x64.ActiveCfg = Release|x64
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Release|x64.Build.0 = Release|x64
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Release|x86.ActiveCfg = Release|Win32
+		{ECBE375E-7BE4-41FF-A204-228892BEED58}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
