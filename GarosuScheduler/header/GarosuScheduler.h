@@ -2,11 +2,6 @@
 
 namespace Garosu
 {
-	class Task
-	{
-	public:
-		virtual void DoWork(void) = 0;
-	};
 
 	class Scheduler
 	{
@@ -18,7 +13,7 @@ namespace Garosu
 		virtual ~Scheduler(void);
 
 		bool Initialize(void);
-		bool PutTask(std::unique_ptr<Task> newTask);
+		bool PutTask(std::unique_ptr<BaseTask> newTask);
 
 	private:
 		class impl;

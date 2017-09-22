@@ -3,6 +3,7 @@
 
 #include "GarosuLog.h"
 
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <concurrent_priority_queue.h>
@@ -29,7 +30,7 @@ namespace Garosu
 		};
 	};
 
-	class Log::impl final : public BaseWorker
+	class Log::impl final : public BaseTask
 	{
 	public:
 		impl(void)
@@ -48,6 +49,7 @@ namespace Garosu
 		LogLevel mLogLevel;
 		std::string mLogPath;
 		std::fstream mFileStream;
+		bool mPrintToConsole = false;
 
 		bool Push(const LogLevel&, const std::string&);
 		LogData* Pop(void);
@@ -63,11 +65,12 @@ namespace Garosu
 		BaseThread mThread;
 	};
 
-	Log::Log(const LogLevel& logLevel, const std::string& logPath)
+	Log::Log(const LogLevel& logLevel, const std::string& logPath, bool printToConsole)
 		: pImpl(std::make_unique<impl>())
 	{
 		pImpl->mLogLevel = logLevel;
 		pImpl->mLogPath = logPath;
+		pImpl->mPrintToConsole = printToConsole;
 	}
 
 	Log::~Log(void)
@@ -184,6 +187,7 @@ namespace Garosu
 
 			try {
 				mFileStream << *logData << std::endl;
+				if (mPrintToConsole) std::cout << *logData << std::endl;
 			}
 			catch (std::ifstream::failure&)
 			{

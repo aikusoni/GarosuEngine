@@ -1,4 +1,5 @@
 #include <memory>
+#include <GarosuThread.h>
 
 #include "GarosuScheduler.h"
 
@@ -27,7 +28,7 @@ namespace Garosu
 		return true;
 	}
 
-	bool Scheduler::PutTask(std::unique_ptr<Task> newTask)
+	bool Scheduler::PutTask(std::unique_ptr<BaseTask> newTask)
 	{
 
 		return true;

@@ -15,7 +15,7 @@ namespace Garosu
 	class Log final
 	{
 	public:
-		Log(const LogLevel& logLevel, const std::string& logPath);
+		Log(const LogLevel& logLevel, const std::string& logPath, bool printToConsole = false);
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
 
