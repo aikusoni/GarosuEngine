@@ -1,20 +1,24 @@
 #include <memory>
 
+#include "GarosuScheduler.h"
 #include "GarosuWorker.h"
 
 #include <vector>
 #include <atomic>
+
+#include <concurrent_queue.h>
 
 #include <GarosuThread.h>
 #include <GarosuSignal.h>
 
 namespace Garosu
 {
+	using TaskQueue = Concurrency::concurrent_queue<BaseTask*>;
 	
 	class TaskWorker final : public BaseWorker
 	{
 	public:
-		TaskWorker(void);
+		TaskWorker(TaskQueue&);
 		TaskWorker(const TaskWorker&) = delete;
 		TaskWorker& operator=(const TaskWorker&) = delete;
 
@@ -23,10 +27,12 @@ namespace Garosu
 		virtual void DoWork(void) override;
 
 		std::atomic<bool> mLoop;
+		TaskQueue& mTaskQueue;
 	};
 
-	TaskWorker::TaskWorker(void)
+	TaskWorker::TaskWorker(TaskQueue& taskQueue)
 		: mLoop(false)
+		, mTaskQueue(taskQueue)
 	{
 		
 	}
@@ -38,39 +44,56 @@ namespace Garosu
 
 	void TaskWorker::DoWork(void)
 	{
+		int tryCnt = 0;
 		mLoop = true;
 		while (mLoop)
 		{
+			BaseTask* task;
+			if (!mTaskQueue.try_pop(task))
+			{
+				tryCnt++;
+				if (tryCnt > 10000)
+				{
+					tryCnt = 0;
+					ThreadUtils::SleepFor(10 * 1000 * 1000); // 10 ms
+				}
+				continue;
+			}
 
+			if (task == NULL) continue;
+
+			// do task
+			task->DoTask();
 		}
 	}
 
 	class WorkerThread final : public BaseThread
 	{
 	public:
-		WorkerThread(void);
+		WorkerThread(TaskQueue&);
 		~WorkerThread(void);
 
 		virtual void RequestStop(void);
 
 	private:
-		TaskWorker worker;
+		TaskWorker mWorker;
 	};
 
-	WorkerThread::WorkerThread(void)
-		: BaseThread(worker)
+	WorkerThread::WorkerThread(TaskQueue& taskQueue)
+		: mWorker(taskQueue)
+		, BaseThread(mWorker)
 	{
 
 	}
 
 	WorkerThread::~WorkerThread(void)
 	{
-		// join here?
+
 	}
 
 	void WorkerThread::RequestStop(void)
 	{
-		worker.mLoop = false;
+		mWorker.mLoop = false;
 	}
 
 	class WorkerGroup::impl
@@ -80,6 +103,7 @@ namespace Garosu
 		bool mIsInit;
 
 		std::vector<std::unique_ptr<WorkerThread>> mWorkerThreads;
+		TaskQueue mTaskQueue;
 	};
 
 	WorkerGroup::WorkerGroup(int numWorker)
@@ -91,6 +115,7 @@ namespace Garosu
 
 	WorkerGroup::~WorkerGroup(void)
 	{
+		Stop();
 		for (auto& e : pImpl->mWorkerThreads)
 			e->Join();
 	}
@@ -102,7 +127,7 @@ namespace Garosu
 			pImpl->mIsInit = true;
 		
 			for (int i = 0; i < pImpl->mNumWorker; ++i)
-				pImpl->mWorkerThreads.push_back(std::make_unique<WorkerThread>());
+				pImpl->mWorkerThreads.push_back(std::make_unique<WorkerThread>(pImpl->mTaskQueue));
 		}
 
 		return true;
@@ -120,6 +145,13 @@ namespace Garosu
 	{
 		for (auto& e : pImpl->mWorkerThreads)
 			e->RequestStop();
+
+		return true;
+	}
+
+	bool WorkerGroup::Put(BaseTask* task)
+	{
+		pImpl->mTaskQueue.push(task);
 
 		return true;
 	}

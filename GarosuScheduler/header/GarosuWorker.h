@@ -17,6 +17,8 @@ namespace Garosu
 		bool Start(void); 
 		bool Stop(void);
 
+		bool Put(BaseTask*);
+
 	private:
 		class impl;
 		std::unique_ptr<impl> pImpl;

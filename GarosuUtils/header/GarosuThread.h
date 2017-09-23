@@ -3,7 +3,7 @@
 
 namespace Garosu
 {
-
+	
 	class BaseWorker
 	{
 	public:
