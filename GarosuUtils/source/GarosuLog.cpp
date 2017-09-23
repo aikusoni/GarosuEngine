@@ -30,7 +30,7 @@ namespace Garosu
 		};
 	};
 
-	class Log::impl final : public BaseTask
+	class Log::impl final : public BaseWorker
 	{
 	public:
 		impl(void)

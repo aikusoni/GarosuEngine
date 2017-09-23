@@ -28,7 +28,7 @@ namespace Garosu
 		return true;
 	}
 
-	bool Scheduler::PutTask(std::unique_ptr<BaseTask> newTask)
+	bool Scheduler::PutTask(std::unique_ptr<BaseWorker> newTask)
 	{
 
 		return true;

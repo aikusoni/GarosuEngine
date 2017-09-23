@@ -4,7 +4,7 @@
 namespace Garosu
 {
 
-	class BaseTask
+	class BaseWorker
 	{
 	public:
 		virtual void DoWork(void) { std::cout << "this is base worker." << std::endl; };
@@ -13,7 +13,7 @@ namespace Garosu
 	class BaseThread
 	{
 	public:
-		BaseThread(BaseTask&);
+		BaseThread(BaseWorker&);
 		BaseThread(const BaseThread&) = delete;
 		BaseThread& operator=(const BaseThread&) = delete;
 
@@ -25,7 +25,7 @@ namespace Garosu
 	protected:
 
 	private:
-		BaseTask& mBaseWorker;
+		BaseWorker& mBaseWorker;
 
 		class impl;
 		std::unique_ptr<impl> pImpl;

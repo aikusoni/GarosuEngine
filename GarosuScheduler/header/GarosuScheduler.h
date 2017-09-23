@@ -13,7 +13,7 @@ namespace Garosu
 		virtual ~Scheduler(void);
 
 		bool Initialize(void);
-		bool PutTask(std::unique_ptr<BaseTask> newTask);
+		bool PutTask(std::unique_ptr<BaseWorker> newTask);
 
 	private:
 		class impl;

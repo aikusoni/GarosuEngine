@@ -8,7 +8,7 @@
 namespace Garosu
 {
 
-	static void DoWork(BaseTask* worker)
+	static void DoWork(BaseWorker* worker)
 	{
 		worker->DoWork();
 	}
@@ -19,7 +19,7 @@ namespace Garosu
 		std::thread thr;
 	};
 
-	BaseThread::BaseThread(BaseTask& baseWorker)
+	BaseThread::BaseThread(BaseWorker& baseWorker)
 		: mBaseWorker(baseWorker)
 		, pImpl(std::make_unique<impl>())
 	{

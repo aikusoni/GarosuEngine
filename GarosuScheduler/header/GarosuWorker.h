@@ -2,35 +2,24 @@
 
 namespace Garosu
 {
-	class Worker final
+
+	class WorkerGroup final
 	{
 	public:
-		Worker(void);
-		Worker(const Worker&) = delete;
-		Worker& operator=(const Worker&) = delete;
+		WorkerGroup(int numWorker);
+		WorkerGroup(const WorkerGroup&) = delete;
+		WorkerGroup& operator=(const WorkerGroup&) = delete;
 
-		~Worker(void);
-
-		void working(void);
-
-	private:
-		class impl;
-		std::unique_ptr<impl> pImpl;
-	};
-
-	class WorkerPool final
-	{
-	public:
-		WorkerPool(int num);
-		WorkerPool(const WorkerPool&) = delete;
-		WorkerPool& operator=(const WorkerPool&) = delete;
-
-		~WorkerPool(void);
+		virtual ~WorkerGroup(void);
 
 		bool Initialize(void);
 
+		bool Start(void); 
+		bool Stop(void);
+
 	private:
 		class impl;
 		std::unique_ptr<impl> pImpl;
 	};
+
 }

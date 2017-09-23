@@ -1,60 +1,125 @@
 #include <memory>
-#include <GarosuThread.h>
 
-#include "GarosuScheduler.h"
 #include "GarosuWorker.h"
 
+#include <vector>
+#include <atomic>
+
+#include <GarosuThread.h>
 #include <GarosuSignal.h>
 
 namespace Garosu
 {
-	class Worker::impl
+	
+	class TaskWorker final : public BaseWorker
 	{
 	public:
-		impl(void) {}
-		virtual ~impl(void) {}
+		TaskWorker(void);
+		TaskWorker(const TaskWorker&) = delete;
+		TaskWorker& operator=(const TaskWorker&) = delete;
 
-		bool mIsWorking;
+		~TaskWorker(void);
+
+		virtual void DoWork(void) override;
+
+		std::atomic<bool> mLoop;
 	};
 
-	Worker::Worker(void)
-		: pImpl(std::make_unique<impl>())
+	TaskWorker::TaskWorker(void)
+		: mLoop(false)
 	{
-		pImpl->mIsWorking = false;
+		
 	}
 
-	Worker::~Worker(void)
+	TaskWorker::~TaskWorker(void)
 	{
 
 	}
 
-	void Worker::working(void)
+	void TaskWorker::DoWork(void)
 	{
-		while (pImpl->mIsWorking)
+		mLoop = true;
+		while (mLoop)
 		{
-			// do work
+
 		}
 	}
 
-	class WorkerPool::impl
+	class WorkerThread final : public BaseThread
 	{
 	public:
-		int mNum;
+		WorkerThread(void);
+		~WorkerThread(void);
+
+		virtual void RequestStop(void);
+
+	private:
+		TaskWorker worker;
 	};
 
-	WorkerPool::WorkerPool(int num)
+	WorkerThread::WorkerThread(void)
+		: BaseThread(worker)
+	{
+
+	}
+
+	WorkerThread::~WorkerThread(void)
+	{
+		// join here?
+	}
+
+	void WorkerThread::RequestStop(void)
+	{
+		worker.mLoop = false;
+	}
+
+	class WorkerGroup::impl
+	{
+	public:
+		int mNumWorker;
+		bool mIsInit;
+
+		std::vector<std::unique_ptr<WorkerThread>> mWorkerThreads;
+	};
+
+	WorkerGroup::WorkerGroup(int numWorker)
 		: pImpl(std::make_unique<impl>())
 	{
-		pImpl->mNum = num;
+		pImpl->mNumWorker = numWorker;
+		pImpl->mIsInit = false;
 	}
 
-	WorkerPool::~WorkerPool(void)
+	WorkerGroup::~WorkerGroup(void)
 	{
-
+		for (auto& e : pImpl->mWorkerThreads)
+			e->Join();
 	}
 
-	bool WorkerPool::Initialize(void)
+	bool WorkerGroup::Initialize(void)
 	{
+		if (!pImpl->mIsInit)
+		{
+			pImpl->mIsInit = true;
+		
+			for (int i = 0; i < pImpl->mNumWorker; ++i)
+				pImpl->mWorkerThreads.push_back(std::make_unique<WorkerThread>());
+		}
+
+		return true;
+	}
+
+	bool WorkerGroup::Start(void)
+	{
+		for (auto& e : pImpl->mWorkerThreads)
+			e->Start();
+
+		return true;
+	}
+
+	bool WorkerGroup::Stop(void)
+	{
+		for (auto& e : pImpl->mWorkerThreads)
+			e->RequestStop();
 
 		return true;
 	}
