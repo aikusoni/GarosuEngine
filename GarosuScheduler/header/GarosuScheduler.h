@@ -3,11 +3,6 @@
 namespace Garosu
 {
 	
-	class BaseTaskBundle
-	{
-	public:
-	};
-
 	class BaseTask
 	{
 	public:
@@ -25,7 +20,7 @@ namespace Garosu
 		virtual ~Scheduler(void);
 
 		bool Initialize(void);
-		bool PutTask(std::unique_ptr<BaseTask> newTask);
+		bool HandoverTask(std::unique_ptr<BaseTask> newTask);
 
 	private:
 		class impl;

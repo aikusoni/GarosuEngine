@@ -17,7 +17,7 @@ namespace Garosu
 		bool Start(void); 
 		bool Stop(void);
 
-		bool Put(BaseTask*);
+		bool Handover(BaseTask*);
 
 	private:
 		class impl;

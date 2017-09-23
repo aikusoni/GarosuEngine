@@ -149,7 +149,7 @@ namespace Garosu
 		return true;
 	}
 
-	bool WorkerGroup::Put(BaseTask* task)
+	bool WorkerGroup::Handover(BaseTask* task)
 	{
 		pImpl->mTaskQueue.push(task);
 
