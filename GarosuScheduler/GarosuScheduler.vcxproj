@@ -151,10 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\GarosuTask.h" />
     <ClInclude Include="header\GarosuWorker.h" />
     <ClInclude Include="header\GarosuScheduler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\GarosuTask.cpp" />
     <ClCompile Include="source\GarosuWorker.cpp" />
     <ClCompile Include="source\GarosuScheduler.cpp" />
   </ItemGroup>

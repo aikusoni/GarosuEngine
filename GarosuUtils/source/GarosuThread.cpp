@@ -47,4 +47,9 @@ namespace Garosu
 		std::this_thread::sleep_for(std::chrono::nanoseconds(nanoSeconds));
 	}
 
+	unsigned int ThreadUtils::GetConcurrencyCount(void)
+	{
+		return std::thread::hardware_concurrency();
+	}
+
 }

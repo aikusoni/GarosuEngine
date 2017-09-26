@@ -35,6 +35,7 @@ namespace Garosu
 	{
 	public:
 		static void SleepFor(int nanoSeconds);
+		static unsigned int GetConcurrencyCount(void);
 	};
 
 }

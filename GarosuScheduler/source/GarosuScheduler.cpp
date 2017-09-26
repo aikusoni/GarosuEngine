@@ -1,14 +1,20 @@
 #include <memory>
-#include <GarosuThread.h>
 
+#include <functional>
+
+#include "GarosuTask.h"
 #include "GarosuScheduler.h"
 #include "GarosuWorker.h"
 
 namespace Garosu
 {
+
 	class Scheduler::impl
 	{
 	public:
+		impl(void) {}
+		virtual ~impl(void) {}
+
 		WorkerGroup mWorkerGroup;
 	};
 

@@ -6,6 +6,7 @@ namespace Garosu
 	class WorkerGroup final
 	{
 	public:
+		WorkerGroup(void);
 		WorkerGroup(int numWorker);
 		WorkerGroup(const WorkerGroup&) = delete;
 		WorkerGroup& operator=(const WorkerGroup&) = delete;
@@ -13,6 +14,7 @@ namespace Garosu
 		virtual ~WorkerGroup(void);
 
 		bool Initialize(void);
+		bool SetNumWorker(int numWorker);
 
 		bool Start(void); 
 		bool Stop(void);

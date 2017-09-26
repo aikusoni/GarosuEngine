@@ -2,13 +2,6 @@
 
 namespace Garosu
 {
-	
-	class BaseTask
-	{
-	public:
-		virtual ~BaseTask(void) = 0;
-		virtual void DoTask(void) = 0;
-	};
 
 	class Scheduler
 	{
