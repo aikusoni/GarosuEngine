@@ -5,7 +5,13 @@
 namespace Garosu
 {
 
-	class Scheduler
+	enum class SchedulerError
+	{
+		OK,
+		ERROR
+	};
+
+	class Scheduler : public IScheduler
 	{
 	public:
 		Scheduler(void);
@@ -14,7 +20,7 @@ namespace Garosu
 
 		virtual ~Scheduler(void);
 
-		bool Initialize(void);
+		SchedulerError Initialize(void);
 		bool HandoverTask(std::unique_ptr<BaseTask> newTask);
 
 	private:

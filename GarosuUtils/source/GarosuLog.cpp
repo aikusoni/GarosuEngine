@@ -30,7 +30,7 @@ namespace Garosu
 		};
 	};
 
-	class Log::impl final : public BaseWorker
+	class Logger::impl final : public BaseWorker
 	{
 	public:
 		impl(void)
@@ -65,7 +65,37 @@ namespace Garosu
 		BaseThread mThread;
 	};
 
-	Log::Log(const std::string& logPath, const LogLevel& logLevel, bool printToConsole)
+	void Logger::C(const std::string& t)
+	{
+		pImpl->Push(LogLevel::CRITICAL, t);
+	}
+
+	void Logger::E(const std::string& t)
+	{
+		pImpl->Push(LogLevel::ERROR, t);
+	}
+
+	void Logger::D(const std::string& t)
+	{
+		pImpl->Push(LogLevel::DEBUG, t);
+	}
+
+	void Logger::W(const std::string& t)
+	{
+		pImpl->Push(LogLevel::WARNING, t);
+	}
+
+	void Logger::N(const std::string& t)
+	{
+		pImpl->Push(LogLevel::NOTICE, t);
+	}
+
+	void Logger::I(const std::string& t)
+	{
+		pImpl->Push(LogLevel::INFO, t);
+	}
+
+	Logger::Logger(const std::string& logPath, const LogLevel& logLevel, bool printToConsole)
 		: pImpl(std::make_unique<impl>())
 	{
 		pImpl->mLogLevel = logLevel;
@@ -73,12 +103,12 @@ namespace Garosu
 		pImpl->mPrintToConsole = printToConsole;
 	}
 
-	Log::~Log(void)
+	Logger::~Logger(void)
 	{
 
 	}
 
-	bool Log::StartLogThread(void)
+	bool Logger::StartLogThread(void)
 	{
 		try {
 			pImpl->mFileStream.open(pImpl->mLogPath, std::fstream::out);
@@ -93,32 +123,7 @@ namespace Garosu
 		return true;
 	}
 
-	void Log::C(const std::string& t)
-	{
-		pImpl->Push(LogLevel::CRITICAL, t);
-	}
-
-	void Log::E(const std::string& t)
-	{
-		pImpl->Push(LogLevel::ERROR, t);
-	}
-
-	void Log::W(const std::string& t)
-	{
-		pImpl->Push(LogLevel::WARNING, t);
-	}
-
-	void Log::N(const std::string& t)
-	{
-		pImpl->Push(LogLevel::NOTICE, t);
-	}
-
-	void Log::I(const std::string& t)
-	{
-		pImpl->Push(LogLevel::INFO, t);
-	}
-
-	bool Log::impl::Push(const LogLevel& logLevel, const std::string& t)
+	bool Logger::impl::Push(const LogLevel& logLevel, const std::string& t)
 	{
 		if (logLevel > mLogLevel)
 			return false;
@@ -133,7 +138,7 @@ namespace Garosu
 		return true;
 	}
 
-	LogData* Log::impl::Pop(void)
+	LogData* Logger::impl::Pop(void)
 	{
 		LogData* logData;
 		if (logQueue.try_pop(logData))
@@ -143,7 +148,7 @@ namespace Garosu
 			return NULL;
 	}
 
-	void Log::impl::StartLogging(void)
+	void Logger::impl::StartLogging(void)
 	{
 		mThread.Start();
 	}
@@ -158,6 +163,9 @@ namespace Garosu
 			break;
 		case LogLevel::ERROR:
 			os << "ERROR";
+			break;
+		case LogLevel::DEBUG:
+			os << "DEBUG";
 			break;
 		case LogLevel::WARNING:
 			os << "WARNING";
@@ -174,7 +182,7 @@ namespace Garosu
 		return os;
 	}
 
-	void Log::impl::DoWork(void)
+	void Logger::impl::DoWork(void)
 	{
 		while (bLoop || logQueue.size() > 0)
 		{

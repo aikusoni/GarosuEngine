@@ -1,10 +1,15 @@
 #include <memory>
-
+#include <string>
 #include <functional>
+
+#include <GarosuLog.h>
+
+#include <SchedulerInterface.h>
 
 #include "GarosuTask.h"
 #include "GarosuScheduler.h"
 #include "GarosuWorker.h"
+
 
 namespace Garosu
 {
@@ -26,13 +31,24 @@ namespace Garosu
 
 	Scheduler::~Scheduler(void)
 	{
-
+		if (pImpl) pImpl->mWorkerGroup.Stop();
 	}
 
-	bool Scheduler::Initialize(void)
+	SchedulerError Scheduler::Initialize(void)
 	{
+		if (!pImpl->mWorkerGroup.Initialize())
+		{
+			LOGE("[Scheduler] cannot intialize WorkerGroup");
+			return SchedulerError::ERROR;
+		}
 
-		return true;
+		if (!pImpl->mWorkerGroup.Start())
+		{
+			LOGE("[Scheduler] cannot start WorkerGroup");
+			return SchedulerError::ERROR;
+		}
+
+		return SchedulerError::OK;
 	}
 
 	bool Scheduler::HandoverTask(std::unique_ptr<BaseTask> newTask)

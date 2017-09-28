@@ -1,15 +1,24 @@
 #include <memory>
+
+#include <SchedulerInterface.h>
 #include "GarosuGraphics.h"
 
 namespace Garosu {
 
 	class Graphics::impl
 	{
+	public:
+		impl(IScheduler* scheduler);
+		virtual ~impl(void) {}
 
+	private:
+		IScheduler* mScheduler;
 	};
 
-	Graphics::Graphics(void)
-		: pImpl(std::make_unique<impl>())
+	Graphics::impl::impl(IScheduler* scheduler) : mScheduler(scheduler) {}
+
+	Graphics::Graphics(IScheduler* scheduler)
+		: pImpl(std::make_unique<impl>(scheduler))
 	{
 
 	}

@@ -4,6 +4,8 @@
 #include <vector>
 #include <functional>
 
+#include <SchedulerInterface.h>
+
 #include <GarosuLog.h>
 #include <GarosuTask.h>
 #include <GarosuPhysics.h>
@@ -19,9 +21,9 @@ namespace Garosu
 		impl(void);
 		virtual ~impl(void);
 
-		Physics physics;
-		Graphics graphics;
-		Scheduler scheduler;
+		//Scheduler scheduler;
+		//Physics physics;
+		//Graphics graphics;
 	};
 
 	Engine::impl::impl(void) {}
@@ -40,6 +42,43 @@ namespace Garosu
 
 	bool Engine::Initialize(void* outputTarget)
 	{
+		LOGD("Garosu Engine initializing");
+
+		bool initFailed = true;
+		do
+		{
+			//if (pImpl->scheduler.Initialize() != SchedulerError::OK)
+			//{
+			//	LOGE("cannot intialize scheduler library");
+			//	break;
+			//}
+			//LOGD("scheduler library initialized...");
+
+			//if (pImpl->physics.Initialize() != PhysicsError::OK)
+			//{
+			//	LOGE("cannot initialize physics library");
+			//	break;
+			//}
+			//LOGD("physics library initialized...");
+
+			//if (pImpl->graphics.Initialize() != GraphicsError::OK)
+			//{
+			//	LOGE("cannot initialize graphics library");
+			//	break;
+			//}
+			//LOGD("graphics library initialized...");
+
+			initFailed = false;
+
+		} while (false);
+
+		if (initFailed)
+		{
+			LOGE("cannot initialize garosu engine");
+			return false;
+		}
+
+		LOGD("Garosu Enigne initializing completed.");
 
 		return true;
 	}

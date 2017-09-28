@@ -31,7 +31,7 @@ namespace Garosu {
 	class Graphics
 	{
 	public:
-		Graphics(void);
+		Graphics(IScheduler*);
 		Graphics(const Graphics&) = delete;
 		Graphics& operator=(const Graphics&) = delete;
 

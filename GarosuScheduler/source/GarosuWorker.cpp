@@ -129,7 +129,7 @@ namespace Garosu
 	public:
 		int mNumWorker;
 		bool mIsInit;
-		bool mIsStarted;
+		bool mStart;
 
 		TaskQueue mTaskQueue;
 		std::vector<std::unique_ptr<WorkerThread>> mWorkerThreads;
@@ -141,7 +141,7 @@ namespace Garosu
 	{
 		pImpl->mNumWorker = ThreadUtils::GetConcurrencyCount();
 		pImpl->mIsInit = false;
-		pImpl->mIsStarted = false;
+		pImpl->mStart = false;
 	}
 
 	WorkerGroup::WorkerGroup(int numWorker)
@@ -190,7 +190,7 @@ namespace Garosu
 
 			pImpl->mNumWorker = numWorker;
 
-			if (pImpl->mIsStarted)
+			if (pImpl->mStart)
 			{
 				for (int i = pImpl->mNumWorker - numExpand; i < pImpl->mNumWorker; ++i)
 				{
@@ -226,7 +226,7 @@ namespace Garosu
 
 	bool WorkerGroup::Start(void)
 	{
-		if (pImpl->mIsStarted) return false;
+		if (pImpl->mStart) return false;
 
 		for (auto& e : pImpl->mWorkerThreads)
 			e->Start();
@@ -236,7 +236,7 @@ namespace Garosu
 
 	bool WorkerGroup::Stop(void)
 	{
-		if (!pImpl->mIsStarted) return false;
+		if (!pImpl->mStart) return false;
 
 		for (auto& e : pImpl->mWorkerThreads)
 			e->RequestStop();

@@ -3,15 +3,23 @@
 #define __GAROSU_PHYSICS_H__
 
 namespace Garosu {
+
+	enum class PhysicsError
+	{
+		OK,
+		ERROR,
+	};
 	
 	class Physics
 	{
 	public:
-		Physics(void);
+		Physics(IScheduler* scheduler);
 		Physics(const Physics&) = delete;
 		Physics operator=(const Physics&) = delete;
 
 		virtual ~Physics(void);
+
+		PhysicsError Initialize(void);
 	};
 
 }

@@ -2,6 +2,12 @@
 #ifndef __GAROSU_TASK_H__
 #define __GAROSU_TASK_H__
 
+#include <memory>
+#include <utility>
+#include <functional>
+
+#include "GarosuTask.h"
+
 namespace Garosu
 {
 

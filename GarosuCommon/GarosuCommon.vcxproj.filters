@@ -15,18 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\GarosuScheduler.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="source\GarosuWorker.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="header\GarosuScheduler.h">
+    <ClInclude Include="header\GarosuTask.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\GarosuWorker.h">
+    <ClInclude Include="header\SchedulerInterface.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
