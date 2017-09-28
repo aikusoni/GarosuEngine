@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __GAROSU_WORKER_H__
+#define __GAROSU_WORKER_H__
 
 namespace Garosu
 {
@@ -27,3 +29,5 @@ namespace Garosu
 	};
 
 }
+
+#endif

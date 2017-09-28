@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuEngine.h" />
+    <ClInclude Include="header\GarosuEngineMessage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __GAROSU_LOCK_UTILS_H__
+#define __GAROSU_LOCK_UTILS_H__
 
 namespace Garosu
 {
@@ -21,3 +23,5 @@ namespace Garosu
 	};
 
 }
+
+#endif

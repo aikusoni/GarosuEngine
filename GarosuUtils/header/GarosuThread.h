@@ -1,4 +1,7 @@
 #pragma once
+#ifndef __GAROSU_THREAD_H__
+#define __GAROSU_THREAD_H__
+
 #include <iostream>
 
 namespace Garosu
@@ -39,3 +42,5 @@ namespace Garosu
 	};
 
 }
+
+#endif

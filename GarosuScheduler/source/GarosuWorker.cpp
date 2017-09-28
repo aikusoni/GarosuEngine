@@ -11,7 +11,7 @@
 #include <concurrent_queue.h>
 
 #include <GarosuThread.h>
-#include <GarosuSignal.h>
+#include <GarosuLockUtils.h>
 
 namespace Garosu
 {

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __GAROSU_TIMER_H__
+#define __GAROSU_TIMER_H__
 
 namespace Garosu
 {
@@ -35,3 +37,5 @@ namespace Garosu
 	};
 
 }
+
+#endif

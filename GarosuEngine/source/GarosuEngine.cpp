@@ -1,14 +1,36 @@
+#include "GarosuEngine.h"
+
 #include <memory>
+#include <functional>
 
-#include <GarosuGraphics.h>
+#include <GarosuTask.h>
 #include <GarosuPhysics.h>
+#include <GarosuGraphics.h>
+#include <GarosuScheduler.h>
 
-#include <Windows.h>
-
-using namespace Garosu;
-
-int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
+namespace Garosu
 {
 
-	return 0;
+	class Engine::impl
+	{
+	public:
+	};
+
+	Engine::Engine(void)
+		: pImpl(std::make_unique<impl>())
+	{
+
+	}
+
+	Engine::~Engine(void)
+	{
+
+	}
+
+	bool Engine::SendMessage(BaseEngineMessage* message)
+	{
+
+		return true;
+	}
+
 }
