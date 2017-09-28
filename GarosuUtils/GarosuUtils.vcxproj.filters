@@ -27,10 +27,10 @@
     <ClInclude Include="header\GarosuLog.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\GarosuSignal.h">
+    <ClInclude Include="header\GarosuLockUtils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="source\GarosuSignal.cpp">
+    <ClInclude Include="source\GarosuLockUtils.cpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

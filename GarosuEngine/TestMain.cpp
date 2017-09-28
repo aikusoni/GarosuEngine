@@ -1,3 +1,5 @@
+#include <memory>
+
 #include <GarosuGraphics.h>
 #include <GarosuPhysics.h>
 

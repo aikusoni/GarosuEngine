@@ -155,8 +155,8 @@
     <ClInclude Include="header\GarosuStringUtils.h" />
     <ClInclude Include="header\GarosuThread.h" />
     <ClInclude Include="header\GarosuTimer.h" />
-    <ClInclude Include="header\GarosuSignal.h" />
-    <ClInclude Include="source\GarosuSignal.cpp" />
+    <ClInclude Include="header\GarosuLockUtils.h" />
+    <ClInclude Include="source\GarosuLockUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GarosuLog.cpp" />
