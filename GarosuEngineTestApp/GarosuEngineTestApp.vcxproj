@@ -20,33 +20,33 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{41AC7B7B-A53E-4586-851D-440197F0CFE3}</ProjectGuid>
+    <ProjectGuid>{3CCB63AC-A372-41FD-8D9D-A76C0974068C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GarosuEngine</RootNamespace>
+    <RootNamespace>GarosuEngineTestApp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuEngine\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuEngine\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuEngine\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuScheduler\header;$(ProjectDir)..\GarosuUtils\header;$(ProjectDir)..\GarosuPhysics\header;$(ProjectDir)..\GarosuGraphics\header;$(ProjectDir)\header</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\GarosuEngine\header</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -151,21 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GarosuGraphics\GarosuGraphics.vcxproj">
-      <Project>{e78f61d9-9e6b-42aa-a049-a9314b39d4c7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\GarosuPhysics\GarosuPhysics.vcxproj">
-      <Project>{4eee5445-1a40-4458-942b-a711a681778b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\GarosuUtils\GarosuUtils.vcxproj">
-      <Project>{905585fd-c0e8-4ffc-9f7a-8b1107e2279b}</Project>
-    </ProjectReference>
+    <ClCompile Include="source\TestMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\GarosuEngine.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="header\GarosuEngine.h" />
+    <ProjectReference Include="..\GarosuEngine\GarosuEngine.vcxproj">
+      <Project>{41ac7b7b-a53e-4586-851d-440197f0cfe3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

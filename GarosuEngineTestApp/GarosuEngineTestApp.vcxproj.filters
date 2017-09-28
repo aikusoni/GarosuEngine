@@ -15,12 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\GarosuEngine.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\GarosuEngine.cpp">
+    <ClCompile Include="source\TestMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
