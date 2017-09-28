@@ -14,10 +14,10 @@ namespace Garosu
 		INFO
 	};
 
-	class Log final
+	class Log
 	{
 	public:
-		Log(const LogLevel& logLevel, const std::string& logPath, bool printToConsole = false);
+		Log(const std::string& logPath, const LogLevel& logLevel = LogLevel::ERROR, bool printToConsole = false);
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
 
@@ -25,11 +25,11 @@ namespace Garosu
 
 		bool StartLogThread(void);
 
-		void C(const std::string&);
-		void E(const std::string&);
-		void W(const std::string&);
-		void N(const std::string&);
-		void I(const std::string&);
+		inline void C(const std::string&);
+		inline void E(const std::string&);
+		inline void W(const std::string&);
+		inline void N(const std::string&);
+		inline void I(const std::string&);
 
 	private:
 		class impl;

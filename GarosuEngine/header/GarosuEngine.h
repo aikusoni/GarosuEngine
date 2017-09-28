@@ -17,6 +17,8 @@ namespace Garosu
 
 		virtual ~Engine(void);
 
+		bool Initialize(void* outputTarget);
+
 		bool SendMessage(BaseEngineMessage*);
 
 	private:

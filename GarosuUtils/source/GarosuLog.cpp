@@ -65,7 +65,7 @@ namespace Garosu
 		BaseThread mThread;
 	};
 
-	Log::Log(const LogLevel& logLevel, const std::string& logPath, bool printToConsole)
+	Log::Log(const std::string& logPath, const LogLevel& logLevel, bool printToConsole)
 		: pImpl(std::make_unique<impl>())
 	{
 		pImpl->mLogLevel = logLevel;
@@ -181,7 +181,7 @@ namespace Garosu
 			LogData* logData = Pop();
 			if (logData == NULL)
 			{
-				ThreadUtils::SleepFor(10);
+				ThreadUtils::SleepFor(10 * 1000 * 1000);
 				continue;
 			}
 

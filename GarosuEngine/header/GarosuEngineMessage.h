@@ -6,14 +6,14 @@ namespace Garosu
 {
 	enum class EngineMessageId
 	{
-		None
+		Default
 	};
 
 	class BaseEngineMessage
 	{
 	public:
-		BaseEngineMessage(EngineMessageId messageId)
-			: mMessageId(messageId)
+		BaseEngineMessage()
+			: mMessageId(EngineMessageId::Default)
 		{
 
 		}

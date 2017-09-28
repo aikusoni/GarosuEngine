@@ -8,6 +8,10 @@ namespace Garosu {
 	{
 	public:
 		Physics(void);
+		Physics(const Physics&) = delete;
+		Physics operator=(const Physics&) = delete;
+
+		virtual ~Physics(void);
 	};
 
 }

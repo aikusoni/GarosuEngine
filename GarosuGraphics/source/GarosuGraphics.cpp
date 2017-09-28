@@ -8,7 +8,7 @@ namespace Garosu {
 
 	};
 
-	Graphics::Graphics(void* OutputTarget)
+	Graphics::Graphics(void)
 		: pImpl(std::make_unique<impl>())
 	{
 
