@@ -1,11 +1,11 @@
 #include <GarosuTypedef.h>
+#include <GarosuTask.h>
 
 #include <vector>
 #include <atomic>
 #include <utility>
 #include <functional>
 
-#include "GarosuTask.h"
 #include "GarosuWorker.h"
 
 #include <concurrent_queue.h>
@@ -135,19 +135,12 @@ namespace Garosu
 		std::vector<uptr<WorkerThread>> mWorkerThreads;
 	};
 
-	WorkerGroup::WorkerGroup(void)
-		: pImpl(mk_uptr<impl>())
-	{
-		pImpl->mNumWorker = ThreadUtils::GetConcurrencyCount();
-		pImpl->mIsInit = false;
-		pImpl->mStart = false;
-	}
-
 	WorkerGroup::WorkerGroup(i32 numWorker)
 		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->mNumWorker = numWorker;
 		pImpl->mIsInit = false;
+		pImpl->mStart = false;
 	}
 
 	WorkerGroup::~WorkerGroup(void)

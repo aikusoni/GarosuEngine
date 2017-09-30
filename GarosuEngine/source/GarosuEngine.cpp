@@ -2,14 +2,22 @@
 
 #include "GarosuEngine.h"
 
+// common
 #include <GarosuTask.h>
-#include <GarosuInterfaces.h>
+#include <GarosuIScheduler.h>
+#include <GarosuIPhysics.h>
+#include <GarosuIGraphics.h>
 
+// Garosu Utils
 #include <GarosuLog.h>
-#include <GarosuTask.h>
+#include <GarosuThread.h>
+
+// garosu libraries
 #include <GarosuPhysics.h>
 #include <GarosuGraphics.h>
 #include <GarosuScheduler.h>
+
+
 
 namespace Garosu
 {
@@ -20,9 +28,9 @@ namespace Garosu
 		impl(void);
 		virtual ~impl(void);
 
-		//Scheduler scheduler;
-		//Physics physics;
-		//Graphics graphics;
+		IScheduler* scheduler;
+		IPhysics* physics;
+		IGraphics* graphics;
 	};
 
 	Engine::impl::impl(void) {}
@@ -31,7 +39,8 @@ namespace Garosu
 	Engine::Engine(void)
 		: pImpl(mk_uptr<impl>())
 	{
-
+		pImpl->scheduler = NULL;
+		pImpl->graphics = NULL;
 	}
 
 	Engine::~Engine(void)
@@ -46,12 +55,14 @@ namespace Garosu
 		bool initFailed = true;
 		do
 		{
-			//if (pImpl->scheduler.Initialize() != SchedulerError::OK)
-			//{
-			//	LOGE("cannot intialize scheduler library");
-			//	break;
-			//}
-			//LOGD("scheduler library initialized...");
+			int numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
+			numSchedulerThreads -= 1; // for main thread
+
+			pImpl->scheduler = Garosu::SchedulerFactory::MakeDefaultScheduler(8);
+			if (pImpl->scheduler == NULL)
+			{
+				// TODO
+			}
 
 			//if (pImpl->physics.Initialize() != PhysicsError::OK)
 			//{

@@ -3,8 +3,9 @@
 #define __GAROSU_TYPEDEF_H__
 
 #include <cstdint>
-#include <string>
+
 #include <memory>
+#include <string>
 #include <vector>
 #include <functional>
 
@@ -20,6 +21,9 @@ namespace Garosu
 	using u16 = uint16_t;
 	using u32 = uint32_t;
 	using u64 = uint64_t;
+
+	using f32 = float;
+	using f64 = double;
 
 	using String = std::string;
 	using WString = std::wstring;

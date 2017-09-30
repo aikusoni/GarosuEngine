@@ -15,8 +15,8 @@ namespace Garosu
 		virtual ~GameTimer(void);
 
 	public:
-		double TotalTime(void) const;
-		double DeltaTime(void) const;
+		f64 TotalTime(void) const;
+		f64 DeltaTime(void) const;
 
 		void Reset(void);
 		void Start(void);
@@ -25,13 +25,13 @@ namespace Garosu
 		void Tick(void);
 
 	private:
-		double mDeltaTime;
+		f64 mDeltaTime;
 
-		double mPausedTime;
-		double mBeginTime;
-		double mStopTime;
-		double mPrevTime;
-		double mCurrTime;
+		f64 mPausedTime;
+		f64 mBeginTime;
+		f64 mStopTime;
+		f64 mPrevTime;
+		f64 mCurrTime;
 
 		bool mStopped;
 	};

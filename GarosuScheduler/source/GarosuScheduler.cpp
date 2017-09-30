@@ -1,9 +1,8 @@
 #include <GarosuTypedef.h>
 
 #include <GarosuTask.h>
-#include <GarosuInterfaces.h>
+#include <GarosuIScheduler.h>
 
-#include "GarosuTask.h"
 #include "GarosuScheduler.h"
 #include "GarosuWorker.h"
 
@@ -13,35 +12,41 @@
 namespace Garosu
 {
 
-	class Scheduler::impl
+	class Scheduler : public IScheduler
 	{
 	public:
-		impl(void) {}
-		virtual ~impl(void) {}
+		Scheduler(u32 numThread);
+		Scheduler(const Scheduler&) = delete;
+		Scheduler& operator=(const Scheduler&) = delete;
+
+		virtual ~Scheduler(void);
+
+		SchedulerError Initialize(void);
+		SchedulerError HandoverTask(uptr<BaseTask> newTask);
 
 		WorkerGroup mWorkerGroup;
 	};
 
-	Scheduler::Scheduler(void)
-		: pImpl(mk_uptr<impl>())
+	Scheduler::Scheduler(u32 numThread)
+		: mWorkerGroup(numThread)
 	{
 
 	}
 
 	Scheduler::~Scheduler(void)
 	{
-		if (pImpl) pImpl->mWorkerGroup.Stop();
+		mWorkerGroup.Stop();
 	}
 
 	SchedulerError Scheduler::Initialize(void)
 	{
-		if (!pImpl->mWorkerGroup.Initialize())
+		if (!mWorkerGroup.Initialize())
 		{
 			LOGE("[Scheduler] cannot intialize WorkerGroup");
 			return SchedulerError::ERROR;
 		}
 
-		if (!pImpl->mWorkerGroup.Start())
+		if (!mWorkerGroup.Start())
 		{
 			LOGE("[Scheduler] cannot start WorkerGroup");
 			return SchedulerError::ERROR;
@@ -50,11 +55,17 @@ namespace Garosu
 		return SchedulerError::OK;
 	}
 
-	bool Scheduler::HandoverTask(uptr<BaseTask> newTask)
+	SchedulerError Scheduler::HandoverTask(uptr<BaseTask> newTask)
 	{
-		bool ret = pImpl->mWorkerGroup.Handover(newTask.get());
+		bool ret = mWorkerGroup.Handover(newTask.get());
 
-		return ret;
+		return ret ? SchedulerError::OK : SchedulerError::ERROR;
+	}
+
+
+	IScheduler* SchedulerFactory::MakeDefaultScheduler(u32 numThread)
+	{
+		return new Scheduler(numThread);
 	}
 
 }

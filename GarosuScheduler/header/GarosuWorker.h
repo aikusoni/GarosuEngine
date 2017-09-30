@@ -8,7 +8,6 @@ namespace Garosu
 	class WorkerGroup final
 	{
 	public:
-		WorkerGroup(void);
 		WorkerGroup(i32 numWorker);
 		WorkerGroup(const WorkerGroup&) = delete;
 		WorkerGroup& operator=(const WorkerGroup&) = delete;

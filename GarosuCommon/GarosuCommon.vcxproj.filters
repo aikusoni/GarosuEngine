@@ -21,7 +21,13 @@
     <ClInclude Include="header\GarosuTypedef.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\GarosuInterfaces.h">
+    <ClInclude Include="header\GarosuIScheduler.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="header\GarosuIGraphics.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="header\GarosuIPhysics.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

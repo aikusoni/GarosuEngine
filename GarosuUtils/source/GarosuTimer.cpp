@@ -9,8 +9,8 @@ using namespace std::chrono;
 
 namespace Garosu {
 
-	inline double GetCurrentTimeSecond(void) {
-		return duration<double>(high_resolution_clock::now().time_since_epoch()).count();
+	inline f64 GetCurrentTimeSecond(void) {
+		return duration<f64>(high_resolution_clock::now().time_since_epoch()).count();
 	}
 
 	GameTimer::GameTimer(void)
@@ -29,7 +29,7 @@ namespace Garosu {
 
 	}
 
-	double GameTimer::TotalTime(void) const
+	f64 GameTimer::TotalTime(void) const
 	{
 		if (mStopped)
 		{
@@ -41,7 +41,7 @@ namespace Garosu {
 		}
 	}
 
-	double GameTimer::DeltaTime(void) const
+	f64 GameTimer::DeltaTime(void) const
 	{
 		return mDeltaTime;
 	}

@@ -1,6 +1,7 @@
 #include <GarosuTypedef.h>
+
 #include <GarosuTask.h>
-#include <GarosuInterfaces.h>
+#include <GarosuIScheduler.h>
 
 #include "GarosuPhysics.h"
 

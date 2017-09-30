@@ -1,25 +1,34 @@
 #include <GarosuTypedef.h>
+
 #include <GarosuTask.h>
-#include <GarosuInterfaces.h>
+#include <GarosuIScheduler.h>
+#include <GarosuIGraphics.h>
 
 #include "GarosuGraphics.h"
 
 namespace Garosu {
 
-	class Graphics::impl
+	class Graphics : public IGraphics
 	{
 	public:
-		impl(IScheduler* scheduler);
-		virtual ~impl(void) {}
+		Graphics(IScheduler*);
+		Graphics(const Graphics&) = delete;
+		Graphics& operator=(const Graphics&) = delete;
 
-	private:
+		~Graphics(void);
+
+		GraphicsError Initialize(void);
+		GraphicsError Start(void);
+		GraphicsError Stop(void);
+
+		GraphicsError SendMessage(GraphicsMessageId messageId);
+		GraphicsError RegisterCallback(IGraphicsCallback* callback);
+
 		IScheduler* mScheduler;
 	};
 
-	Graphics::impl::impl(IScheduler* scheduler) : mScheduler(scheduler) {}
-
 	Graphics::Graphics(IScheduler* scheduler)
-		: pImpl(mk_uptr<impl>(scheduler))
+		: mScheduler(scheduler)
 	{
 
 	}
@@ -56,6 +65,11 @@ namespace Garosu {
 	{
 
 		return GraphicsError::OK;
+	}
+
+	IGraphics* GraphicsFactory::MakeDefaultGraphics(IScheduler* scheduler)
+	{
+		return new Graphics(scheduler);
 	}
 
 }
