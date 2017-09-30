@@ -148,7 +148,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuTask.h" />
-    <ClInclude Include="header\SchedulerInterface.h" />
+    <ClInclude Include="header\GarosuTypedef.h" />
+    <ClInclude Include="header\GarosuInterfaces.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

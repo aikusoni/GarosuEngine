@@ -1,7 +1,6 @@
-#include <memory>
-#include <string>
-
-#include <SchedulerInterface.h>
+#include <GarosuTypedef.h>
+#include <GarosuTask.h>
+#include <GarosuInterfaces.h>
 
 #include "GarosuPhysics.h"
 

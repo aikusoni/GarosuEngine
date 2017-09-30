@@ -1,11 +1,11 @@
-#include <memory>
+#include <GarosuTypedef.h>
+
 #include <vector>
 #include <atomic>
 #include <utility>
 #include <functional>
 
 #include "GarosuTask.h"
-#include "GarosuScheduler.h"
 #include "GarosuWorker.h"
 
 #include <concurrent_queue.h>
@@ -53,7 +53,7 @@ namespace Garosu
 
 	void TaskWorker::DoWork(void)
 	{
-		int tryCnt = 0;
+		i32 tryCnt = 0;
 		mDone = false;
 		mLoop = true;
 		while (mLoop)
@@ -99,7 +99,7 @@ namespace Garosu
 
 	WorkerThread::WorkerThread(TaskQueue& taskQueue)
 		: mWorker(taskQueue)
-		, BaseThread(mWorker)
+		, BaseThread(&mWorker)
 	{
 
 	}
@@ -127,25 +127,24 @@ namespace Garosu
 	class WorkerGroup::impl
 	{
 	public:
-		int mNumWorker;
+		i32 mNumWorker;
 		bool mIsInit;
 		bool mStart;
 
 		TaskQueue mTaskQueue;
-		std::vector<std::unique_ptr<WorkerThread>> mWorkerThreads;
-		std::vector<std::unique_ptr<WorkerThread>> mReducedWorkerThreads;
+		std::vector<uptr<WorkerThread>> mWorkerThreads;
 	};
 
 	WorkerGroup::WorkerGroup(void)
-		: pImpl(std::make_unique<impl>())
+		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->mNumWorker = ThreadUtils::GetConcurrencyCount();
 		pImpl->mIsInit = false;
 		pImpl->mStart = false;
 	}
 
-	WorkerGroup::WorkerGroup(int numWorker)
-		: pImpl(std::make_unique<impl>())
+	WorkerGroup::WorkerGroup(i32 numWorker)
+		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->mNumWorker = numWorker;
 		pImpl->mIsInit = false;
@@ -156,9 +155,6 @@ namespace Garosu
 		Stop();
 		for (auto& e : pImpl->mWorkerThreads)
 			e->Join();
-
-		for (auto& e : pImpl->mReducedWorkerThreads)
-			e->Join();
 	}
 
 	bool WorkerGroup::Initialize(void)
@@ -167,14 +163,14 @@ namespace Garosu
 		{
 			pImpl->mIsInit = true;
 		
-			for (int i = 0; i < pImpl->mNumWorker; ++i)
-				pImpl->mWorkerThreads.push_back(std::make_unique<WorkerThread>(pImpl->mTaskQueue));
+			for (i32 i = 0; i < pImpl->mNumWorker; ++i)
+				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskQueue));
 		}
 
 		return true;
 	}
 
-	bool WorkerGroup::SetNumWorker(int numWorker)
+	bool WorkerGroup::SetNumWorker(i32 numWorker)
 	{
 		if (!pImpl->mIsInit) {
 			pImpl->mNumWorker = numWorker;
@@ -183,38 +179,40 @@ namespace Garosu
 
 		if (numWorker > pImpl->mNumWorker)
 		{
-			int numExpand = numWorker - pImpl->mNumWorker;
+			i32 numExpand = numWorker - pImpl->mNumWorker;
 
-			for (int i = 0; i < numExpand; ++i)
-				pImpl->mWorkerThreads.push_back(std::make_unique<WorkerThread>(pImpl->mTaskQueue));
+			for (i32 i = 0; i < numExpand; ++i)
+				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskQueue));
 
 			pImpl->mNumWorker = numWorker;
 
 			if (pImpl->mStart)
 			{
-				for (int i = pImpl->mNumWorker - numExpand; i < pImpl->mNumWorker; ++i)
+				for (i32 i = pImpl->mNumWorker - numExpand; i < pImpl->mNumWorker; ++i)
 				{
-					pImpl->mReducedWorkerThreads[i]->Start();
+					pImpl->mWorkerThreads[i]->Start();
 				}
 			}
 		}
 		else if (numWorker < pImpl->mNumWorker)
 		{
-			int numReduce = pImpl->mNumWorker;
+			i32 numReduce = pImpl->mNumWorker;
 
-			for (int i = 0; i < numReduce; ++i)
+			std::vector<uptr<WorkerThread>> reducedWorkerThreads;
+
+			for (i32 i = 0; i < numReduce; ++i)
 			{
 				auto reducing = std::move(pImpl->mWorkerThreads[pImpl->mWorkerThreads.size() - 1]);
 				reducing->RequestStop();
-				pImpl->mReducedWorkerThreads.push_back(std::move(reducing));
+				reducedWorkerThreads.push_back(std::move(reducing));
 			}
 
 			pImpl->mNumWorker = numWorker;
 
-			for (size_t i = 0; i < pImpl->mReducedWorkerThreads.size(); ++i)
-				pImpl->mReducedWorkerThreads[i]->Join();
+			for (size_t i = 0; i < reducedWorkerThreads.size(); ++i)
+				reducedWorkerThreads[i]->Join();
 
-			pImpl->mReducedWorkerThreads.clear();
+			reducedWorkerThreads.clear();
 		}
 		else
 		{

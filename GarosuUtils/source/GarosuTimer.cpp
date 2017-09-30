@@ -1,4 +1,4 @@
-#include <memory>
+#include <GarosuTypedef.h>
 
 #include "GarosuTimer.h"
 

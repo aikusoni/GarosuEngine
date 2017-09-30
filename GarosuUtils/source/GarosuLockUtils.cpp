@@ -1,4 +1,4 @@
-#include <memory>
+#include <GarosuTypedef.h>
 
 #include "GarosuLockUtils.h"
 
@@ -17,7 +17,7 @@ namespace Garosu
 	};
 
 	Signal::Signal(void)
-		: pImpl(std::make_unique<impl>())
+		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->lck = std::unique_lock<std::mutex>(pImpl->mt);
 	}

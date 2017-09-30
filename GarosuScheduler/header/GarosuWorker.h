@@ -9,14 +9,14 @@ namespace Garosu
 	{
 	public:
 		WorkerGroup(void);
-		WorkerGroup(int numWorker);
+		WorkerGroup(i32 numWorker);
 		WorkerGroup(const WorkerGroup&) = delete;
 		WorkerGroup& operator=(const WorkerGroup&) = delete;
 
 		virtual ~WorkerGroup(void);
 
 		bool Initialize(void);
-		bool SetNumWorker(int numWorker);
+		bool SetNumWorker(i32 numWorker);
 
 		bool Start(void); 
 		bool Stop(void);
@@ -25,7 +25,7 @@ namespace Garosu
 
 	private:
 		class impl;
-		std::unique_ptr<impl> pImpl;
+		uptr<impl> pImpl;
 	};
 
 }

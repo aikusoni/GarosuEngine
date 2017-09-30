@@ -1,14 +1,13 @@
-#include <memory>
-#include <string>
-#include <functional>
+#include <GarosuTypedef.h>
 
-#include <GarosuLog.h>
-
-#include <SchedulerInterface.h>
+#include <GarosuTask.h>
+#include <GarosuInterfaces.h>
 
 #include "GarosuTask.h"
 #include "GarosuScheduler.h"
 #include "GarosuWorker.h"
+
+#include <GarosuLog.h>
 
 
 namespace Garosu
@@ -24,7 +23,7 @@ namespace Garosu
 	};
 
 	Scheduler::Scheduler(void)
-		: pImpl(std::make_unique<impl>())
+		: pImpl(mk_uptr<impl>())
 	{
 
 	}
@@ -51,7 +50,7 @@ namespace Garosu
 		return SchedulerError::OK;
 	}
 
-	bool Scheduler::HandoverTask(std::unique_ptr<BaseTask> newTask)
+	bool Scheduler::HandoverTask(uptr<BaseTask> newTask)
 	{
 		bool ret = pImpl->mWorkerGroup.Handover(newTask.get());
 

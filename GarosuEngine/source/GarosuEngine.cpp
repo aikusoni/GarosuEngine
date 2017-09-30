@@ -1,10 +1,9 @@
+#include <GarosuTypedef.h>
+
 #include "GarosuEngine.h"
 
-#include <memory>
-#include <vector>
-#include <functional>
-
-#include <SchedulerInterface.h>
+#include <GarosuTask.h>
+#include <GarosuInterfaces.h>
 
 #include <GarosuLog.h>
 #include <GarosuTask.h>
@@ -30,7 +29,7 @@ namespace Garosu
 	Engine::impl::~impl(void) {}
 
 	Engine::Engine(void)
-		: pImpl(std::make_unique<impl>())
+		: pImpl(mk_uptr<impl>())
 	{
 
 	}

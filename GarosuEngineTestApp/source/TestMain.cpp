@@ -1,3 +1,5 @@
+#include <GarosuTypedef.h>
+
 #include <GarosuEngine.h>
 
 #include <Windows.h>
@@ -24,7 +26,7 @@ TestApp::~TestApp(void)
 
 }
 
-int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 
 	return 0;

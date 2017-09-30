@@ -1,3 +1,5 @@
+#include <GarosuTypedef.h>
+
 #include <ostream>
 #include <chrono>
 

@@ -46,7 +46,7 @@ namespace Garosu {
 
 	private:
 		class impl;
-		std::unique_ptr<impl> pImpl;
+		uptr<impl> pImpl;
 	};
 
 }

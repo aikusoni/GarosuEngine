@@ -7,7 +7,8 @@ namespace Garosu
 
 	class IScheduler
 	{
-
+	public:
+		virtual bool HandoverTask(uptr<BaseTask> newTask) = 0;		
 	};
 
 }

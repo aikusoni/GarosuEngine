@@ -10,13 +10,13 @@ namespace Garosu
 	class BaseWorker
 	{
 	public:
-		virtual void DoWork(void) { std::cout << "this is base worker." << std::endl; };
+		virtual void DoWork(void) = 0;
 	};
 
 	class BaseThread
 	{
 	public:
-		BaseThread(BaseWorker&);
+		BaseThread(BaseWorker*);
 		BaseThread(const BaseThread&) = delete;
 		BaseThread& operator=(const BaseThread&) = delete;
 
@@ -28,17 +28,17 @@ namespace Garosu
 	protected:
 
 	private:
-		BaseWorker& mBaseWorker;
+		BaseWorker* mBaseWorker;
 
 		class impl;
-		std::unique_ptr<impl> pImpl;
+		uptr<impl> pImpl;
 	};
 
 	class ThreadUtils
 	{
 	public:
-		static void SleepFor(int nanoSeconds);
-		static unsigned int GetConcurrencyCount(void);
+		static void SleepFor(i32 nanoSeconds);
+		static u32 GetConcurrencyCount(void);
 	};
 
 }

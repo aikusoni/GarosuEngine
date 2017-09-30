@@ -1,4 +1,4 @@
-#include <memory>
+#include <GarosuTypedef.h>
 
 #include "GarosuThread.h"
 
@@ -19,9 +19,9 @@ namespace Garosu
 		std::thread thr;
 	};
 
-	BaseThread::BaseThread(BaseWorker& baseWorker)
+	BaseThread::BaseThread(BaseWorker* baseWorker)
 		: mBaseWorker(baseWorker)
-		, pImpl(std::make_unique<impl>())
+		, pImpl(mk_uptr<impl>())
 	{
 
 	}
@@ -33,7 +33,7 @@ namespace Garosu
 
 	void BaseThread::Start(void)
 	{
-		pImpl->thr = std::thread(DoWork, &mBaseWorker);
+		pImpl->thr = std::thread(DoWork, mBaseWorker);
 	}
 
 	void BaseThread::Join(void)
@@ -42,12 +42,12 @@ namespace Garosu
 			pImpl->thr.join();
 	}
 
-	void ThreadUtils::SleepFor(int nanoSeconds)
+	void ThreadUtils::SleepFor(i32 nanoSeconds)
 	{
 		std::this_thread::sleep_for(std::chrono::nanoseconds(nanoSeconds));
 	}
 
-	unsigned int ThreadUtils::GetConcurrencyCount(void)
+	u32 ThreadUtils::GetConcurrencyCount(void)
 	{
 		return std::thread::hardware_concurrency();
 	}

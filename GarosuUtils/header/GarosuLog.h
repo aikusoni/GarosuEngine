@@ -18,7 +18,7 @@ namespace Garosu
 	class Logger
 	{
 	public:
-		Logger(const std::string& logPath, const LogLevel& logLevel = LogLevel::ERROR, bool printToConsole = false);
+		Logger(const String& logPath, const LogLevel& logLevel = LogLevel::ERROR, bool printToConsole = false);
 		Logger(const Logger&) = delete;
 		Logger& operator=(const Logger&) = delete;
 
@@ -26,16 +26,16 @@ namespace Garosu
 
 		bool StartLogThread(void);
 
-		inline void C(const std::string&);
-		inline void E(const std::string&);
-		inline void D(const std::string&);
-		inline void W(const std::string&);
-		inline void N(const std::string&);
-		inline void I(const std::string&);
+		inline void C(const String&);
+		inline void E(const String&);
+		inline void D(const String&);
+		inline void W(const String&);
+		inline void N(const String&);
+		inline void I(const String&);
 
 	private:
 		class impl;
-		std::unique_ptr<impl> pImpl;
+		uptr<impl> pImpl;
 	};
 
 	class Log : public Logger

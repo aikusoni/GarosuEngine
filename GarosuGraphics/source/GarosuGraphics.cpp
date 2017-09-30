@@ -1,6 +1,7 @@
-#include <memory>
+#include <GarosuTypedef.h>
+#include <GarosuTask.h>
+#include <GarosuInterfaces.h>
 
-#include <SchedulerInterface.h>
 #include "GarosuGraphics.h"
 
 namespace Garosu {
@@ -18,7 +19,7 @@ namespace Garosu {
 	Graphics::impl::impl(IScheduler* scheduler) : mScheduler(scheduler) {}
 
 	Graphics::Graphics(IScheduler* scheduler)
-		: pImpl(std::make_unique<impl>(scheduler))
+		: pImpl(mk_uptr<impl>(scheduler))
 	{
 
 	}

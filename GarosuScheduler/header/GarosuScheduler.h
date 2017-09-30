@@ -21,11 +21,11 @@ namespace Garosu
 		virtual ~Scheduler(void);
 
 		SchedulerError Initialize(void);
-		bool HandoverTask(std::unique_ptr<BaseTask> newTask);
+		bool HandoverTask(uptr<BaseTask> newTask);
 
 	private:
 		class impl;
-		std::unique_ptr<impl> pImpl;
+		uptr<impl> pImpl;
 	};
 
 }

@@ -1,5 +1,4 @@
-#include <memory>
-#include <string>
+#include <GarosuTypedef.h>
 
 #include "GarosuLog.h"
 
@@ -20,7 +19,7 @@ namespace Garosu
 	{
 		std::chrono::system_clock::time_point logTime;
 		LogLevel logLevel;
-		std::string logString;
+		String logString;
 
 		struct Comparator
 		{
@@ -34,24 +33,24 @@ namespace Garosu
 	{
 	public:
 		impl(void)
-			: mThread(*this)
+			: mThread(this)
 		{
 
 		}
 
 		~impl(void)
 		{
-			bLoop = false;
+			bLoop = false; // to stop thread loop
 			mThread.Join();
 			mFileStream.close();
 		}
 
 		LogLevel mLogLevel;
-		std::string mLogPath;
+		String mLogPath;
 		std::fstream mFileStream;
 		bool mPrintToConsole = false;
 
-		bool Push(const LogLevel&, const std::string&);
+		bool Push(const LogLevel&, const String&);
 		LogData* Pop(void);
 
 		void StartLogging(void);
@@ -61,42 +60,42 @@ namespace Garosu
 	private:
 		Concurrency::concurrent_priority_queue <LogData*, LogData::Comparator> logQueue;
 
-		bool bLoop = true;
+		std::atomic<bool> bLoop = true;
 		BaseThread mThread;
 	};
 
-	void Logger::C(const std::string& t)
+	void Logger::C(const String& t)
 	{
 		pImpl->Push(LogLevel::CRITICAL, t);
 	}
 
-	void Logger::E(const std::string& t)
+	void Logger::E(const String& t)
 	{
 		pImpl->Push(LogLevel::ERROR, t);
 	}
 
-	void Logger::D(const std::string& t)
+	void Logger::D(const String& t)
 	{
 		pImpl->Push(LogLevel::DEBUG, t);
 	}
 
-	void Logger::W(const std::string& t)
+	void Logger::W(const String& t)
 	{
 		pImpl->Push(LogLevel::WARNING, t);
 	}
 
-	void Logger::N(const std::string& t)
+	void Logger::N(const String& t)
 	{
 		pImpl->Push(LogLevel::NOTICE, t);
 	}
 
-	void Logger::I(const std::string& t)
+	void Logger::I(const String& t)
 	{
 		pImpl->Push(LogLevel::INFO, t);
 	}
 
-	Logger::Logger(const std::string& logPath, const LogLevel& logLevel, bool printToConsole)
-		: pImpl(std::make_unique<impl>())
+	Logger::Logger(const String& logPath, const LogLevel& logLevel, bool printToConsole)
+		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->mLogLevel = logLevel;
 		pImpl->mLogPath = logPath;
@@ -123,7 +122,7 @@ namespace Garosu
 		return true;
 	}
 
-	bool Logger::impl::Push(const LogLevel& logLevel, const std::string& t)
+	bool Logger::impl::Push(const LogLevel& logLevel, const String& t)
 	{
 		if (logLevel > mLogLevel)
 			return false;
