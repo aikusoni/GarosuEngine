@@ -14,6 +14,8 @@ namespace Garosu
 	{
 	public:
 		virtual SchedulerError Initialize(void) = 0;
+		virtual SchedulerError Finalize(void) = 0;
+
 		virtual SchedulerError HandoverTask(uptr<BaseTask> newTask) = 0;
 	};
 

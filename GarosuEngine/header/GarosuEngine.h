@@ -18,6 +18,7 @@ namespace Garosu
 		virtual ~Engine(void);
 
 		bool Initialize(void* outputTarget);
+		bool Finalize(void);
 
 		bool SendMessage(BaseEngineMessage*);
 

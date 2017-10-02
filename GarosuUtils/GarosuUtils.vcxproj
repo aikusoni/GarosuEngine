@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuLog.h" />
+    <ClInclude Include="header\GarosuMathUtils.h" />
     <ClInclude Include="header\GarosuStringUtils.h" />
     <ClInclude Include="header\GarosuThread.h" />
     <ClInclude Include="header\GarosuTimer.h" />
@@ -160,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GarosuLog.cpp" />
+    <ClCompile Include="source\GarosuMathUtils.cpp" />
     <ClCompile Include="source\GarosuStringUtils.cpp" />
     <ClCompile Include="source\GarosuThread.cpp" />
     <ClCompile Include="source\GarosuTimer.cpp" />

@@ -5,9 +5,17 @@
 namespace Garosu
 {
 
+	enum class PhysicsError
+	{
+		OK,
+		ERROR,
+	};
+
 	class IPhysics
 	{
 	public:
+		virtual PhysicsError Initialize(void) = 0;
+		virtual PhysicsError Finalize(void) = 0;
 	};
 
 }

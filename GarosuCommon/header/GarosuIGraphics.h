@@ -30,6 +30,8 @@ namespace Garosu
 	class IGraphics
 	{
 	public:
+		virtual GraphicsError Initialize(void) = 0;
+		virtual GraphicsError Finalize(void) = 0;
 	};
 
 }

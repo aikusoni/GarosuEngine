@@ -4,22 +4,10 @@
 
 namespace Garosu {
 
-	enum class PhysicsError
-	{
-		OK,
-		ERROR,
-	};
-	
-	class Physics
+	class PhysicsFactory
 	{
 	public:
-		Physics(IScheduler* scheduler);
-		Physics(const Physics&) = delete;
-		Physics operator=(const Physics&) = delete;
-
-		virtual ~Physics(void);
-
-		PhysicsError Initialize(void);
+		static IPhysics* MakeDefaultPhysics(IScheduler* scheduler);
 	};
 
 }

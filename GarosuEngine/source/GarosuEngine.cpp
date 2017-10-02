@@ -17,8 +17,6 @@
 #include <GarosuGraphics.h>
 #include <GarosuScheduler.h>
 
-
-
 namespace Garosu
 {
 
@@ -40,6 +38,7 @@ namespace Garosu
 		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->scheduler = NULL;
+		pImpl->physics = NULL;
 		pImpl->graphics = NULL;
 	}
 
@@ -55,31 +54,52 @@ namespace Garosu
 		bool initFailed = true;
 		do
 		{
-			int numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
-			numSchedulerThreads -= 1; // for main thread
+			///// Make Scheduler
+			u32 numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
+			numSchedulerThreads -= 2; // for main thread & logger
 
-			pImpl->scheduler = Garosu::SchedulerFactory::MakeDefaultScheduler(8);
+			pImpl->scheduler = Garosu::SchedulerFactory::MakeDefaultScheduler(numSchedulerThreads);
 			if (pImpl->scheduler == NULL)
 			{
-				// TODO
+				LOGC("Scheduler allocation failed.");
+				break;
 			}
 
-			//if (pImpl->physics.Initialize() != PhysicsError::OK)
-			//{
-			//	LOGE("cannot initialize physics library");
-			//	break;
-			//}
-			//LOGD("physics library initialized...");
+			if (pImpl->scheduler->Initialize() != SchedulerError::OK)
+			{
+				LOGE("Scheduler initialization failed.");
+				break;
+			}
 
-			//if (pImpl->graphics.Initialize() != GraphicsError::OK)
-			//{
-			//	LOGE("cannot initialize graphics library");
-			//	break;
-			//}
-			//LOGD("graphics library initialized...");
+			///// Make Physics
+			pImpl->physics = Garosu::PhysicsFactory::MakeDefaultPhysics(pImpl->scheduler);
+			if (pImpl->physics == NULL)
+			{
+				LOGC("Physics allocation failed.");
+				break;
+			}
+
+			if (pImpl->physics->Initialize() != PhysicsError::OK)
+			{
+				LOGE("Physics initialization failed.");
+				break;
+			}
+
+			///// Make Graphics
+			pImpl->graphics = Garosu::GraphicsFactory::MakeDefaultGraphics(pImpl->scheduler);
+			if (pImpl->graphics == NULL)
+			{
+				LOGC("Graphics allocation failed.");
+				break;
+			}
+
+			if (pImpl->graphics->Initialize() != GraphicsError::OK)
+			{
+				LOGE("Graphics initialization failed.");
+				break;
+			}
 
 			initFailed = false;
-
 		} while (false);
 
 		if (initFailed)
@@ -89,6 +109,35 @@ namespace Garosu
 		}
 
 		LOGD("Garosu Enigne initializing completed.");
+
+		return true;
+	}
+
+	bool Engine::Finalize(void)
+	{
+		if (pImpl)
+		{
+			if (pImpl->graphics)
+			{
+				pImpl->graphics->Finalize();
+				delete pImpl->graphics;
+				pImpl->graphics = NULL;
+			}
+
+			if (pImpl->physics)
+			{
+				pImpl->physics->Finalize();
+				delete pImpl->physics;
+				pImpl->physics = NULL;
+			}
+
+			if (pImpl->scheduler)
+			{
+				pImpl->scheduler->Finalize();
+				delete pImpl->scheduler;
+				pImpl->scheduler = NULL;
+			}
+		}
 
 		return true;
 	}

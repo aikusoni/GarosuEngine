@@ -33,6 +33,9 @@
     <ClInclude Include="source\GarosuLockUtils.cpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="header\GarosuMathUtils.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GarosuTimer.cpp">
@@ -45,6 +48,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="source\GarosuLog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GarosuMathUtils.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

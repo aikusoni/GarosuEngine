@@ -12,10 +12,15 @@
 
 #include <GarosuThread.h>
 #include <GarosuLockUtils.h>
+#include <GarosuMathUtils.h>
 
 namespace Garosu
 {
 	using TaskQueue = Concurrency::concurrent_queue<BaseTask*>;
+
+	inline u32 SaturateConcurrency(u32 n) {
+		return MathUtils::Clamp<u32>(n, 1, ThreadUtils::GetConcurrencyCount());
+	}
 	
 	/*
 	* TaskWorker executes tasks taked from task queue.
@@ -138,7 +143,7 @@ namespace Garosu
 	WorkerGroup::WorkerGroup(i32 numWorker)
 		: pImpl(mk_uptr<impl>())
 	{
-		pImpl->mNumWorker = numWorker;
+		pImpl->mNumWorker = SaturateConcurrency(numWorker);
 		pImpl->mIsInit = false;
 		pImpl->mStart = false;
 	}
@@ -165,6 +170,8 @@ namespace Garosu
 
 	bool WorkerGroup::SetNumWorker(i32 numWorker)
 	{
+		SaturateConcurrency(numWorker);
+
 		if (!pImpl->mIsInit) {
 			pImpl->mNumWorker = numWorker;
 			return true;

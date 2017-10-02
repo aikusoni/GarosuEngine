@@ -8,7 +8,6 @@
 
 #include <GarosuLog.h>
 
-
 namespace Garosu
 {
 
@@ -21,8 +20,10 @@ namespace Garosu
 
 		virtual ~Scheduler(void);
 
-		SchedulerError Initialize(void);
-		SchedulerError HandoverTask(uptr<BaseTask> newTask);
+		virtual SchedulerError Initialize(void);
+		virtual SchedulerError Finalize(void);
+
+		virtual SchedulerError HandoverTask(uptr<BaseTask> newTask);
 
 		WorkerGroup mWorkerGroup;
 	};
@@ -53,6 +54,13 @@ namespace Garosu
 		}
 
 		return SchedulerError::OK;
+	}
+
+	SchedulerError Scheduler::Finalize(void)
+	{
+		bool ret = mWorkerGroup.Stop();
+
+		return ret ? SchedulerError::OK : SchedulerError::ERROR;
 	}
 
 	SchedulerError Scheduler::HandoverTask(uptr<BaseTask> newTask)

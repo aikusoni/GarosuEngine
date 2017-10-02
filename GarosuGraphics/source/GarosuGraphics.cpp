@@ -17,7 +17,9 @@ namespace Garosu {
 
 		~Graphics(void);
 
-		GraphicsError Initialize(void);
+		virtual GraphicsError Initialize(void);
+		virtual GraphicsError Finalize(void);
+
 		GraphicsError Start(void);
 		GraphicsError Stop(void);
 
@@ -43,6 +45,13 @@ namespace Garosu {
 
 		return GraphicsError::OK;
 	}
+
+	GraphicsError Graphics::Finalize(void)
+	{
+		
+		return GraphicsError::OK;
+	}
+
 	GraphicsError Graphics::Start(void)
 	{
 
