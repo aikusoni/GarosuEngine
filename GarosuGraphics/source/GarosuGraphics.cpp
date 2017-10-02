@@ -20,11 +20,8 @@ namespace Garosu {
 		virtual GraphicsError Initialize(void);
 		virtual GraphicsError Finalize(void);
 
-		GraphicsError Start(void);
-		GraphicsError Stop(void);
-
-		GraphicsError SendMessage(GraphicsMessageId messageId);
-		GraphicsError RegisterCallback(IGraphicsCallback* callback);
+		virtual GraphicsError SendMessage(GraphicsMessage* message);
+		virtual GraphicsError RegisterCallback(IGraphicsCallback* callback);
 
 		IScheduler* mScheduler;
 	};
@@ -52,19 +49,7 @@ namespace Garosu {
 		return GraphicsError::OK;
 	}
 
-	GraphicsError Graphics::Start(void)
-	{
-
-		return GraphicsError::OK;
-	}
-
-	GraphicsError Graphics::Stop(void)
-	{
-
-		return GraphicsError::OK;
-	}
-
-	GraphicsError Graphics::SendMessage(GraphicsMessageId messageId)
+	GraphicsError Graphics::SendMessage(GraphicsMessage* message)
 	{
 
 		return GraphicsError::OK;

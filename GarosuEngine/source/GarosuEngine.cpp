@@ -104,11 +104,11 @@ namespace Garosu
 
 		if (initFailed)
 		{
-			LOGE("cannot initialize garosu engine");
+			LOGE("Garosu Engine initialization failed.");
 			return false;
 		}
 
-		LOGD("Garosu Enigne initializing completed.");
+		LOGD("Garosu Enigne initialization failed.");
 
 		return true;
 	}
@@ -144,6 +144,13 @@ namespace Garosu
 
 	bool Engine::SendMessage(BaseEngineMessage* message)
 	{
+		switch (message->mMessageId)
+		{
+		case EngineMessageId::Default:
+			break;
+
+
+		}
 
 		return true;
 	}

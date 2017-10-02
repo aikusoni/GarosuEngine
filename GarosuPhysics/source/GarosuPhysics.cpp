@@ -21,6 +21,9 @@ namespace Garosu {
 
 		virtual PhysicsError Initialize(void);
 		virtual PhysicsError Finalize(void);
+
+		virtual PhysicsError SendMessage(PhysicsMessage*);
+		virtual PhysicsError RegisterCallback(IPhysicsCallback*);
 	};
 
 	Physics::Physics(IScheduler* scheduler)
@@ -41,6 +44,18 @@ namespace Garosu {
 	}
 
 	PhysicsError Physics::Finalize(void)
+	{
+
+		return PhysicsError::OK;
+	}
+
+	PhysicsError Physics::SendMessage(PhysicsMessage* message)
+	{
+
+		return PhysicsError::OK;
+	}
+
+	PhysicsError Physics::RegisterCallback(IPhysicsCallback* callback)
 	{
 
 		return PhysicsError::OK;

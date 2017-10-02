@@ -11,6 +11,8 @@ namespace Garosu
 		{
 			return (n > min ? (n < max ? n : max) : min);
 		}
+
+		const static f32 PI;
 	};
 
 }

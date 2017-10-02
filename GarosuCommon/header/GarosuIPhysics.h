@@ -11,11 +11,38 @@ namespace Garosu
 		ERROR,
 	};
 
+	enum class PhysicsMessageId
+	{
+
+	};
+
+	enum class PhysicsCallbackMessageId
+	{
+
+	};
+
+	class PhysicsMessage
+	{
+	public:
+		PhysicsMessage(PhysicsMessageId msgId) : mMsgId(msgId) {}
+
+		PhysicsMessageId mMsgId;
+	};
+
+	class IPhysicsCallback
+	{
+	public:
+		virtual void operator()(PhysicsCallbackMessageId) = 0;
+	};
+
 	class IPhysics
 	{
 	public:
 		virtual PhysicsError Initialize(void) = 0;
 		virtual PhysicsError Finalize(void) = 0;
+
+		virtual PhysicsError SendMessage(PhysicsMessage*) = 0;
+		virtual PhysicsError RegisterCallback(IPhysicsCallback* callback) = 0;
 	};
 
 }

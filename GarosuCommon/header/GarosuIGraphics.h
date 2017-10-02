@@ -20,6 +20,14 @@ namespace Garosu
 	{
 
 	};
+
+	class GraphicsMessage
+	{
+	public:
+		GraphicsMessage(GraphicsMessageId msgId) : mMsgId(msgId) {}
+
+		GraphicsMessageId mMsgId;
+	};
 	
 	class IGraphicsCallback
 	{
@@ -32,6 +40,9 @@ namespace Garosu
 	public:
 		virtual GraphicsError Initialize(void) = 0;
 		virtual GraphicsError Finalize(void) = 0;
+
+		virtual GraphicsError SendMessage(GraphicsMessage*) = 0;
+		virtual GraphicsError RegisterCallback(IGraphicsCallback* callback) = 0;
 	};
 
 }
