@@ -114,47 +114,7 @@ namespace Garosu
 
 		virtual ~LogWorker(void);
 
-		virtual void DoWork(void)
-		{
-			locker.Lock();
-			if (isLogging)
-			{
-				locker.Unlock();
-				return;
-			}
-			isLogging = true;
-			locker.Unlock();
-
-			std::fstream logFile;
-			logFile.open(Settings::GetLogPath().c_str(), std::fstream::out);
-
-			if (!logFile.is_open()) return;
-
-			// log output loop
-			u32 tryCnt = 0u;
-			doLog = true;
-			while (doLog)
-			{
-				auto logData = mLogQueue.Pop();
-				if (logData == NULL) {
-					tryCnt++;
-					if (tryCnt > 1000)
-					{
-						tryCnt = 0;
-						ThreadUtils::SleepFor(10 * 1000 * 1000); // 10 ms
-					}
-					continue;
-				}
-
-				logFile << logData << std::endl; // TODO
-			}
-
-			if (logFile.is_open()) logFile.close();
-
-			locker.Lock();
-			isLogging = false;
-			locker.Unlock();
-		}
+		virtual void DoWork(void);
 
 		Locker locker;
 		bool isLogging;
@@ -165,6 +125,48 @@ namespace Garosu
 
 	LogWorker::LogWorker(LogQueue& logQueue) : doLog(false), isLogging(false), mLogQueue(logQueue) {}
 	LogWorker::~LogWorker(void) {}
+
+	void LogWorker::DoWork(void)
+	{
+		locker.Lock();
+		if (isLogging)
+		{
+			locker.Unlock();
+			return;
+		}
+		isLogging = true;
+		locker.Unlock();
+
+		std::fstream logFile;
+		logFile.open(Settings::GetLogPath().c_str(), std::fstream::out);
+
+		if (!logFile.is_open()) return;
+
+		// log output loop
+		u32 tryCnt = 0u;
+		doLog = true;
+		while (doLog)
+		{
+			auto logData = mLogQueue.Pop();
+			if (logData == NULL) {
+				tryCnt++;
+				if (tryCnt > 1000)
+				{
+					tryCnt = 0;
+					ThreadUtils::SleepFor(10 * 1000 * 1000); // 10 ms
+				}
+				continue;
+			}
+
+			logFile << logData << std::endl; // TODO
+		}
+
+		if (logFile.is_open()) logFile.close();
+
+		locker.Lock();
+		isLogging = false;
+		locker.Unlock();
+	}
 
 	class Log::LogThread : public BaseThread
 	{
