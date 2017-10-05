@@ -119,11 +119,12 @@ namespace Garosu
 		Locker locker;
 		bool isLogging;
 
-		std::atomic<bool> doLog;
+		std::atomic<bool> doLoop;
+		std::atomic<bool> needStop;
 		LogQueue& mLogQueue;
 	};
 
-	LogWorker::LogWorker(LogQueue& logQueue) : doLog(false), isLogging(false), mLogQueue(logQueue) {}
+	LogWorker::LogWorker(LogQueue& logQueue) : doLoop(false), needStop(true), isLogging(false), mLogQueue(logQueue) {}
 	LogWorker::~LogWorker(void) {}
 
 	void LogWorker::DoWork(void)
@@ -144,11 +145,13 @@ namespace Garosu
 
 		// log output loop
 		u32 tryCnt = 0u;
-		doLog = true;
-		while (doLog)
+		doLoop = true;
+		needStop = false;
+		shptr<LogData> logData;
+		while (doLoop)
 		{
-			auto logData = mLogQueue.Pop();
-			if (logData == NULL) {
+			logData = mLogQueue.Pop();
+			if (logData == nullptr) {
 				tryCnt++;
 				if (tryCnt > 1000)
 				{
@@ -158,8 +161,12 @@ namespace Garosu
 				continue;
 			}
 
-			logFile << logData << std::endl; // TODO
+			logFile << *logData << std::endl;
 		}
+
+		// flush remaining logs
+		while ((logData = mLogQueue.Pop()) != nullptr)
+			logFile << *logData << std::endl;
 
 		if (logFile.is_open()) logFile.close();
 
@@ -203,7 +210,7 @@ namespace Garosu
 
 	void Log::LogThread::Stop(void)
 	{
-		mLogWorker.doLog = false;
+		mLogWorker.doLoop = false;
 	}
 
 	void Log::LogThread::SetLogLevel(const LogLevel& logLevel)
@@ -213,8 +220,8 @@ namespace Garosu
 
 	void Log::LogThread::HandoverLog(const LogLevel& logLevel, const String& logString)
 	{
-		if (!mLogWorker.doLog) return;
-		if (logLevel < mLogLevel) return;
+		if (!mLogWorker.doLoop) return;
+		if (logLevel > mLogLevel) return;
 
 		auto logData = mk_shptr<LogData>();
 		logData->logTime = std::chrono::system_clock::now();

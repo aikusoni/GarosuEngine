@@ -22,7 +22,7 @@ namespace Garosu
 
 	Locker::impl::impl(void)
 	{
-		
+
 	}
 
 	Locker::impl::~impl(void)

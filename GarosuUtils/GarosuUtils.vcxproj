@@ -151,15 +151,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\GarosuLockUtils.h" />
     <ClInclude Include="header\GarosuLog.h" />
     <ClInclude Include="header\GarosuMathUtils.h" />
     <ClInclude Include="header\GarosuStringUtils.h" />
     <ClInclude Include="header\GarosuThread.h" />
     <ClInclude Include="header\GarosuTimer.h" />
-    <ClInclude Include="header\GarosuLockUtils.h" />
-    <ClInclude Include="source\GarosuLockUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\GarosuLockUtils.cpp" />
     <ClCompile Include="source\GarosuLog.cpp" />
     <ClCompile Include="source\GarosuMathUtils.cpp" />
     <ClCompile Include="source\GarosuStringUtils.cpp" />

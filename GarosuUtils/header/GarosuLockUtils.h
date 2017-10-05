@@ -4,7 +4,7 @@
 
 namespace Garosu
 {
-	
+
 	class Locker
 	{
 	public:

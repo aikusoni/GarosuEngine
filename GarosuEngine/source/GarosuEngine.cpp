@@ -54,6 +54,10 @@ namespace Garosu
 		bool initFailed = true;
 		do
 		{
+			// Start Log Thread
+			SETLOGLEVELD();
+			LOGSTART();
+
 			///// Make Scheduler
 			u32 numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
 			numSchedulerThreads -= 2; // for main thread & logger
@@ -108,7 +112,7 @@ namespace Garosu
 			return false;
 		}
 
-		LOGD("Garosu Enigne initialization failed.");
+		LOGD("Garosu Enigne initialization Success.");
 
 		return true;
 	}
@@ -137,6 +141,8 @@ namespace Garosu
 				delete pImpl->scheduler;
 				pImpl->scheduler = NULL;
 			}
+
+			LOGSTOP();
 		}
 
 		return true;
