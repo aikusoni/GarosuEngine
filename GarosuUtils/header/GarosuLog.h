@@ -24,14 +24,15 @@ namespace Garosu
 
 		virtual ~Logger(void);
 
-		bool StartLogThread(void);
-
 		inline void C(const String&);
 		inline void E(const String&);
 		inline void D(const String&);
 		inline void W(const String&);
 		inline void N(const String&);
 		inline void I(const String&);
+
+	protected:
+		bool StartLogThread(void);
 
 	private:
 		class impl;
@@ -49,7 +50,7 @@ namespace Garosu
 		}
 
 	private:
-		Log(void) : Logger("garosu.log") {}
+		Log(void) : Logger("garosu.log") { StartLogThread(); }
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
 
@@ -57,12 +58,19 @@ namespace Garosu
 	};
 
 #define LOGINSTANCE Log::instance()
-#define LOGC(X) LOGINSTANCE.C(X)
-#define LOGE(X) LOGINSTANCE.E(X)
-#define LOGD(X) LOGINSTANCE.D(X)
-#define LOGW(X) LOGINSTANCE.W(X)
-#define LOGN(X) LOGINSTANCE.N(X)
-#define LOGI(X) LOGINSTANCE.I(X)
+//#define LOGC(X) LOGINSTANCE.C(X)
+//#define LOGE(X) LOGINSTANCE.E(X)
+//#define LOGD(X) LOGINSTANCE.D(X)
+//#define LOGW(X) LOGINSTANCE.W(X)
+//#define LOGN(X) LOGINSTANCE.N(X)
+//#define LOGI(X) LOGINSTANCE.I(X)
+
+#define LOGC(X)// LOGINSTANCE.C(X)
+#define LOGE(X)// LOGINSTANCE.E(X)
+#define LOGD(X)// LOGINSTANCE.D(X)
+#define LOGW(X)// LOGINSTANCE.W(X)
+#define LOGN(X)// LOGINSTANCE.N(X)
+#define LOGI(X)// LOGINSTANCE.I(X)
 
 }
 
