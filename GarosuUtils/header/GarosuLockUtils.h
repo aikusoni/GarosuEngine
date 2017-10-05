@@ -12,10 +12,10 @@ namespace Garosu
 		Locker(const Locker&) = delete;
 		Locker& operator=(const Locker&) = delete;
 
-		~Locker(void);
+		virtual ~Locker(void);
 
-		void Lock(void);
-		void Unlock(void);
+		virtual void Lock(void);
+		virtual void Unlock(void);
 
 	private:
 		class impl;

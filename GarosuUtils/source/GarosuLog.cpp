@@ -72,7 +72,7 @@ namespace Garosu
 		LogQueue(const LogQueue&) = delete;
 		LogQueue& operator=(const LogQueue&) = delete;
 
-		~LogQueue(void);
+		virtual ~LogQueue(void);
 
 		inline void Push(shptr<LogData> logData);
 		inline shptr<LogData> Pop(void);
@@ -108,11 +108,11 @@ namespace Garosu
 	class LogWorker : public BaseWorker
 	{
 	public:
-		LogWorker(LogQueue& logQueue) : doLog(false), isLogging(false), mLogQueue(logQueue) {}
+		LogWorker(LogQueue& logQueue);
 		LogWorker(const LogWorker&) = delete;
 		LogWorker& operator=(const LogWorker&) = delete;
 
-		~LogWorker(void) {}
+		virtual ~LogWorker(void);
 
 		virtual void DoWork(void)
 		{
@@ -161,7 +161,10 @@ namespace Garosu
 
 		std::atomic<bool> doLog;
 		LogQueue& mLogQueue;
-	};	
+	};
+
+	LogWorker::LogWorker(LogQueue& logQueue) : doLog(false), isLogging(false), mLogQueue(logQueue) {}
+	LogWorker::~LogWorker(void) {}
 
 	class Log::LogThread : public BaseThread
 	{
@@ -170,7 +173,7 @@ namespace Garosu
 		LogThread(const LogThread&) = delete;
 		LogThread& operator=(const LogThread&) = delete;
 
-		~LogThread(void);
+		virtual ~LogThread(void);
 
 		void Stop(void);
 

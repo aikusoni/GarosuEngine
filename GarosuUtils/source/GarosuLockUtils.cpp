@@ -15,14 +15,14 @@ namespace Garosu
 		impl(const impl&) = delete;
 		impl& operator=(const impl&) = delete;
 
-		~impl(void);
+		virtual ~impl(void);
 
-		std::mutex m;
+		std::mutex mt;
 	};
 
 	Locker::impl::impl(void)
 	{
-
+		
 	}
 
 	Locker::impl::~impl(void)
@@ -33,7 +33,6 @@ namespace Garosu
 	Locker::Locker(void)
 		: pImpl(mk_uptr<impl>())
 	{
-
 	}
 
 	Locker::~Locker(void)
@@ -43,21 +42,37 @@ namespace Garosu
 
 	void Locker::Lock(void)
 	{
-		pImpl->m.lock();
+		pImpl->mt.lock();
 	}
 
 	void Locker::Unlock(void)
 	{
-		pImpl->m.unlock();
+		pImpl->mt.unlock();
 	}
 
 	class Signal::impl
 	{
 	public:
+		impl(void);
+		impl(const impl&) = delete;
+		impl& operator=(const impl&) = delete;
+
+		virtual ~impl(void);
+
 		std::mutex mt;
 		std::unique_lock<std::mutex> lck;
 		std::condition_variable cv;
 	};
+
+	Signal::impl::impl(void)
+	{
+
+	}
+
+	Signal::impl::~impl(void)
+	{
+
+	}
 
 	Signal::Signal(void)
 		: pImpl(mk_uptr<impl>())
