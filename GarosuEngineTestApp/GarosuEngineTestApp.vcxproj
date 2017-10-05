@@ -154,8 +154,26 @@
     <ClCompile Include="source\TestMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GarosuAudio\GarosuAudio.vcxproj">
+      <Project>{f8281cdf-c3ca-446b-a99d-8cff62250368}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuCommon\GarosuCommon.vcxproj">
+      <Project>{5b223e71-9519-4f8b-ad9e-7177efa64a76}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\GarosuEngine\GarosuEngine.vcxproj">
       <Project>{41ac7b7b-a53e-4586-851d-440197f0cfe3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuGraphics\GarosuGraphics.vcxproj">
+      <Project>{e78f61d9-9e6b-42aa-a049-a9314b39d4c7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuPhysics\GarosuPhysics.vcxproj">
+      <Project>{4eee5445-1a40-4458-942b-a711a681778b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuScheduler\GarosuScheduler.vcxproj">
+      <Project>{ecbe375e-7be4-41ff-a204-228892beed58}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GarosuUtils\GarosuUtils.vcxproj">
+      <Project>{905585fd-c0e8-4ffc-9f7a-8b1107e2279b}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

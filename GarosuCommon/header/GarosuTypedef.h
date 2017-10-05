@@ -37,6 +37,14 @@ namespace Garosu
 		return std::make_unique<T>(args...);
 	}
 
+	template <typename T>
+	using shptr = std::shared_ptr<T>;
+
+	template <typename T, typename... Args>
+	inline shptr<T> mk_shptr(Args&&... args)
+	{
+		return std::make_shared<T>(args...);
+	}
 }
 
 #endif

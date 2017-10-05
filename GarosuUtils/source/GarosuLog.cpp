@@ -1,4 +1,5 @@
 #include <GarosuTypedef.h>
+#include <GarosuSettings.h>
 
 #include "GarosuLog.h"
 
@@ -15,147 +16,9 @@
 namespace Garosu
 {
 
-	struct LogData
+	inline std::ostream& operator<<(std::ostream& os, LogLevel logLevel)
 	{
-		std::chrono::system_clock::time_point logTime;
-		LogLevel logLevel;
-		String logString;
-
-		struct Comparator
-		{
-			bool operator()(const LogData* a, const LogData* b) const {
-				return a->logTime > b->logTime;
-			}
-		};
-	};
-
-	class Logger::impl final : public BaseWorker
-	{
-	public:
-		impl(void)
-			: mThread(this)
-		{
-
-		}
-
-		~impl(void)
-		{
-			bLoop = false; // to stop thread loop
-			mThread.Join();
-			mFileStream.close();
-		}
-
-		LogLevel mLogLevel;
-		String mLogPath;
-		std::fstream mFileStream;
-		bool mPrintToConsole = false;
-
-		bool Push(const LogLevel&, const String&);
-		LogData* Pop(void);
-
-		void StartLogging(void);
-
-		virtual void DoWork(void);
-
-	private:
-		Concurrency::concurrent_priority_queue <LogData*, LogData::Comparator> logQueue;
-
-		std::atomic<bool> bLoop = true;
-		BaseThread mThread;
-	};
-
-	void Logger::C(const String& t)
-	{
-		pImpl->Push(LogLevel::CRITICAL, t);
-	}
-
-	void Logger::E(const String& t)
-	{
-		pImpl->Push(LogLevel::ERROR, t);
-	}
-
-	void Logger::D(const String& t)
-	{
-		pImpl->Push(LogLevel::DEBUG, t);
-	}
-
-	void Logger::W(const String& t)
-	{
-		pImpl->Push(LogLevel::WARNING, t);
-	}
-
-	void Logger::N(const String& t)
-	{
-		pImpl->Push(LogLevel::NOTICE, t);
-	}
-
-	void Logger::I(const String& t)
-	{
-		pImpl->Push(LogLevel::INFO, t);
-	}
-
-	Logger::Logger(const String& logPath, const LogLevel& logLevel, bool printToConsole)
-		: pImpl(mk_uptr<impl>())
-	{
-		pImpl->mLogLevel = logLevel;
-		pImpl->mLogPath = logPath;
-		pImpl->mPrintToConsole = printToConsole;
-	}
-
-	Logger::~Logger(void)
-	{
-
-	}
-
-	bool Logger::StartLogThread(void)
-	{
-		try {
-			pImpl->mFileStream.open(pImpl->mLogPath, std::fstream::out);
-		}
-		catch (std::ostream::failure&)
-		{
-			return false;
-		}
-
-		pImpl->StartLogging();
-
-		return true;
-	}
-
-	bool Logger::impl::Push(const LogLevel& logLevel, const String& t)
-	{
-		if (logLevel > mLogLevel)
-			return false;
-
-		LogData* logData = new LogData();
-		logData->logLevel = logLevel;
-		logData->logTime = std::chrono::system_clock::now();
-		logData->logString = t;
-
-		logQueue.push(logData);
-
-		return true;
-	}
-
-	LogData* Logger::impl::Pop(void)
-	{
-		LogData* logData;
-		if (logQueue.try_pop(logData))
-			return logData;
-
-		else
-			return NULL;
-	}
-
-	void Logger::impl::StartLogging(void)
-	{
-		mThread.Start();
-	}
-
-	std::ostream& operator<<(std::ostream& os, LogData& logData)
-	{
-		os << "(" << logData.logTime << ")[";
-		switch (logData.logLevel)
+		switch (logLevel)
 		{
 		case LogLevel::CRITICAL:
 			os << "CRITICAL";
@@ -176,31 +39,204 @@ namespace Garosu
 			os << "INFO";
 			break;
 		}
-		os << "] " << logData.logString;
 
 		return os;
 	}
 
-	void Logger::impl::DoWork(void)
+	class LogData
 	{
-		while (bLoop || logQueue.size() > 0)
+	public:
+		std::chrono::system_clock::time_point logTime;
+		LogLevel logLevel;
+		String logString;
+
+		struct Comparator
 		{
-			LogData* logData = Pop();
-			if (logData == NULL)
+			bool operator()(shptr<LogData> a, shptr<LogData> b) const {
+				return a->logTime > b->logTime;
+			}
+		};
+
+		inline friend std::ostream& operator<<(std::ostream& os, LogData& logData)
+		{
+			os << "(" << logData.logTime << ")[" << logData.logLevel << "] " << logData.logString;
+			return os;
+		}
+	};
+
+	class LogQueue
+	{
+	public:
+		LogQueue(void);
+		LogQueue(const LogQueue&) = delete;
+		LogQueue& operator=(const LogQueue&) = delete;
+
+		~LogQueue(void);
+
+		inline void Push(shptr<LogData> logData);
+		inline shptr<LogData> Pop(void);
+
+	private:
+		Concurrency::concurrent_priority_queue<shptr<LogData>, LogData::Comparator> mQueue;
+	};
+
+	LogQueue::LogQueue(void)
+	{
+
+	}
+
+	LogQueue::~LogQueue(void)
+	{
+
+	}
+
+	void LogQueue::Push(shptr<LogData> logData)
+	{
+		mQueue.push(logData);
+	}
+
+	shptr<LogData> LogQueue::Pop(void)
+	{
+		shptr<LogData> logData;
+		if (mQueue.try_pop(logData))
+			return logData;
+		else
+			return nullptr;
+	}
+
+	class LogWorker : public BaseWorker
+	{
+	public:
+		LogWorker(LogQueue& logQueue) : doLog(false), mLogQueue(logQueue) {}
+		LogWorker(const LogWorker&) = delete;
+		LogWorker& operator=(const LogWorker&) = delete;
+
+		~LogWorker(void) {}
+
+		virtual void DoWork(void)
+		{
+			std::fstream logFile;
+			logFile.open(Settings::GetLogPath().c_str(), std::fstream::out);
+
+			if (!logFile.is_open()) return;
+
+			// log output loop
+			u32 tryCnt = 0u;
+			doLog = true;
+			while (doLog)
 			{
-				ThreadUtils::SleepFor(10 * 1000 * 1000);
-				continue;
+				auto logData = mLogQueue.Pop();
+				if (logData == NULL) {
+					tryCnt++;
+					if (tryCnt > 1000)
+					{
+						tryCnt = 0;
+						ThreadUtils::SleepFor(10 * 1000 * 1000); // 10 ms
+					}
+					continue;
+				}
+
+				logFile << logData << std::endl; // TODO
 			}
 
-			try {
-				mFileStream << *logData << std::endl;
-				if (mPrintToConsole) std::cout << *logData << std::endl;
-			}
-			catch (std::ifstream::failure&)
-			{
-				std::cerr << "log failed" << std::endl;
-			}
+			if (logFile.is_open()) logFile.close();
 		}
+
+		std::atomic<bool> doLog;
+		LogQueue& mLogQueue;
+	};
+
+	class Log::LogThread : public BaseThread
+	{
+	public:
+		LogThread(LogLevel);
+		LogThread(const LogThread&) = delete;
+		LogThread& operator=(const LogThread&) = delete;
+
+		~LogThread(void);
+
+		void Stop(void);
+
+		void HandoverLog(const LogLevel&, const String&);
+
+	private:
+		LogLevel mLogLevel;
+		LogQueue mLogQueue;
+		LogWorker mLogWorker;
+	};
+
+	Log::LogThread::LogThread(LogLevel logLevel)
+		: mLogLevel(logLevel)
+		, mLogWorker(mLogQueue)
+		, BaseThread(&mLogWorker)
+	{
+
+	}
+
+	Log::LogThread::~LogThread(void)
+	{
+
+	}
+
+	void Log::LogThread::Stop(void)
+	{
+		mLogWorker.doLog = false;
+	}
+
+	void Log::LogThread::HandoverLog(const LogLevel& logLevel, const String& logString)
+	{
+		if (!mLogWorker.doLog) return;
+		if (logLevel > mLogLevel) return;
+
+		auto logData = mk_shptr<LogData>();
+		logData->logTime = std::chrono::system_clock::now();
+		logData->logLevel = logLevel;
+		logData->logString = logString;
+
+		mLogQueue.Push(logData);
+	}
+
+	Log::Log(LogLevel logLevel)
+		: pLT(mk_uptr<LogThread>(logLevel))
+	{
+		if (logLevel > LogLevel::NONE)
+			pLT->Start();
+	}
+
+	Log::~Log(void)
+	{
+		pLT->Stop();
+		pLT->Join();
+	}
+
+	void Log::C(const String& str)
+	{
+		pLT->HandoverLog(LogLevel::CRITICAL, str);
+	}
+
+	void Log::E(const String& str)
+	{
+		pLT->HandoverLog(LogLevel::ERROR, str);
+	}
+
+	void Log::D(const String& str)
+	{
+		pLT->HandoverLog(LogLevel::DEBUG, str);
+	}
+
+	void Log::W(const String& str)
+	{
+		pLT->HandoverLog(LogLevel::WARNING, str);
+	}
+
+	void Log::N(const String& str)
+	{
+		pLT->HandoverLog(LogLevel::NOTICE, str);
+	}
+
+	void Log::I(const String& str)
+	{
+		pLT->HandoverLog(LogLevel::INFO, str);
 	}
 
 }

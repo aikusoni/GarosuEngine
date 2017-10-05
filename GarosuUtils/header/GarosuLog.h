@@ -7,6 +7,7 @@ namespace Garosu
 
 	enum class LogLevel
 	{
+		NONE,
 		CRITICAL,
 		ERROR,
 		DEBUG,
@@ -15,14 +16,15 @@ namespace Garosu
 		INFO
 	};
 
-	class Logger
+	class Log
 	{
 	public:
-		Logger(const String& logPath, const LogLevel& logLevel = LogLevel::ERROR, bool printToConsole = false);
-		Logger(const Logger&) = delete;
-		Logger& operator=(const Logger&) = delete;
-
-		virtual ~Logger(void);
+		static Log& Instance(void)
+		{
+			// this code is thread-safety on c++11
+			static Log inst(LogLevel::DEBUG);
+			return inst;
+		}
 
 		inline void C(const String&);
 		inline void E(const String&);
@@ -31,47 +33,27 @@ namespace Garosu
 		inline void N(const String&);
 		inline void I(const String&);
 
-	protected:
-		bool StartLogThread(void);
-
 	private:
-		class impl;
-		uptr<impl> pImpl;
-	};
-
-	class Log : public Logger
-	{
-	public:
-		static Log& instance(void)
-		{
-			// this code will be thread-safety on c++11
-			static Log inst;
-			return inst;
-		}
-
-	private:
-		Log(void) : Logger("garosu.log") { StartLogThread(); }
+		Log(LogLevel logLevel);
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
 
-		virtual ~Log(void) {}
+		~Log(void);
+
+	private:
+		class LogThread;
+		uptr<LogThread> pLT;
 	};
 
-#define LOGINSTANCE Log::instance()
-//#define LOGC(X) LOGINSTANCE.C(X)
-//#define LOGE(X) LOGINSTANCE.E(X)
-//#define LOGD(X) LOGINSTANCE.D(X)
-//#define LOGW(X) LOGINSTANCE.W(X)
-//#define LOGN(X) LOGINSTANCE.N(X)
-//#define LOGI(X) LOGINSTANCE.I(X)
-
-#define LOGC(X)// LOGINSTANCE.C(X)
-#define LOGE(X)// LOGINSTANCE.E(X)
-#define LOGD(X)// LOGINSTANCE.D(X)
-#define LOGW(X)// LOGINSTANCE.W(X)
-#define LOGN(X)// LOGINSTANCE.N(X)
-#define LOGI(X)// LOGINSTANCE.I(X)
-
 }
+
+#define LOGINSTANCE Garosu::Log::Instance()
+
+#define LOGC(X) LOGINSTANCE.C(X)
+#define LOGE(X) LOGINSTANCE.E(X)
+#define LOGD(X) LOGINSTANCE.D(X)
+#define LOGW(X) LOGINSTANCE.W(X)
+#define LOGN(X) LOGINSTANCE.N(X)
+#define LOGI(X) LOGINSTANCE.I(X)
 
 #endif

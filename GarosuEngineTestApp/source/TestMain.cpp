@@ -4,8 +4,6 @@
 
 #include <Windows.h>
 
-using namespace Garosu;
-
 class TestApp
 {
 public:
@@ -28,6 +26,9 @@ TestApp::~TestApp(void)
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	Garosu::Engine engine;
+	engine.Initialize(NULL);
+	engine.Finalize();
 
 	return 0;
 }

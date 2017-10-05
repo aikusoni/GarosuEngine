@@ -6,18 +6,31 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngine", "GarosuEngine\GarosuEngine.vcxproj", "{41AC7B7B-A53E-4586-851D-440197F0CFE3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuGraphics", "GarosuGraphics\GarosuGraphics.vcxproj", "{E78F61D9-9E6B-42AA-A049-A9314B39D4C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuPhysics", "GarosuPhysics\GarosuPhysics.vcxproj", "{4EEE5445-1A40-4458-942B-A711A681778B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuUtils", "GarosuUtils\GarosuUtils.vcxproj", "{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuScheduler", "GarosuScheduler\GarosuScheduler.vcxproj", "{ECBE375E-7BE4-41FF-A204-228892BEED58}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngineTestApp", "GarosuEngineTestApp\GarosuEngineTestApp.vcxproj", "{3CCB63AC-A372-41FD-8D9D-A76C0974068C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuCommon", "GarosuCommon\GarosuCommon.vcxproj", "{5B223E71-9519-4F8B-AD9E-7177EFA64A76}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuAudio", "GarosuAudio\GarosuAudio.vcxproj", "{F8281CDF-C3CA-446B-A99D-8CFF62250368}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
+		{905585FD-C0E8-4FFC-9F7A-8B1107E2279B} = {905585FD-C0E8-4FFC-9F7A-8B1107E2279B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
