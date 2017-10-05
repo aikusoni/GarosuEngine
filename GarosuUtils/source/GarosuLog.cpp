@@ -12,6 +12,7 @@
 
 #include "GarosuThread.h"
 #include "GarosuStringUtils.h"
+#include "GarosuLockUtils.h"
 
 namespace Garosu
 {
@@ -107,7 +108,7 @@ namespace Garosu
 	class LogWorker : public BaseWorker
 	{
 	public:
-		LogWorker(LogQueue& logQueue) : doLog(false), mLogQueue(logQueue) {}
+		LogWorker(LogQueue& logQueue) : doLog(false), isLogging(false), mLogQueue(logQueue) {}
 		LogWorker(const LogWorker&) = delete;
 		LogWorker& operator=(const LogWorker&) = delete;
 
@@ -115,6 +116,15 @@ namespace Garosu
 
 		virtual void DoWork(void)
 		{
+			locker.Lock();
+			if (isLogging)
+			{
+				locker.Unlock();
+				return;
+			}
+			isLogging = true;
+			locker.Unlock();
+
 			std::fstream logFile;
 			logFile.open(Settings::GetLogPath().c_str(), std::fstream::out);
 
@@ -140,16 +150,23 @@ namespace Garosu
 			}
 
 			if (logFile.is_open()) logFile.close();
+
+			locker.Lock();
+			isLogging = false;
+			locker.Unlock();
 		}
+
+		Locker locker;
+		bool isLogging;
 
 		std::atomic<bool> doLog;
 		LogQueue& mLogQueue;
-	};
+	};	
 
 	class Log::LogThread : public BaseThread
 	{
 	public:
-		LogThread(LogLevel);
+		LogThread(void);
 		LogThread(const LogThread&) = delete;
 		LogThread& operator=(const LogThread&) = delete;
 
@@ -157,16 +174,17 @@ namespace Garosu
 
 		void Stop(void);
 
+		void SetLogLevel(const LogLevel&);
 		void HandoverLog(const LogLevel&, const String&);
 
 	private:
-		LogLevel mLogLevel;
+		std::atomic<LogLevel> mLogLevel;
 		LogQueue mLogQueue;
 		LogWorker mLogWorker;
 	};
 
-	Log::LogThread::LogThread(LogLevel logLevel)
-		: mLogLevel(logLevel)
+	Log::LogThread::LogThread(void)
+		: mLogLevel(LogLevel::NONE)
 		, mLogWorker(mLogQueue)
 		, BaseThread(&mLogWorker)
 	{
@@ -183,10 +201,15 @@ namespace Garosu
 		mLogWorker.doLog = false;
 	}
 
+	void Log::LogThread::SetLogLevel(const LogLevel& logLevel)
+	{
+		mLogLevel = logLevel;
+	}
+
 	void Log::LogThread::HandoverLog(const LogLevel& logLevel, const String& logString)
 	{
 		if (!mLogWorker.doLog) return;
-		if (logLevel > mLogLevel) return;
+		if (logLevel < mLogLevel) return;
 
 		auto logData = mk_shptr<LogData>();
 		logData->logTime = std::chrono::system_clock::now();
@@ -196,17 +219,30 @@ namespace Garosu
 		mLogQueue.Push(logData);
 	}
 
-	Log::Log(LogLevel logLevel)
-		: pLT(mk_uptr<LogThread>(logLevel))
+	Log::Log(void)
+		: pLT(mk_uptr<LogThread>())
 	{
-		if (logLevel > LogLevel::NONE)
-			pLT->Start();
+
 	}
 
 	Log::~Log(void)
 	{
-		pLT->Stop();
 		pLT->Join();
+	}
+
+	void Log::SetLogLevel(const LogLevel& logLevel)
+	{
+		pLT->SetLogLevel(logLevel);
+	}
+
+	void Log::Start(void)
+	{
+		pLT->Start();
+	}
+
+	void Log::Stop(void)
+	{
+		pLT->Stop();
 	}
 
 	void Log::C(const String& str)

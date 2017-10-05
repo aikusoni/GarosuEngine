@@ -22,19 +22,23 @@ namespace Garosu
 		static Log& Instance(void)
 		{
 			// this code is thread-safety on c++11
-			static Log inst(LogLevel::DEBUG);
+			static Log inst;
 			return inst;
 		}
 
-		inline void C(const String&);
-		inline void E(const String&);
-		inline void D(const String&);
-		inline void W(const String&);
-		inline void N(const String&);
-		inline void I(const String&);
+		void SetLogLevel(const LogLevel&);
+		void Start(void);
+		void Stop(void);
+
+		void C(const String&);
+		void E(const String&);
+		void D(const String&);
+		void W(const String&);
+		void N(const String&);
+		void I(const String&);
 
 	private:
-		Log(LogLevel logLevel);
+		Log(void);
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
 

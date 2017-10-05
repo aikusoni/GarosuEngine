@@ -4,6 +4,23 @@
 
 namespace Garosu
 {
+	
+	class Locker
+	{
+	public:
+		Locker(void);
+		Locker(const Locker&) = delete;
+		Locker& operator=(const Locker&) = delete;
+
+		~Locker(void);
+
+		void Lock(void);
+		void Unlock(void);
+
+	private:
+		class impl;
+		uptr<impl> pImpl;
+	};
 
 	class Signal
 	{
