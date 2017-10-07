@@ -70,7 +70,7 @@ namespace Garosu
 				if (tryCnt > 10000)
 				{
 					tryCnt = 0;
-					ThreadUtils::SleepFor(10 * 1000 * 1000); // 10 ms
+					ThreadUtils::SleepFor(10000u); // 10 ms
 				}
 				continue;
 			}

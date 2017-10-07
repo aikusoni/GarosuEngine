@@ -42,9 +42,9 @@ namespace Garosu
 			pImpl->thr.join();
 	}
 
-	void ThreadUtils::SleepFor(i32 nanoSeconds)
+	void ThreadUtils::SleepFor(u32 microSeconds)
 	{
-		std::this_thread::sleep_for(std::chrono::nanoseconds(nanoSeconds));
+		std::this_thread::sleep_for(std::chrono::microseconds(microSeconds));
 	}
 
 	u32 ThreadUtils::GetConcurrencyCount(void)

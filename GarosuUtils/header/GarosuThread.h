@@ -37,7 +37,7 @@ namespace Garosu
 	class ThreadUtils
 	{
 	public:
-		static void SleepFor(i32 nanoSeconds);
+		static void SleepFor(u32 microSeconds);
 		static u32 GetConcurrencyCount(void);
 	};
 

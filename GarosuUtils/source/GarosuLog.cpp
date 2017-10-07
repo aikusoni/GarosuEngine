@@ -116,38 +116,42 @@ namespace Garosu
 
 		virtual void DoWork(void);
 
-		Locker locker;
+		Locker mLocker;
+		Signal mSignal;
 		bool isLogging;
 
 		std::atomic<bool> doLoop;
-		std::atomic<bool> needStop;
 		LogQueue& mLogQueue;
 	};
 
-	LogWorker::LogWorker(LogQueue& logQueue) : doLoop(false), needStop(true), isLogging(false), mLogQueue(logQueue) {}
+	LogWorker::LogWorker(LogQueue& logQueue) : doLoop(false), isLogging(false), mLogQueue(logQueue) {}
 	LogWorker::~LogWorker(void) {}
 
 	void LogWorker::DoWork(void)
 	{
-		locker.Lock();
+		mLocker.Lock();
+		// Check the thread started.
 		if (isLogging)
 		{
-			locker.Unlock();
+			mLocker.Unlock();
 			return;
 		}
 		isLogging = true;
-		locker.Unlock();
+		mLocker.Unlock();
 
 		std::fstream logFile;
 		logFile.open(Settings::GetLogPath().c_str(), std::fstream::out);
 
 		if (!logFile.is_open()) return;
 
-		// log output loop
 		u32 tryCnt = 0u;
 		doLoop = true;
-		needStop = false;
 		shptr<LogData> logData;
+
+		auto outputLog = [&]() {
+			logFile << *logData << std::endl;
+		};
+
 		while (doLoop)
 		{
 			logData = mLogQueue.Pop();
@@ -156,23 +160,23 @@ namespace Garosu
 				if (tryCnt > 1000)
 				{
 					tryCnt = 0;
-					ThreadUtils::SleepFor(10 * 1000 * 1000); // 10 ms
+					mSignal.wait();
 				}
 				continue;
 			}
 
-			logFile << *logData << std::endl;
+			outputLog();
 		}
 
 		// flush remaining logs
 		while ((logData = mLogQueue.Pop()) != nullptr)
-			logFile << *logData << std::endl;
+			outputLog();
 
 		if (logFile.is_open()) logFile.close();
 
-		locker.Lock();
+		mLocker.Lock();
 		isLogging = false;
-		locker.Unlock();
+		mLocker.Unlock();
 	}
 
 	class Log::LogThread : public BaseThread
@@ -211,6 +215,7 @@ namespace Garosu
 	void Log::LogThread::Stop(void)
 	{
 		mLogWorker.doLoop = false;
+		mLogWorker.mSignal.notify();
 	}
 
 	void Log::LogThread::SetLogLevel(const LogLevel& logLevel)
@@ -229,6 +234,8 @@ namespace Garosu
 		logData->logString = logString;
 
 		mLogQueue.Push(logData);
+
+		mLogWorker.mSignal.notify();
 	}
 
 	Log::Log(void)

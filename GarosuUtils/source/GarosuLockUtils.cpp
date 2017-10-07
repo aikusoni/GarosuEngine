@@ -50,6 +50,32 @@ namespace Garosu
 		pImpl->mt.unlock();
 	}
 
+	class SingleLock::impl
+	{
+	public:
+		impl(void);
+		impl(const impl&) = delete;
+		impl& operator=(const impl&) = delete;
+
+		virtual ~impl(void);
+
+		std::mutex mt;
+	};
+
+	SingleLock::impl::impl(void) {}
+	SingleLock::impl::~impl(void) {}
+
+	SingleLock::SingleLock(void)
+		: pImpl(mk_uptr<impl>())
+	{
+		pImpl->mt.lock();
+	}
+
+	SingleLock::~SingleLock(void)
+	{
+		pImpl->mt.unlock();
+	}
+
 	class Signal::impl
 	{
 	public:
@@ -60,7 +86,6 @@ namespace Garosu
 		virtual ~impl(void);
 
 		std::mutex mt;
-		std::unique_lock<std::mutex> lck;
 		std::condition_variable cv;
 	};
 
@@ -77,7 +102,6 @@ namespace Garosu
 	Signal::Signal(void)
 		: pImpl(mk_uptr<impl>())
 	{
-		pImpl->lck = std::unique_lock<std::mutex>(pImpl->mt);
 	}
 
 	Signal::~Signal(void)
@@ -87,7 +111,9 @@ namespace Garosu
 
 	void Signal::wait(void)
 	{
-		pImpl->cv.wait(pImpl->lck);
+		auto lck = std::unique_lock<std::mutex>(pImpl->mt);
+		pImpl->cv.wait(lck);
+		lck.unlock();
 	}
 
 	void Signal::notify(void)

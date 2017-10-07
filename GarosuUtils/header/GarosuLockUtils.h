@@ -22,6 +22,20 @@ namespace Garosu
 		uptr<impl> pImpl;
 	};
 
+	class SingleLock
+	{
+	public:
+		SingleLock(void);
+		SingleLock(const SingleLock&) = delete;
+		SingleLock& operator=(const SingleLock&) = delete;
+
+		virtual ~SingleLock(void);
+
+	private:
+		class impl;
+		uptr<impl> pImpl;
+	};
+
 	class Signal
 	{
 	public:
