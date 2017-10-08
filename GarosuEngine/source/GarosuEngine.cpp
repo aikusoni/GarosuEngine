@@ -37,9 +37,9 @@ namespace Garosu
 	Engine::Engine(void)
 		: pImpl(mk_uptr<impl>())
 	{
-		pImpl->scheduler = NULL;
-		pImpl->physics = NULL;
-		pImpl->graphics = NULL;
+		pImpl->scheduler = nullptr;
+		pImpl->physics = nullptr;
+		pImpl->graphics = nullptr;
 	}
 
 	Engine::~Engine(void)
@@ -47,7 +47,7 @@ namespace Garosu
 
 	}
 
-	bool Engine::Initialize(void* outputTarget)
+	bool Engine::Initialize(void)
 	{
 		LOGD("Garosu Engine initializing");
 
@@ -60,10 +60,10 @@ namespace Garosu
 
 			///// Make Scheduler
 			u32 numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
-			numSchedulerThreads -= 2; // for main thread & logger
+			numSchedulerThreads -= 2; // for main thread & window thread
 
 			pImpl->scheduler = Garosu::SchedulerFactory::MakeDefaultScheduler(numSchedulerThreads);
-			if (pImpl->scheduler == NULL)
+			if (pImpl->scheduler == nullptr)
 			{
 				LOGC("Scheduler allocation failed.");
 				break;
@@ -77,7 +77,7 @@ namespace Garosu
 
 			///// Make Physics
 			pImpl->physics = Garosu::PhysicsFactory::MakeDefaultPhysics(pImpl->scheduler);
-			if (pImpl->physics == NULL)
+			if (pImpl->physics == nullptr)
 			{
 				LOGC("Physics allocation failed.");
 				break;
@@ -91,7 +91,7 @@ namespace Garosu
 
 			///// Make Graphics
 			pImpl->graphics = Garosu::GraphicsFactory::MakeDefaultGraphics(pImpl->scheduler);
-			if (pImpl->graphics == NULL)
+			if (pImpl->graphics == nullptr)
 			{
 				LOGC("Graphics allocation failed.");
 				break;
@@ -125,21 +125,21 @@ namespace Garosu
 			{
 				pImpl->graphics->Finalize();
 				delete pImpl->graphics;
-				pImpl->graphics = NULL;
+				pImpl->graphics = nullptr;
 			}
 
 			if (pImpl->physics)
 			{
 				pImpl->physics->Finalize();
 				delete pImpl->physics;
-				pImpl->physics = NULL;
+				pImpl->physics = nullptr;
 			}
 
 			if (pImpl->scheduler)
 			{
 				pImpl->scheduler->Finalize();
 				delete pImpl->scheduler;
-				pImpl->scheduler = NULL;
+				pImpl->scheduler = nullptr;
 			}
 
 			LOGSTOP();

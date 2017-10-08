@@ -4,31 +4,68 @@
 
 #include <Windows.h>
 
-class TestApp
+class EngineTestWindow
 {
 public:
-	TestApp(void);
-	TestApp(const TestApp&) = delete;
-	TestApp& operator=(const TestApp&) = delete;
+	EngineTestWindow(HINSTANCE);
+	EngineTestWindow(const EngineTestWindow&) = delete;
+	EngineTestWindow& operator=(const EngineTestWindow&) = delete;
 
-	virtual ~TestApp(void);
+	virtual ~EngineTestWindow(void);
+
+	bool Initialize(void);
+	bool Finalize(void);
+
+	void Run(void);
+
+private:
+	Garosu::Engine engine;
 };
 
-TestApp::TestApp(void)
+EngineTestWindow::EngineTestWindow(HINSTANCE hInstance)
 {
 
 }
 
-TestApp::~TestApp(void)
+EngineTestWindow::~EngineTestWindow(void)
 {
 
+}
+
+bool EngineTestWindow::Initialize(void)
+{
+	// initialize window
+
+	// initialize engine
+
+	return true;
+}
+
+bool EngineTestWindow::Finalize(void)
+{
+	// finalize engine
+
+	// finalize window
+
+	return true;
+}
+
+void EngineTestWindow::Run(void)
+{
+	// windowws message loop
 }
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	Garosu::Engine engine;
-	engine.Initialize(NULL);
-	engine.Finalize();
+	EngineTestWindow win(hInstance);
+
+	do {
+		if (!win.Initialize()) break;
+
+		win.Run();
+
+		if (!win.Finalize()) break;
+	} while (false);
 
 	return 0;
 }

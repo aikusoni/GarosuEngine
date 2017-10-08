@@ -19,7 +19,7 @@ namespace Garosu
 	using TaskQueue = Concurrency::concurrent_queue<BaseTask*>;
 
 	inline u32 SaturateConcurrency(u32 n) {
-		return MathUtils::Clamp<u32>(n, 1, ThreadUtils::GetConcurrencyCount());
+		return MathUtils::Clamp<u32>(n, 1u, ThreadUtils::GetConcurrencyCount());
 	}
 	
 	/*
@@ -75,7 +75,7 @@ namespace Garosu
 				continue;
 			}
 
-			if (task == NULL) continue;
+			if (task == nullptr) continue;
 
 			// do task
 			task->DoTask();
@@ -140,7 +140,7 @@ namespace Garosu
 		std::vector<uptr<WorkerThread>> mWorkerThreads;
 	};
 
-	WorkerGroup::WorkerGroup(i32 numWorker)
+	WorkerGroup::WorkerGroup(u32 numWorker)
 		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->mNumWorker = SaturateConcurrency(numWorker);
@@ -168,7 +168,7 @@ namespace Garosu
 		return true;
 	}
 
-	bool WorkerGroup::SetNumWorker(i32 numWorker)
+	bool WorkerGroup::SetNumWorker(u32 numWorker)
 	{
 		SaturateConcurrency(numWorker);
 

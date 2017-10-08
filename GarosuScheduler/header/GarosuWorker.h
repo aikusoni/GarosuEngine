@@ -8,14 +8,14 @@ namespace Garosu
 	class WorkerGroup final
 	{
 	public:
-		WorkerGroup(i32 numWorker);
+		WorkerGroup(u32 numWorker);
 		WorkerGroup(const WorkerGroup&) = delete;
 		WorkerGroup& operator=(const WorkerGroup&) = delete;
 
 		virtual ~WorkerGroup(void);
 
 		bool Initialize(void);
-		bool SetNumWorker(i32 numWorker);
+		bool SetNumWorker(u32 numWorker);
 
 		bool Start(void); 
 		bool Stop(void);
