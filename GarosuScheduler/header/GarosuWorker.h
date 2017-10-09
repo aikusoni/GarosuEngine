@@ -5,10 +5,16 @@
 namespace Garosu
 {
 
+	class ITaskProvider
+	{
+	public:
+		virtual BaseTask* GetTask(void) = 0;
+	};
+
 	class WorkerGroup final
 	{
 	public:
-		WorkerGroup(u32 numWorker);
+		WorkerGroup(u32 numWorker, ITaskProvider* taskProvider);
 		WorkerGroup(const WorkerGroup&) = delete;
 		WorkerGroup& operator=(const WorkerGroup&) = delete;
 

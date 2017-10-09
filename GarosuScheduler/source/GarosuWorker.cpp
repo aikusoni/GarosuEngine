@@ -132,20 +132,23 @@ namespace Garosu
 	class WorkerGroup::impl
 	{
 	public:
-		i32 mNumWorker;
+		u32 mNumWorker;
 		bool mIsInit;
 		bool mStart;
+
+		ITaskProvider* mTaskProvider;
 
 		TaskQueue mTaskQueue;
 		std::vector<uptr<WorkerThread>> mWorkerThreads;
 	};
 
-	WorkerGroup::WorkerGroup(u32 numWorker)
+	WorkerGroup::WorkerGroup(u32 numWorker, ITaskProvider* taskProvider)
 		: pImpl(mk_uptr<impl>())
 	{
 		pImpl->mNumWorker = SaturateConcurrency(numWorker);
 		pImpl->mIsInit = false;
 		pImpl->mStart = false;
+		pImpl->mTaskProvider = taskProvider;
 	}
 
 	WorkerGroup::~WorkerGroup(void)
@@ -161,7 +164,7 @@ namespace Garosu
 		{
 			pImpl->mIsInit = true;
 		
-			for (i32 i = 0; i < pImpl->mNumWorker; ++i)
+			for (u32 i = 0; i < pImpl->mNumWorker; ++i)
 				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskQueue));
 		}
 
@@ -179,16 +182,16 @@ namespace Garosu
 
 		if (numWorker > pImpl->mNumWorker)
 		{
-			i32 numExpand = numWorker - pImpl->mNumWorker;
+			u32 numExpand = numWorker - pImpl->mNumWorker;
 
-			for (i32 i = 0; i < numExpand; ++i)
+			for (u32 i = 0; i < numExpand; ++i)
 				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskQueue));
 
 			pImpl->mNumWorker = numWorker;
 
 			if (pImpl->mStart)
 			{
-				for (i32 i = pImpl->mNumWorker - numExpand; i < pImpl->mNumWorker; ++i)
+				for (u32 i = pImpl->mNumWorker - numExpand; i < pImpl->mNumWorker; ++i)
 				{
 					pImpl->mWorkerThreads[i]->Start();
 				}

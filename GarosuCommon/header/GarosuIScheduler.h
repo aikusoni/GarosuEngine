@@ -10,13 +10,21 @@ namespace Garosu
 		ERROR
 	};
 
+	enum class TaskSource
+	{
+		Undefined = 0,
+		Graphics,
+		Physics,
+		Count,
+	};
+
 	class IScheduler
 	{
 	public:
 		virtual SchedulerError Initialize(void) = 0;
 		virtual SchedulerError Finalize(void) = 0;
 
-		virtual SchedulerError HandoverTask(uptr<BaseTask> newTask) = 0;
+		virtual SchedulerError HandoverTask(TaskSource taskSource, BaseTask* newTask) = 0;
 	};
 
 }

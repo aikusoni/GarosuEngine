@@ -10,36 +10,49 @@
 
 namespace Garosu
 {
-
-	class Scheduler : public IScheduler
+	/*
+	* Default Scheduler
+	*
+	* FIFO Scheduler
+	*/
+	class DefaultScheduler : public IScheduler
 	{
 	public:
-		Scheduler(u32 numThread);
-		Scheduler(const Scheduler&) = delete;
-		Scheduler& operator=(const Scheduler&) = delete;
+		DefaultScheduler(u32 numThread);
+		DefaultScheduler(const DefaultScheduler&) = delete;
+		DefaultScheduler& operator=(const DefaultScheduler&) = delete;
 
-		virtual ~Scheduler(void);
+		virtual ~DefaultScheduler(void);
 
 		virtual SchedulerError Initialize(void);
 		virtual SchedulerError Finalize(void);
 
-		virtual SchedulerError HandoverTask(uptr<BaseTask> newTask);
+		virtual SchedulerError HandoverTask(TaskSource, BaseTask*);
 
 		WorkerGroup mWorkerGroup;
+
+		class DefaultTaskProvider : public ITaskProvider
+		{
+		public:
+			virtual BaseTask* GetTask(void)
+			{
+				return nullptr;	// TODO
+			}
+		} mTaskProvider;
 	};
 
-	Scheduler::Scheduler(u32 numThread)
-		: mWorkerGroup(numThread)
+	DefaultScheduler::DefaultScheduler(u32 numThread)
+		: mWorkerGroup(numThread, &mTaskProvider)
 	{
 
 	}
 
-	Scheduler::~Scheduler(void)
+	DefaultScheduler::~DefaultScheduler(void)
 	{
 		mWorkerGroup.Stop();
 	}
 
-	SchedulerError Scheduler::Initialize(void)
+	SchedulerError DefaultScheduler::Initialize(void)
 	{
 		if (!mWorkerGroup.Initialize())
 		{
@@ -56,24 +69,127 @@ namespace Garosu
 		return SchedulerError::OK;
 	}
 
-	SchedulerError Scheduler::Finalize(void)
+	SchedulerError DefaultScheduler::Finalize(void)
 	{
 		bool ret = mWorkerGroup.Stop();
 
 		return ret ? SchedulerError::OK : SchedulerError::ERROR;
 	}
 
-	SchedulerError Scheduler::HandoverTask(uptr<BaseTask> newTask)
+	SchedulerError DefaultScheduler::HandoverTask(TaskSource taskSource, BaseTask* newTask)
 	{
-		bool ret = mWorkerGroup.Handover(newTask.get());
+		bool ret = mWorkerGroup.Handover(newTask);
+
+		return ret ? SchedulerError::OK : SchedulerError::ERROR;
+	}
+
+	
+	/* BalancedScheduler
+	*
+	*
+	* 
+	*/
+	class BalancedScheduler : public IScheduler
+	{
+	public:
+		BalancedScheduler(u32 numThread);
+		BalancedScheduler(const BalancedScheduler&) = delete;
+		BalancedScheduler& operator=(const BalancedScheduler&) = delete;
+
+		virtual ~BalancedScheduler(void);
+
+		virtual SchedulerError Initialize(void);
+		virtual SchedulerError Finalize(void);
+
+		virtual SchedulerError HandoverTask(TaskSource, BaseTask*);
+
+		WorkerGroup mWorkerGroup;
+
+		class BalancedTaskProvider : public ITaskProvider
+		{
+		public:
+			virtual BaseTask* GetTask(void)
+			{
+				return nullptr;	// TODO
+			}
+		} mTaskProvider;
+	};
+
+	BalancedScheduler::BalancedScheduler(u32 numThread)
+		: mWorkerGroup(numThread, &mTaskProvider)
+	{
+
+	}
+
+	BalancedScheduler::~BalancedScheduler(void)
+	{
+		mWorkerGroup.Stop();
+	}
+
+	SchedulerError BalancedScheduler::Initialize(void)
+	{
+		if (!mWorkerGroup.Initialize())
+		{
+			LOGE("[Scheduler] cannot intialize WorkerGroup");
+			return SchedulerError::ERROR;
+		}
+
+		if (!mWorkerGroup.Start())
+		{
+			LOGE("[Scheduler] cannot start WorkerGroup");
+			return SchedulerError::ERROR;
+		}
+
+		return SchedulerError::OK;
+	}
+
+	SchedulerError BalancedScheduler::Finalize(void)
+	{
+		bool ret = mWorkerGroup.Stop();
+
+		return ret ? SchedulerError::OK : SchedulerError::ERROR;
+	}
+
+	SchedulerError BalancedScheduler::HandoverTask(TaskSource taskSource, BaseTask* newTask)
+	{
+		bool ret = mWorkerGroup.Handover(newTask);
 
 		return ret ? SchedulerError::OK : SchedulerError::ERROR;
 	}
 
 
-	IScheduler* SchedulerFactory::MakeDefaultScheduler(u32 numThread)
+	/*
+	* SchedulerFactory
+	*/
+	SchedulerError SchedulerFactory::MakeDefaultScheduler(IScheduler** scheduler, u32 numThread)
 	{
-		return new Scheduler(numThread);
+		if (scheduler == nullptr) return SchedulerError::ERROR;
+		if (*scheduler != nullptr) return SchedulerError::ERROR;
+
+		*scheduler = new DefaultScheduler(numThread);
+
+		return SchedulerError::OK;
+	}
+
+	SchedulerError SchedulerFactory::MakeBalancedScheduler(IScheduler** scheduler, u32 numThread)
+	{
+		if (scheduler == nullptr) return SchedulerError::ERROR;
+		if (*scheduler != nullptr) return SchedulerError::ERROR;
+
+		*scheduler = new BalancedScheduler(numThread);
+
+		return SchedulerError::OK;
+	}
+
+	SchedulerError SchedulerFactory::DeleteScheduler(IScheduler** scheduler)
+	{
+		if (scheduler == nullptr) return SchedulerError::ERROR;
+		if (*scheduler == nullptr) return SchedulerError::ERROR;
+
+		delete *scheduler;
+		*scheduler = nullptr;
+
+		return SchedulerError::OK;
 	}
 
 }

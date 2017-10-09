@@ -8,7 +8,10 @@ namespace Garosu
 	class SchedulerFactory
 	{
 	public:
-		static IScheduler* MakeDefaultScheduler(u32 numThread);
+		static SchedulerError MakeDefaultScheduler(IScheduler** scheduler, u32 numThread);
+		static SchedulerError MakeBalancedScheduler(IScheduler** scheduler, u32 numThread);
+
+		static SchedulerError DeleteScheduler(IScheduler** scheduler);
 	};
 
 }
