@@ -136,6 +136,7 @@ namespace Garosu
 			mLocker.Unlock();
 			return;
 		}
+		doLoop = true;
 		isLogging = true;
 		mLocker.Unlock();
 
@@ -151,7 +152,6 @@ namespace Garosu
 			logFile << *logData << std::endl;
 		};
 
-		doLoop = true;
 		while (doLoop)
 		{
 			logData = mLogQueue.Pop();
