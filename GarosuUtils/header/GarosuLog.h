@@ -103,8 +103,8 @@ namespace Garosu
 		}
 
 	private:
-		class LogThread;
-		uptr<LogThread> pLT;
+		class impl;
+		uptr<impl> pImpl;
 	};
 
 }

@@ -9,9 +9,9 @@
 namespace Garosu
 {
 
-	static void DoWork(BaseWorker* worker)
+	static void DoWorkCaller(BaseThread* thr)
 	{
-		worker->DoWork();
+		thr->DoWork();
 	}
 
 	class BaseThread::impl
@@ -20,9 +20,8 @@ namespace Garosu
 		std::thread thr;
 	};
 
-	BaseThread::BaseThread(BaseWorker* worker)
-		: mBaseWorker(worker)
-		, pImpl(mk_uptr<impl>())
+	BaseThread::BaseThread(void)
+		: pImpl(mk_uptr<impl>())
 	{
 
 	}
@@ -34,7 +33,7 @@ namespace Garosu
 
 	void BaseThread::Start(void)
 	{
-		pImpl->thr = std::thread(DoWork, mBaseWorker);
+		pImpl->thr = std::thread(DoWorkCaller, this);
 	}
 
 	void BaseThread::Join(void)
@@ -43,28 +42,6 @@ namespace Garosu
 			pImpl->thr.join();
 	}
 
-	/*
-	*
-	*
-	*
-	*/
-	class Looper : public BaseWorker
-	{
-	public:
-		virtual void DoWork(void);
-
-		BaseWorker* loopingTarget = nullptr;
-		std::atomic<bool> NeedStop = false;
-	};
-
-	void Looper::DoWork(void)
-	{
-		while (true)
-		{
-			if (NeedStop) return;
-			if (loopingTarget != nullptr) loopingTarget->DoWork();
-		}
-	}
 
 	/*
 	*
@@ -74,30 +51,13 @@ namespace Garosu
 	class LoopThread::impl
 	{
 	public:
-		impl(void);
-		impl(const impl&) = delete;
-		impl& operator=(const impl&) = delete;
-
-		virtual ~impl(void);
-
-		Looper mLooper;
+		std::atomic<bool> NeedStop = false;
 	};
 
-	LoopThread::impl::impl(void)
-	{
-	
-	}
-
-	LoopThread::impl::~impl(void)
-	{
-
-	}
-
-	LoopThread::LoopThread(BaseWorker* onLoop)
+	LoopThread::LoopThread(void)
 		: pImpl(mk_uptr<impl>())
-		, BaseThread(&pImpl->mLooper)
 	{
-		pImpl->mLooper.loopingTarget = onLoop;
+
 	}
 
 	LoopThread::~LoopThread(void)
@@ -107,13 +67,22 @@ namespace Garosu
 
 	void LoopThread::Start(void)
 	{
-		pImpl->mLooper.NeedStop = false;
+		pImpl->NeedStop = false;
 		BaseThread::Start();
 	}
 
 	void LoopThread::Stop(void)
 	{
-		pImpl->mLooper.NeedStop = true;
+		pImpl->NeedStop = true;
+	}
+
+	void LoopThread::DoWork(void)
+	{
+		while (true)
+		{
+			if (pImpl->NeedStop) break;
+			OnLoop();
+		}
 	}
 
 	void ThreadUtils::SleepFor(u32 microSeconds)

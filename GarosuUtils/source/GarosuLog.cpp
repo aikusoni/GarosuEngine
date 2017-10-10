@@ -105,125 +105,73 @@ namespace Garosu
 			return nullptr;
 	}
 
-	class LogWorker : public BaseWorker
+	/*
+	*
+	*
+	*
+	*/
+	class LogLoop : public LoopThread
 	{
 	public:
-		LogWorker(LogQueue& logQueue);
-		LogWorker(const LogWorker&) = delete;
-		LogWorker& operator=(const LogWorker&) = delete;
+		LogLoop(LogQueue& logQueue);
+		virtual ~LogLoop(void);
 
-		virtual ~LogWorker(void);
+		virtual void OnLoop(void);
 
-		virtual void DoWork(void);
-
-		Locker mLocker;
-		Signal mSignal;
-		bool isLogging;
-
-		std::atomic<bool> doLoop;
 		LogQueue& mLogQueue;
 	};
 
-	LogWorker::LogWorker(LogQueue& logQueue) : doLoop(false), isLogging(false), mLogQueue(logQueue) {}
-	LogWorker::~LogWorker(void) {}
-
-	void LogWorker::DoWork(void)
+	LogLoop::LogLoop(LogQueue& logQueue)
+		: mLogQueue(logQueue)
 	{
-		mLocker.Lock();
-		// Check the thread started.
-		if (isLogging)
-		{
-			mLocker.Unlock();
-			return;
-		}
-		doLoop = true;
-		isLogging = true;
-		mLocker.Unlock();
 
-		std::fstream logFile;
-		logFile.open(Settings::GetLogPath().c_str(), std::fstream::out);
-
-		if (!logFile.is_open()) return;
-
-		u32 tryCnt = 0u;
-		shptr<LogData> logData;
-
-		auto outputLog = [&]() {
-			logFile << *logData << std::endl;
-		};
-
-		while (doLoop)
-		{
-			logData = mLogQueue.Pop();
-			if (logData == nullptr) {
-				tryCnt++;
-				if (tryCnt > 1000)
-				{
-					tryCnt = 0;
-					mSignal.wait();
-				}
-				continue;
-			}
-
-			outputLog();
-		}
-
-		// flush remaining logs
-		while ((logData = mLogQueue.Pop()) != nullptr)
-			outputLog();
-
-		if (logFile.is_open()) logFile.close();
-
-		mLocker.Lock();
-		isLogging = false;
-		mLocker.Unlock();
 	}
 
-	class Log::LogThread : public BaseThread
+	LogLoop::~LogLoop(void)
+	{
+
+	}
+
+	void LogLoop::OnLoop(void)
+	{
+
+	}
+
+	class Log::impl
 	{
 	public:
-		LogThread(void);
-		LogThread(const LogThread&) = delete;
-		LogThread& operator=(const LogThread&) = delete;
+		impl(void);
+		impl(const impl&) = delete;
+		impl& operator=(const impl&) = delete;
 
-		virtual ~LogThread(void);
-
-		void Stop(void);
+		virtual ~impl(void);
 
 		void SetLogLevel(const LogLevel&);
 		void HandoverLog(const LogLevel&, const String&);
 
-	private:
 		std::atomic<LogLevel> mLogLevel;
 		LogQueue mLogQueue;
-		LogWorker mLogWorker;
+		LogLoop mLoggingLoop;
 	};
 
-	Log::LogThread::LogThread(void)
+	Log::impl::impl(void)
 		: mLogLevel(LogLevel::NONE)
-		, mLogWorker(mLogQueue)
-		, BaseThread(&mLogWorker)
+		, mLoggingLoop(mLogQueue)
 	{
 
 	}
 
-	Log::LogThread::~LogThread(void)
+	Log::impl::~impl(void)
 	{
 
 	}
 
-	void Log::LogThread::Stop(void)
-	{
-		mLogWorker.doLoop = false;
-		mLogWorker.mSignal.notify();
-	}
-
-	void Log::LogThread::SetLogLevel(const LogLevel& logLevel)
+	void Log::impl::SetLogLevel(const LogLevel& logLevel)
 	{
 		mLogLevel = logLevel;
 	}
 
-	void Log::LogThread::HandoverLog(const LogLevel& logLevel, const String& logString)
+	void Log::impl::HandoverLog(const LogLevel& logLevel, const String& logString)
 	{
 		if (logLevel > mLogLevel) return;
 
@@ -233,39 +181,37 @@ namespace Garosu
 		logData->logString = logString;
 
 		mLogQueue.Push(logData);
-
-		mLogWorker.mSignal.notify();
 	}
 
 	Log::Log(void)
-		: pLT(mk_uptr<LogThread>())
+		: pImpl(mk_uptr<impl>())
 	{
 
 	}
 
 	Log::~Log(void)
 	{
-		pLT->Join();
 	}
 
 	void Log::SetLogLevel(const LogLevel& logLevel)
 	{
-		pLT->SetLogLevel(logLevel);
+		pImpl->SetLogLevel(logLevel);
 	}
 
 	void Log::Start(void)
 	{
-		pLT->Start();
+		pImpl->mLoggingLoop.Start();
 	}
 
 	void Log::Stop(void)
 	{
-		pLT->Stop();
+		pImpl->mLoggingLoop.Stop();
+		pImpl->mLoggingLoop.Join();
 	}
 
 	void Log::Logging(LogLevel mLogLevel, const String& str)
 	{
-		pLT->HandoverLog(LogLevel::CRITICAL, str);
+		pImpl->HandoverLog(LogLevel::CRITICAL, str);
 	}
 
 }

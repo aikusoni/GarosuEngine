@@ -7,27 +7,21 @@
 namespace Garosu
 {
 	
-	class BaseWorker
-	{
-	public:
-		virtual void DoWork(void) = 0;
-	};
-
 	class BaseThread
 	{
 	public:
-		BaseThread(BaseWorker*);
+		BaseThread(void);
 		BaseThread(const BaseThread&) = delete;
 		BaseThread& operator=(const BaseThread&) = delete;
 
 		virtual ~BaseThread(void);
 
-		virtual void Start(void);
-		virtual void Join(void);
+		void Start(void);
+		void Join(void);
+
+		virtual void DoWork(void) = 0;
 
 	private:
-		BaseWorker* mBaseWorker;
-
 		class impl;
 		uptr<impl> pImpl;
 	};
@@ -35,15 +29,19 @@ namespace Garosu
 	class LoopThread : public BaseThread
 	{
 	public:
-		LoopThread(BaseWorker* onLoop);
+		LoopThread(void);
 		LoopThread(const LoopThread&) = delete;
 		LoopThread& operator=(const LoopThread&) = delete;
 
 		virtual ~LoopThread(void);
 
-		virtual void Start(void);
-		virtual void Stop(void);
-		
+		void Start(void);
+		void Stop(void);
+
+		virtual void DoWork(void);
+
+		virtual void OnLoop(void) = 0;
+
 	private:
 		class impl;
 		uptr<impl> pImpl;
