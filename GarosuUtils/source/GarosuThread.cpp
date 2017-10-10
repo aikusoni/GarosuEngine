@@ -4,6 +4,7 @@
 
 #include <thread>
 #include <chrono>
+#include <atomic>
 
 namespace Garosu
 {
@@ -19,8 +20,8 @@ namespace Garosu
 		std::thread thr;
 	};
 
-	BaseThread::BaseThread(BaseWorker* baseWorker)
-		: mBaseWorker(baseWorker)
+	BaseThread::BaseThread(BaseWorker* worker)
+		: mBaseWorker(worker)
 		, pImpl(mk_uptr<impl>())
 	{
 
@@ -40,6 +41,79 @@ namespace Garosu
 	{
 		if (pImpl->thr.joinable())
 			pImpl->thr.join();
+	}
+
+	/*
+	*
+	*
+	*
+	*/
+	class Looper : public BaseWorker
+	{
+	public:
+		virtual void DoWork(void);
+
+		BaseWorker* loopingTarget = nullptr;
+		std::atomic<bool> NeedStop = false;
+	};
+
+	void Looper::DoWork(void)
+	{
+		while (true)
+		{
+			if (NeedStop) return;
+			if (loopingTarget != nullptr) loopingTarget->DoWork();
+		}
+	}
+
+	/*
+	*
+	*
+	*
+	*/
+	class LoopThread::impl
+	{
+	public:
+		impl(void);
+		impl(const impl&) = delete;
+		impl& operator=(const impl&) = delete;
+
+		virtual ~impl(void);
+
+		Looper mLooper;
+	};
+
+	LoopThread::impl::impl(void)
+	{
+	
+	}
+
+	LoopThread::impl::~impl(void)
+	{
+
+	}
+
+	LoopThread::LoopThread(BaseWorker* onLoop)
+		: pImpl(mk_uptr<impl>())
+		, BaseThread(&pImpl->mLooper)
+	{
+		pImpl->mLooper.loopingTarget = onLoop;
+	}
+
+	LoopThread::~LoopThread(void)
+	{
+
+	}
+
+	void LoopThread::Start(void)
+	{
+		pImpl->mLooper.NeedStop = false;
+		BaseThread::Start();
+	}
+
+	void LoopThread::Stop(void)
+	{
+		pImpl->mLooper.NeedStop = true;
 	}
 
 	void ThreadUtils::SleepFor(u32 microSeconds)

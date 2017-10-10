@@ -22,14 +22,29 @@ namespace Garosu
 
 		virtual ~BaseThread(void);
 
-		virtual void Start(void) final;
-		virtual void Join(void) final;
-
-	protected:
+		virtual void Start(void);
+		virtual void Join(void);
 
 	private:
 		BaseWorker* mBaseWorker;
 
+		class impl;
+		uptr<impl> pImpl;
+	};
+
+	class LoopThread : public BaseThread
+	{
+	public:
+		LoopThread(BaseWorker* onLoop);
+		LoopThread(const LoopThread&) = delete;
+		LoopThread& operator=(const LoopThread&) = delete;
+
+		virtual ~LoopThread(void);
+
+		virtual void Start(void);
+		virtual void Stop(void);
+		
+	private:
 		class impl;
 		uptr<impl> pImpl;
 	};
