@@ -145,13 +145,13 @@ namespace Garosu
 		if (!logFile.is_open()) return;
 
 		u32 tryCnt = 0u;
-		doLoop = true;
 		shptr<LogData> logData;
 
 		auto outputLog = [&]() {
 			logFile << *logData << std::endl;
 		};
 
+		doLoop = true;
 		while (doLoop)
 		{
 			logData = mLogQueue.Pop();
@@ -225,7 +225,6 @@ namespace Garosu
 
 	void Log::LogThread::HandoverLog(const LogLevel& logLevel, const String& logString)
 	{
-		if (!mLogWorker.doLoop) return;
 		if (logLevel > mLogLevel) return;
 
 		auto logData = mk_shptr<LogData>();

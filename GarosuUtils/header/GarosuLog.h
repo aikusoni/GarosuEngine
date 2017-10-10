@@ -29,13 +29,26 @@ namespace Garosu
 		void SetLogLevel(const LogLevel&);
 		void Start(void);
 		void Stop(void);
-		
-		inline void C(const String& str) { Logging(LogLevel::CRITICAL, str); }
-		inline void E(const String& str) { Logging(LogLevel::ERROR, str); }
-		inline void D(const String& str) { Logging(LogLevel::DEBUG, str); }
-		inline void W(const String& str) { Logging(LogLevel::WARNING, str); }
-		inline void N(const String& str) { Logging(LogLevel::NOTICE, str); }
-		inline void I(const String& str) { Logging(LogLevel::INFO, str); }
+
+		void Logging(LogLevel, const String&);
+
+		// Stream Style Log
+		template <Garosu::LogLevel VLogLevel>
+		inline auto S(void) { return LogStream<VLogLevel>(*this); }
+
+		// Function Style Log (maybe quick)
+		template <Garosu::LogLevel VLogLevel>
+		inline void Q(const String& str) {
+			Logging(VLogLevel, str);
+		}
+
+		// Formatting Style Log
+		template <Garosu::LogLevel VLogLevel, typename ... Args>
+		inline void F(const String& format, Args&& ... args) {
+			StringStream ss;
+			FMT(ss, format.c_str(), args...);
+			Logging(VLogLevel, ss.str());
+		}
 
 	private:
 		Log(void);
@@ -44,7 +57,50 @@ namespace Garosu
 
 		~Log(void);
 
-		void Logging(LogLevel, const String&);
+	private:
+		// template for stream style log
+		template <Garosu::LogLevel VLogLevel>
+		class LogStream
+		{
+		private:
+			std::stringstream ss;
+			Log& mLogger;
+
+		public:
+			LogStream(Log& logger) : mLogger(logger) { }
+			LogStream(LogStream& logStream) : mLogger(logStream.mLogger) { }
+			LogStream& operator=(LogStream& logStream) { mLogger = logstream.mLogger; }
+
+			virtual ~LogStream(void) {
+				mLogger.Logging(VLogLevel, ss.str());
+			}
+
+			template<typename T>
+			LogStream& operator<<(const T& toLog)
+			{
+				ss << toLog;
+				return *this;
+			}
+		};
+
+		// template for formatting style log
+		inline void FMT(StringStream& ss, const char* format) { ss << format; }
+
+		template <typename T, typename ... Args>
+		inline void FMT(StringStream& ss, const char* format, T&& value, Args&& ... args) {
+			for (; *format != '\0'; ++format) {
+				if (*format == '%') {
+					if (*(format + 1) == '%') ++format; // "%%" -> '%'						
+					else
+					{
+						ss << value;
+						FMT(ss, format + 1, args...); // recursive call
+						return;
+					}
+				}
+				ss << *format;
+			}
+		}
 
 	private:
 		class LogThread;
@@ -67,11 +123,31 @@ namespace Garosu
 #define LOGSTART()	LOGINSTANCE.Start()
 #define LOGSTOP()	LOGINSTANCE.Stop()
 
-#define LOGC(X) LOGINSTANCE.C(X)
-#define LOGE(X) LOGINSTANCE.E(X)
-#define LOGD(X) LOGINSTANCE.D(X)
-#define LOGW(X) LOGINSTANCE.W(X)
-#define LOGN(X) LOGINSTANCE.N(X)
-#define LOGI(X) LOGINSTANCE.I(X)
+// stream style log macro
+// usage : LOGC << "blah blah " << 123 << ", " << 3.14f << 'c';
+#define LOGC LOGINSTANCE.S<LogLevel::CRITICAL>()
+#define LOGE LOGINSTANCE.S<LogLevel::ERROR>()
+#define LOGD LOGINSTANCE.S<LogLevel::DEBUG>()
+#define LOGW LOGINSTANCE.S<LogLevel::WARNING>()
+#define LOGN LOGINSTANCE.S<LogLevel::NOTICE>()
+#define LOGI LOGINSTANCE.S<LogLevel::INFO>()
+
+// function style log macro (it may quick than the others)
+// usage : LOGFC("function style log");
+#define LOGQC(X) LOGINSTANCE.Q<LogLevel::CRITICAL>(X)
+#define LOGQE(X) LOGINSTANCE.Q<LogLevel::ERROR>(X)
+#define LOGQD(X) LOGINSTANCE.Q<LogLevel::DEBUG>(X)
+#define LOGQW(X) LOGINSTANCE.Q<LogLevel::WARNING>(X)
+#define LOGQN(X) LOGINSTANCE.Q<LogLevel::NOTICE>(X)
+#define LOGQI(X) LOGINSTANCE.Q<LogLevel::INFO>(X)
+
+// formatting style log macro
+// usage : LOGFC("i-value : %, f-value : %", 123, 3.14f);
+#define LOGFC(FORMAT, ...) LOGINSTANCE.F<LogLevel::CRITICAL>(FORMAT, __VA_ARGS__)
+#define LOGFE(FORMAT, ...) LOGINSTANCE.F<LogLevel::ERROR>(FORMAT, __VA_ARGS__)
+#define LOGFD(FORMAT, ...) LOGINSTANCE.F<LogLevel::DEBUG>(FORMAT, __VA_ARGS__)
+#define LOGFW(FORMAT, ...) LOGINSTANCE.F<LogLevel::WARNING>(FORMAT, __VA_ARGS__)
+#define LOGFN(FORMAT, ...) LOGINSTANCE.F<LogLevel::NOTICE>(FORMAT, __VA_ARGS__)
+#define LOGFI(FORMAT, ...) LOGINSTANCE.F<LogLevel::INFO>(FORMAT, __VA_ARGS__)
 
 #endif

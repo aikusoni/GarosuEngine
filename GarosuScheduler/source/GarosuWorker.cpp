@@ -232,6 +232,8 @@ namespace Garosu
 		for (auto& e : pImpl->mWorkerThreads)
 			e->Start();
 
+		pImpl->mStart = true;
+
 		return true;
 	}
 

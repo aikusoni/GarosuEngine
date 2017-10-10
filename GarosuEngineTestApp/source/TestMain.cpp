@@ -37,6 +37,7 @@ bool EngineTestWindow::Initialize(void)
 	// initialize window
 
 	// initialize engine
+	if (!engine.Initialize()) return false;
 
 	return true;
 }
@@ -44,6 +45,11 @@ bool EngineTestWindow::Initialize(void)
 bool EngineTestWindow::Finalize(void)
 {
 	// finalize engine
+	bool ret = engine.Finalize();
+	if (!ret)
+	{
+		// engine finalize failed
+	}
 
 	// finalize window
 
@@ -58,14 +64,11 @@ void EngineTestWindow::Run(void)
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	EngineTestWindow win(hInstance);
-
-	do {
-		if (!win.Initialize()) break;
-
+	
+	bool ret = win.Initialize();
+	if (ret)
 		win.Run();
-
-		if (!win.Finalize()) break;
-	} while (false);
+	win.Finalize();
 
 	return 0;
 }

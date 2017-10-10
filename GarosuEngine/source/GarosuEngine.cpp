@@ -49,15 +49,15 @@ namespace Garosu
 
 	bool Engine::Initialize(void)
 	{
-		LOGD("Garosu Engine initializing");
+		///// Start Log Thread
+		SETLOGLEVELD();
+		LOGSTART();
+
+		LOGQD("Garosu Engine initializing");
 
 		bool initSuccess = false;
 		do
 		{
-			///// Start Log Thread
-			SETLOGLEVELD();
-			LOGSTART();
-
 			///// Make Scheduler
 			u32 numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
 			numSchedulerThreads -= 2; // for main thread & window thread
@@ -65,18 +65,19 @@ namespace Garosu
 			auto scherr = Garosu::SchedulerFactory::MakeDefaultScheduler(&pImpl->scheduler, numSchedulerThreads);
 			if (pImpl->scheduler == nullptr)
 			{
-				LOGC("Scheduler allocation failed.");
+				LOGQC("Scheduler allocation failed.");
 				break;
 			}
-			if (scherr != SchedulerError::OK)
+
+			if (scherr == SchedulerError::OK)
 			{
-				LOGC("MakeDefaultScheduler() failed.("    ")");
+				LOGC << "MakeDefaultSceduler() failed (err:" << (int)scherr << ")";
 				break;
 			}
 
 			if (pImpl->scheduler->Initialize() != SchedulerError::OK)
 			{
-				LOGE("Scheduler initialization failed.");
+				LOGQE("Scheduler initialization failed.");
 				break;
 			}
 
@@ -84,13 +85,13 @@ namespace Garosu
 			pImpl->physics = Garosu::PhysicsFactory::MakeDefaultPhysics(pImpl->scheduler);
 			if (pImpl->physics == nullptr)
 			{
-				LOGC("Physics allocation failed.");
+				LOGQC("Physics allocation failed.");
 				break;
 			}
 
 			if (pImpl->physics->Initialize() != PhysicsError::OK)
 			{
-				LOGE("Physics initialization failed.");
+				LOGQE("Physics initialization failed.");
 				break;
 			}
 
@@ -98,13 +99,13 @@ namespace Garosu
 			pImpl->graphics = Garosu::GraphicsFactory::MakeDefaultGraphics(pImpl->scheduler);
 			if (pImpl->graphics == nullptr)
 			{
-				LOGC("Graphics allocation failed.");
+				LOGQC("Graphics allocation failed.");
 				break;
 			}
 
 			if (pImpl->graphics->Initialize() != GraphicsError::OK)
 			{
-				LOGE("Graphics initialization failed.");
+				LOGQE("Graphics initialization failed.");
 				break;
 			}
 
@@ -115,11 +116,11 @@ namespace Garosu
 
 		if (!initSuccess)
 		{
-			LOGE("Garosu Engine initialization failed.");
+			LOGQE("Garosu Engine initialization failed.");
 			return false;
 		}
 
-		LOGD("Garosu Enigne initialization Success.");
+		LOGQD("Garosu Enigne initialization Success.");
 
 		return true;
 	}
@@ -148,9 +149,9 @@ namespace Garosu
 				delete pImpl->scheduler;
 				pImpl->scheduler = nullptr;
 			}
-
-			LOGSTOP();
 		}
+
+		LOGSTOP();
 
 		return true;
 	}

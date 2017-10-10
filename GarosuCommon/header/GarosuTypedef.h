@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <functional>
 
@@ -27,6 +28,9 @@ namespace Garosu
 
 	using String = std::string;
 	using WString = std::wstring;
+
+	using StringStream = std::stringstream;
+	using WStringStream = std::wstringstream;
 
 	template <typename T>
 	using uptr = std::unique_ptr<T>;

@@ -56,13 +56,13 @@ namespace Garosu
 	{
 		if (!mWorkerGroup.Initialize())
 		{
-			LOGE("[Scheduler] cannot intialize WorkerGroup");
+			LOGQE("[Scheduler] cannot intialize WorkerGroup");
 			return SchedulerError::ERROR;
 		}
 
 		if (!mWorkerGroup.Start())
 		{
-			LOGE("[Scheduler] cannot start WorkerGroup");
+			LOGQE("[Scheduler] cannot start WorkerGroup");
 			return SchedulerError::ERROR;
 		}
 
@@ -130,13 +130,13 @@ namespace Garosu
 	{
 		if (!mWorkerGroup.Initialize())
 		{
-			LOGE("[Scheduler] cannot intialize WorkerGroup");
+			LOGQE("[Scheduler] cannot intialize WorkerGroup");
 			return SchedulerError::ERROR;
 		}
 
 		if (!mWorkerGroup.Start())
 		{
-			LOGE("[Scheduler] cannot start WorkerGroup");
+			LOGQE("[Scheduler] cannot start WorkerGroup");
 			return SchedulerError::ERROR;
 		}
 

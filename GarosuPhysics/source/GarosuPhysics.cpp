@@ -38,7 +38,7 @@ namespace Garosu {
 
 	PhysicsError Physics::Initialize(void)
 	{
-		LOGC("We need to make physics engine.");
+		LOGQC("We need to make physics engine.");
 
 		return PhysicsError::OK;
 	}
