@@ -10,8 +10,6 @@ namespace Garosu
 	public:
 		static SchedulerError MakeDefaultScheduler(IScheduler** scheduler, u32 numThread);
 		static SchedulerError MakeBalancedScheduler(IScheduler** scheduler, u32 numThread);
-
-		static SchedulerError DeleteScheduler(IScheduler** scheduler);
 	};
 
 }

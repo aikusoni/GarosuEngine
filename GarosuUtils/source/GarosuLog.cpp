@@ -264,34 +264,9 @@ namespace Garosu
 		pLT->Stop();
 	}
 
-	void Log::C(const String& str)
+	void Log::Logging(LogLevel mLogLevel, const String& str)
 	{
 		pLT->HandoverLog(LogLevel::CRITICAL, str);
-	}
-
-	void Log::E(const String& str)
-	{
-		pLT->HandoverLog(LogLevel::ERROR, str);
-	}
-
-	void Log::D(const String& str)
-	{
-		pLT->HandoverLog(LogLevel::DEBUG, str);
-	}
-
-	void Log::W(const String& str)
-	{
-		pLT->HandoverLog(LogLevel::WARNING, str);
-	}
-
-	void Log::N(const String& str)
-	{
-		pLT->HandoverLog(LogLevel::NOTICE, str);
-	}
-
-	void Log::I(const String& str)
-	{
-		pLT->HandoverLog(LogLevel::INFO, str);
 	}
 
 }

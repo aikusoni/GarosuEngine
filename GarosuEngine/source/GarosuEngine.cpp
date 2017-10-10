@@ -51,10 +51,10 @@ namespace Garosu
 	{
 		LOGD("Garosu Engine initializing");
 
-		bool initFailed = true;
+		bool initSuccess = false;
 		do
 		{
-			// Start Log Thread
+			///// Start Log Thread
 			SETLOGLEVELD();
 			LOGSTART();
 
@@ -62,10 +62,15 @@ namespace Garosu
 			u32 numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
 			numSchedulerThreads -= 2; // for main thread & window thread
 
-			pImpl->scheduler = Garosu::SchedulerFactory::MakeDefaultScheduler(numSchedulerThreads);
+			auto scherr = Garosu::SchedulerFactory::MakeDefaultScheduler(&pImpl->scheduler, numSchedulerThreads);
 			if (pImpl->scheduler == nullptr)
 			{
 				LOGC("Scheduler allocation failed.");
+				break;
+			}
+			if (scherr != SchedulerError::OK)
+			{
+				LOGC("MakeDefaultScheduler() failed.("    ")");
 				break;
 			}
 
@@ -103,10 +108,12 @@ namespace Garosu
 				break;
 			}
 
-			initFailed = false;
+			///// Make Audio
+
+			initSuccess = true;
 		} while (false);
 
-		if (initFailed)
+		if (!initSuccess)
 		{
 			LOGE("Garosu Engine initialization failed.");
 			return false;

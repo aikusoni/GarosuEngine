@@ -29,13 +29,13 @@ namespace Garosu
 		void SetLogLevel(const LogLevel&);
 		void Start(void);
 		void Stop(void);
-
-		void C(const String&);
-		void E(const String&);
-		void D(const String&);
-		void W(const String&);
-		void N(const String&);
-		void I(const String&);
+		
+		inline void C(const String& str) { Logging(LogLevel::CRITICAL, str); }
+		inline void E(const String& str) { Logging(LogLevel::ERROR, str); }
+		inline void D(const String& str) { Logging(LogLevel::DEBUG, str); }
+		inline void W(const String& str) { Logging(LogLevel::WARNING, str); }
+		inline void N(const String& str) { Logging(LogLevel::NOTICE, str); }
+		inline void I(const String& str) { Logging(LogLevel::INFO, str); }
 
 	private:
 		Log(void);
@@ -43,6 +43,8 @@ namespace Garosu
 		Log& operator=(const Log&) = delete;
 
 		~Log(void);
+
+		void Logging(LogLevel, const String&);
 
 	private:
 		class LogThread;

@@ -7,7 +7,8 @@ namespace Garosu
 	enum class SchedulerError
 	{
 		OK,
-		ERROR
+		ERROR,
+		ERROR_MEM_ALLOC_FAILED
 	};
 
 	enum class TaskSource

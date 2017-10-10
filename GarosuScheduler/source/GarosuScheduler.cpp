@@ -166,7 +166,13 @@ namespace Garosu
 		if (scheduler == nullptr) return SchedulerError::ERROR;
 		if (*scheduler != nullptr) return SchedulerError::ERROR;
 
-		*scheduler = new DefaultScheduler(numThread);
+		try {
+			*scheduler = new DefaultScheduler(numThread);
+		}
+		catch (std::bad_alloc ba)
+		{
+			return SchedulerError::ERROR_MEM_ALLOC_FAILED;
+		}
 
 		return SchedulerError::OK;
 	}
@@ -176,20 +182,27 @@ namespace Garosu
 		if (scheduler == nullptr) return SchedulerError::ERROR;
 		if (*scheduler != nullptr) return SchedulerError::ERROR;
 
-		*scheduler = new BalancedScheduler(numThread);
+		try
+		{
+			*scheduler = new BalancedScheduler(numThread);
+		}
+		catch (std::bad_alloc ba)
+		{
+			return SchedulerError::ERROR_MEM_ALLOC_FAILED;
+		}
 
 		return SchedulerError::OK;
 	}
 
-	SchedulerError SchedulerFactory::DeleteScheduler(IScheduler** scheduler)
-	{
-		if (scheduler == nullptr) return SchedulerError::ERROR;
-		if (*scheduler == nullptr) return SchedulerError::ERROR;
+	//SchedulerError SchedulerFactory::DeleteScheduler(IScheduler** scheduler)
+	//{
+	//	if (scheduler == nullptr) return SchedulerError::ERROR;
+	//	if (*scheduler == nullptr) return SchedulerError::ERROR;
 
-		delete *scheduler;
-		*scheduler = nullptr;
+	//	delete *scheduler;
+	//	*scheduler = nullptr;
 
-		return SchedulerError::OK;
-	}
+	//	return SchedulerError::OK;
+	//}
 
 }
