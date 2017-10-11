@@ -78,11 +78,13 @@ namespace Garosu
 
 	void LoopThread::DoWork(void)
 	{
+		if (!OnBegin()) return;
 		while (true)
 		{
 			if (pImpl->NeedStop) break;
-			OnLoop();
+			if (!OnLoop()) break;
 		}
+		if (!OnEnd()) return;
 	}
 
 	void ThreadUtils::SleepFor(u32 microSeconds)

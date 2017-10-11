@@ -115,10 +115,15 @@ namespace Garosu
 	public:
 		LogLoop(LogQueue& logQueue);
 		virtual ~LogLoop(void);
+		
+		virtual bool OnBegin(void);
+		virtual bool OnLoop(void);
+		virtual bool OnEnd(void);
 
-		virtual void OnLoop(void);
-
+	private:
 		LogQueue& mLogQueue;
+		std::fstream fs;
+		std::function<void(LogData*)> output;
 	};
 
 	LogLoop::LogLoop(LogQueue& logQueue)
@@ -132,9 +137,35 @@ namespace Garosu
 
 	}
 
-	void LogLoop::OnLoop(void)
+	bool LogLoop::OnBegin(void)
 	{
+		// open file
+		fs.open(Settings::GetLogPath().c_str(), std::fstream::out);
+		if (!fs.is_open()) return false;
 
+		output = [&](LogData* logData) { fs << *logData << std::endl; };
+
+		return true;
+	}
+
+	bool LogLoop::OnLoop(void)
+	{
+		shptr<LogData> logData = mLogQueue.Pop();
+		if (logData != nullptr) output(logData.get());
+
+		return true;
+	}
+
+	bool LogLoop::OnEnd(void)
+	{
+		// close file and flush logs
+		shptr<LogData> logData = nullptr;
+		while ((logData = mLogQueue.Pop()) != nullptr)
+			output(logData.get());
+
+		if (fs.is_open()) fs.close();
+
+		return true;
 	}
 
 	class Log::impl
@@ -152,6 +183,9 @@ namespace Garosu
 		std::atomic<LogLevel> mLogLevel;
 		LogQueue mLogQueue;
 		LogLoop mLoggingLoop;
+
+		Locker mStartingLock;
+		bool mStarted = false;
 	};
 
 	Log::impl::impl(void)
@@ -200,13 +234,25 @@ namespace Garosu
 
 	void Log::Start(void)
 	{
+		pImpl->mStartingLock.Lock();
+		if (pImpl->mStarted) {
+			pImpl->mStartingLock.Unlock();
+			return;
+		}
+		pImpl->mStarted = true;
+
 		pImpl->mLoggingLoop.Start();
+		pImpl->mStartingLock.Unlock();
 	}
 
 	void Log::Stop(void)
 	{
+		pImpl->mStartingLock.Lock();
+		pImpl->mStarted = false;
+
 		pImpl->mLoggingLoop.Stop();
 		pImpl->mLoggingLoop.Join();
+		pImpl->mStartingLock.Unlock();
 	}
 
 	void Log::Logging(LogLevel mLogLevel, const String& str)

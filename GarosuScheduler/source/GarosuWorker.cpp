@@ -8,80 +8,15 @@
 
 #include "GarosuWorker.h"
 
-#include <concurrent_queue.h>
-
 #include <GarosuThread.h>
 #include <GarosuLockUtils.h>
 #include <GarosuMathUtils.h>
 
 namespace Garosu
 {
-	using TaskQueue = Concurrency::concurrent_queue<BaseTask*>;
 
 	inline u32 SaturateConcurrency(u32 n) {
 		return MathUtils::Clamp<u32>(n, 1u, ThreadUtils::GetConcurrencyCount());
-	}
-	
-	/*
-	* TaskWorker executes tasks taked from task queue.
-	* One TaskWorker runs a task at a time.
-	*
-	*/
-	class TaskWorker final : public BaseWorker
-	{
-	public:
-		TaskWorker(TaskQueue&);
-		TaskWorker(const TaskWorker&) = delete;
-		TaskWorker& operator=(const TaskWorker&) = delete;
-
-		~TaskWorker(void);
-
-		virtual void DoWork(void) override;
-
-		std::atomic<bool> mLoop;
-		std::atomic<bool> mDone;
-		TaskQueue& mTaskQueue;
-	};
-
-	TaskWorker::TaskWorker(TaskQueue& taskQueue)
-		: mLoop(false)
-		, mDone(true)
-		, mTaskQueue(taskQueue)
-	{
-		
-	}
-
-	TaskWorker::~TaskWorker(void)
-	{
-
-	}
-
-	void TaskWorker::DoWork(void)
-	{
-		i32 tryCnt = 0;
-		mDone = false;
-		mLoop = true;
-		while (mLoop)
-		{
-			BaseTask* task;
-			if (!mTaskQueue.try_pop(task))
-			{
-				tryCnt++;
-				if (tryCnt > 10000)
-				{
-					tryCnt = 0;
-					ThreadUtils::SleepFor(10000u); // 10 ms
-				}
-				continue;
-			}
-
-			if (task == nullptr) continue;
-
-			// do task
-			task->DoTask();
-		}
-
-		mDone = true;
 	}
 
 	/*
@@ -89,24 +24,24 @@ namespace Garosu
 	* 
 	*
 	*/
-	class WorkerThread final : public BaseThread
+	class WorkerThread final : public LoopThread
 	{
 	public:
-		WorkerThread(TaskQueue&);
+		WorkerThread(ITaskProvider*);
 		~WorkerThread(void);
 
-		void RequestStop(void);
-		bool IsDone(void);
+		virtual bool OnLoop(void);
 
 	private:
-		TaskWorker mWorker;
+		u32 mTryCnt = 0;
+		ITaskProvider* mTaskProvider;
+		Locker mLocker;
 	};
 
-	WorkerThread::WorkerThread(TaskQueue& taskQueue)
-		: mWorker(taskQueue)
-		, BaseThread(&mWorker)
+	WorkerThread::WorkerThread(ITaskProvider* taskProvider)
+		: mTaskProvider(taskProvider)
 	{
-
+		mTryCnt = 0;
 	}
 
 	WorkerThread::~WorkerThread(void)
@@ -114,14 +49,24 @@ namespace Garosu
 
 	}
 
-	void WorkerThread::RequestStop(void)
+	bool WorkerThread::OnLoop(void)
 	{
-		mWorker.mLoop = false;
-	}
+		BaseTask* task = nullptr;
+		task = mTaskProvider->GetTask();
+		if (task == nullptr) {
+			mTryCnt++;
+			if (mTryCnt > 10000u)
+			{
+				mTryCnt = 0;
+				ThreadUtils::SleepFor(1000u); // 1 ms
+			}
+			return true;
+		}
 
-	bool WorkerThread::IsDone(void)
-	{
-		return mWorker.mDone;
+		// do task
+		task->DoTask(); // TODO catch exception & save it.
+
+		return true;
 	}
 
 	/*
@@ -138,7 +83,6 @@ namespace Garosu
 
 		ITaskProvider* mTaskProvider;
 
-		TaskQueue mTaskQueue;
 		std::vector<uptr<WorkerThread>> mWorkerThreads;
 	};
 
@@ -154,8 +98,7 @@ namespace Garosu
 	WorkerGroup::~WorkerGroup(void)
 	{
 		Stop();
-		for (auto& e : pImpl->mWorkerThreads)
-			e->Join();
+		Join();
 	}
 
 	bool WorkerGroup::Initialize(void)
@@ -165,7 +108,7 @@ namespace Garosu
 			pImpl->mIsInit = true;
 		
 			for (u32 i = 0; i < pImpl->mNumWorker; ++i)
-				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskQueue));
+				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskProvider));
 		}
 
 		return true;
@@ -185,7 +128,7 @@ namespace Garosu
 			u32 numExpand = numWorker - pImpl->mNumWorker;
 
 			for (u32 i = 0; i < numExpand; ++i)
-				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskQueue));
+				pImpl->mWorkerThreads.push_back(mk_uptr<WorkerThread>(pImpl->mTaskProvider));
 
 			pImpl->mNumWorker = numWorker;
 
@@ -205,8 +148,9 @@ namespace Garosu
 
 			for (i32 i = 0; i < numReduce; ++i)
 			{
-				auto reducing = std::move(pImpl->mWorkerThreads[pImpl->mWorkerThreads.size() - 1]);
-				reducing->RequestStop();
+				auto reducing = std::move(pImpl->mWorkerThreads.back());
+				pImpl->mWorkerThreads.pop_back();
+				reducing->Stop();
 				reducedWorkerThreads.push_back(std::move(reducing));
 			}
 
@@ -242,14 +186,15 @@ namespace Garosu
 		if (!pImpl->mStart) return false;
 
 		for (auto& e : pImpl->mWorkerThreads)
-			e->RequestStop();
+			e->Stop();
 
 		return true;
 	}
 
-	bool WorkerGroup::Handover(BaseTask* task)
+	bool WorkerGroup::Join(void)
 	{
-		pImpl->mTaskQueue.push(task);
+		for (auto& e : pImpl->mWorkerThreads)
+			e->Join();
 
 		return true;
 	}

@@ -69,7 +69,7 @@ namespace Garosu
 				break;
 			}
 
-			if (scherr == SchedulerError::OK)
+			if (scherr != SchedulerError::OK)
 			{
 				LOGC << "MakeDefaultSceduler() failed (err:" << (int)scherr << ")";
 				break;
@@ -80,6 +80,8 @@ namespace Garosu
 				LOGQE("Scheduler initialization failed.");
 				break;
 			}
+
+			LOGQN("Scheduler initialization success.");
 
 			///// Make Physics
 			pImpl->physics = Garosu::PhysicsFactory::MakeDefaultPhysics(pImpl->scheduler);
@@ -95,6 +97,8 @@ namespace Garosu
 				break;
 			}
 
+			LOGQN("Physics initialization success.");
+
 			///// Make Graphics
 			pImpl->graphics = Garosu::GraphicsFactory::MakeDefaultGraphics(pImpl->scheduler);
 			if (pImpl->graphics == nullptr)
@@ -108,6 +112,8 @@ namespace Garosu
 				LOGQE("Graphics initialization failed.");
 				break;
 			}
+
+			LOGQN("Graphics initialization success.");
 
 			///// Make Audio
 

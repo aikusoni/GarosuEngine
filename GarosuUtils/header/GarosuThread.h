@@ -40,7 +40,14 @@ namespace Garosu
 
 		virtual void DoWork(void);
 
-		virtual void OnLoop(void) = 0;
+		/*
+		* OnBegin() : called at thread starting.
+		* OnLoop() : called when every loop.
+		* OnEnd() : called at thread ending.
+		*/
+		virtual bool OnBegin(void) { return true; } // if OnBegin() returns false, the loop will not work;
+		virtual bool OnLoop(void) = 0; // if OnLoop() returns false, the loop will exit;
+		virtual bool OnEnd(void) { return true; }
 
 	private:
 		class impl;

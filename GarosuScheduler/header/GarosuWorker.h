@@ -8,6 +8,7 @@ namespace Garosu
 	class ITaskProvider
 	{
 	public:
+		// GetTask() should be thread-safe.
 		virtual BaseTask* GetTask(void) = 0;
 	};
 
@@ -25,8 +26,7 @@ namespace Garosu
 
 		bool Start(void); 
 		bool Stop(void);
-
-		bool Handover(BaseTask*);
+		bool Join(void);
 
 	private:
 		class impl;

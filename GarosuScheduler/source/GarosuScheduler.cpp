@@ -8,17 +8,27 @@
 
 #include <GarosuLog.h>
 
+#include <unordered_map>
+#include <concurrent_queue.h>
+
 namespace Garosu
 {
+
+	class ITaskManager : public ITaskProvider
+	{
+	public:
+		virtual bool Handover(TaskSource, BaseTask*) = 0;
+	};
+
 	/*
 	* Default Scheduler
 	*
-	* FIFO Scheduler
+	* 
 	*/
 	class DefaultScheduler : public IScheduler
 	{
 	public:
-		DefaultScheduler(u32 numThread);
+		DefaultScheduler(uptr<ITaskManager>, u32);
 		DefaultScheduler(const DefaultScheduler&) = delete;
 		DefaultScheduler& operator=(const DefaultScheduler&) = delete;
 
@@ -29,22 +39,15 @@ namespace Garosu
 
 		virtual SchedulerError HandoverTask(TaskSource, BaseTask*);
 
+		uptr<ITaskManager> mTaskManager;
 		WorkerGroup mWorkerGroup;
-
-		class DefaultTaskProvider : public ITaskProvider
-		{
-		public:
-			virtual BaseTask* GetTask(void)
-			{
-				return nullptr;	// TODO
-			}
-		} mTaskProvider;
 	};
 
-	DefaultScheduler::DefaultScheduler(u32 numThread)
-		: mWorkerGroup(numThread, &mTaskProvider)
+	DefaultScheduler::DefaultScheduler(uptr<ITaskManager> taskMgr, u32 numThread)
+		: mTaskManager(std::move(taskMgr))
+		, mWorkerGroup(numThread, mTaskManager.get())
 	{
-
+		
 	}
 
 	DefaultScheduler::~DefaultScheduler(void)
@@ -78,85 +81,73 @@ namespace Garosu
 
 	SchedulerError DefaultScheduler::HandoverTask(TaskSource taskSource, BaseTask* newTask)
 	{
-		bool ret = mWorkerGroup.Handover(newTask);
+		bool ret = mTaskManager->Handover(taskSource, newTask);
 
 		return ret ? SchedulerError::OK : SchedulerError::ERROR;
 	}
 
-	
-	/* BalancedScheduler
+
+	/*
 	*
 	*
-	* 
+	*
 	*/
-	class BalancedScheduler : public IScheduler
+	class FIFOTaskManager : public ITaskManager
 	{
+		using TaskQueue = Concurrency::concurrent_queue<BaseTask*>; // lock-free queue
+
 	public:
-		BalancedScheduler(u32 numThread);
-		BalancedScheduler(const BalancedScheduler&) = delete;
-		BalancedScheduler& operator=(const BalancedScheduler&) = delete;
+		virtual BaseTask* GetTask(void);
+		virtual bool Handover(TaskSource, BaseTask*);
 
-		virtual ~BalancedScheduler(void);
-
-		virtual SchedulerError Initialize(void);
-		virtual SchedulerError Finalize(void);
-
-		virtual SchedulerError HandoverTask(TaskSource, BaseTask*);
-
-		WorkerGroup mWorkerGroup;
-
-		class BalancedTaskProvider : public ITaskProvider
-		{
-		public:
-			virtual BaseTask* GetTask(void)
-			{
-				return nullptr;	// TODO
-			}
-		} mTaskProvider;
+		TaskQueue mQueue;
 	};
 
-	BalancedScheduler::BalancedScheduler(u32 numThread)
-		: mWorkerGroup(numThread, &mTaskProvider)
+	BaseTask* FIFOTaskManager::GetTask(void)
 	{
-
+		BaseTask* task;
+		if (mQueue.try_pop(task)) return task;
+		return nullptr;
 	}
 
-	BalancedScheduler::~BalancedScheduler(void)
+	bool FIFOTaskManager::Handover(TaskSource taskSource, BaseTask* newTask)
 	{
-		mWorkerGroup.Stop();
+		// FIFOTaskManager does not consider taskSource;
+		mQueue.push(newTask);
+
+		return true;
 	}
 
-	SchedulerError BalancedScheduler::Initialize(void)
+	/*
+	*
+	*
+	*
+	*/
+	class BalancingTaskManager : public ITaskManager
 	{
-		if (!mWorkerGroup.Initialize())
-		{
-			LOGQE("[Scheduler] cannot intialize WorkerGroup");
-			return SchedulerError::ERROR;
-		}
+		using TaskQueue = Concurrency::concurrent_queue<BaseTask*>; // lock-free queue
 
-		if (!mWorkerGroup.Start())
-		{
-			LOGQE("[Scheduler] cannot start WorkerGroup");
-			return SchedulerError::ERROR;
-		}
+	public:
+		virtual BaseTask* GetTask(void);
+		virtual bool Handover(TaskSource, BaseTask*);
 
-		return SchedulerError::OK;
+		std::unordered_map<TaskSource, TaskQueue> mQueues;
+		TaskQueue* nextTaskQueue;
+	};
+
+	BaseTask* BalancingTaskManager::GetTask(void)
+	{
+		// TODO
+
+		return nullptr;
 	}
 
-	SchedulerError BalancedScheduler::Finalize(void)
+	bool BalancingTaskManager::Handover(TaskSource taskSource, BaseTask* newTask)
 	{
-		bool ret = mWorkerGroup.Stop();
+		mQueues[taskSource].push(newTask);
 
-		return ret ? SchedulerError::OK : SchedulerError::ERROR;
+		return true;
 	}
-
-	SchedulerError BalancedScheduler::HandoverTask(TaskSource taskSource, BaseTask* newTask)
-	{
-		bool ret = mWorkerGroup.Handover(newTask);
-
-		return ret ? SchedulerError::OK : SchedulerError::ERROR;
-	}
-
 
 	/*
 	* SchedulerFactory
@@ -167,7 +158,7 @@ namespace Garosu
 		if (*scheduler != nullptr) return SchedulerError::ERROR;
 
 		try {
-			*scheduler = new DefaultScheduler(numThread);
+			*scheduler = new DefaultScheduler(mk_uptr<FIFOTaskManager>(), numThread);
 		}
 		catch (std::bad_alloc ba)
 		{
@@ -184,7 +175,7 @@ namespace Garosu
 
 		try
 		{
-			*scheduler = new BalancedScheduler(numThread);
+			*scheduler = new DefaultScheduler(mk_uptr<BalancingTaskManager>(), numThread);
 		}
 		catch (std::bad_alloc ba)
 		{
@@ -193,16 +184,5 @@ namespace Garosu
 
 		return SchedulerError::OK;
 	}
-
-	//SchedulerError SchedulerFactory::DeleteScheduler(IScheduler** scheduler)
-	//{
-	//	if (scheduler == nullptr) return SchedulerError::ERROR;
-	//	if (*scheduler == nullptr) return SchedulerError::ERROR;
-
-	//	delete *scheduler;
-	//	*scheduler = nullptr;
-
-	//	return SchedulerError::OK;
-	//}
 
 }
