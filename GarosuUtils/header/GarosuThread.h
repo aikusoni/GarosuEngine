@@ -59,6 +59,7 @@ namespace Garosu
 	public:
 		static void SleepFor(u32 microSeconds);
 		static u32 GetConcurrencyCount(void);
+		static String GetThreadId(void);
 	};
 
 }

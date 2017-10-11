@@ -97,4 +97,11 @@ namespace Garosu
 		return std::thread::hardware_concurrency();
 	}
 
+	String ThreadUtils::GetThreadId(void)
+	{
+		StringStream ss;
+		ss << std::this_thread::get_id();
+		return ss.str();
+	}
+
 }
