@@ -22,22 +22,28 @@ namespace Garosu
 		switch (logLevel)
 		{
 		case LogLevel::CRITICAL:
-			os << "CRITICAL";
+			//os << "CRITICAL";
+			os << "C";
 			break;
 		case LogLevel::ERROR:
-			os << "ERROR";
+			//os << "ERROR";
+			os << "E";
 			break;
 		case LogLevel::DEBUG:
-			os << "DEBUG";
+			//os << "DEBUG";
+			os << "D";
 			break;
 		case LogLevel::WARNING:
-			os << "WARNING";
+			//os << "WARNING";
+			os << "W";
 			break;
 		case LogLevel::NOTICE:
-			os << "NOTICE";
+			//os << "NOTICE";
+			os << "N";
 			break;
 		case LogLevel::INFO:
-			os << "INFO";
+			//os << "INFO";
+			os << "I";
 			break;
 		}
 
@@ -257,7 +263,7 @@ namespace Garosu
 
 	void Log::Logging(LogLevel mLogLevel, const String& str)
 	{
-		pImpl->HandoverLog(LogLevel::CRITICAL, str);
+		pImpl->HandoverLog(mLogLevel, str);
 	}
 
 }

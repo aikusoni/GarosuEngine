@@ -50,7 +50,8 @@ namespace Garosu
 	bool Engine::Initialize(void)
 	{
 		///// Start Log Thread
-		SETLOGLEVELD();
+		//SETLOGLEVEL_DEBUG();
+		SETLOGLEVEL_INFO();
 		LOGSTART();
 
 		LOGQD("Garosu Engine initializing");
