@@ -77,7 +77,7 @@ bool EngineTestApp::Finalize(void)
 	}
 	if (!ret)
 	{
-		// engine finalize failed
+		// engine finalization failed
 	}
 
 	// finalize window

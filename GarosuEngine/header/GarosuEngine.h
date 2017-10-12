@@ -17,6 +17,7 @@ namespace Garosu
 		virtual bool SendMessage(BaseMessage*) = 0;
 	};
 
+	// TODO Make callback routine for processing from engine.
 }
 
 extern "C" {
