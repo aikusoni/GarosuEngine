@@ -20,26 +20,31 @@
 namespace Garosu
 {
 
-	class Engine::impl
+	class Engine final : public IEngine
 	{
 	public:
-		impl(void);
-		virtual ~impl(void);
+		Engine(void);
+		Engine(const Engine&) = delete;
+		Engine& operator=(const Engine&) = delete;
 
+		virtual ~Engine(void);
+
+		virtual bool Initialize(void);
+		virtual bool Finalize(void);
+
+		virtual bool SendMessage(BaseEngineMessage*);
+
+	private:
 		IScheduler* scheduler;
 		IPhysics* physics;
 		IGraphics* graphics;
 	};
 
-	Engine::impl::impl(void) {}
-	Engine::impl::~impl(void) {}
-
 	Engine::Engine(void)
-		: pImpl(mk_uptr<impl>())
 	{
-		pImpl->scheduler = nullptr;
-		pImpl->physics = nullptr;
-		pImpl->graphics = nullptr;
+		scheduler = nullptr;
+		physics = nullptr;
+		graphics = nullptr;
 	}
 
 	Engine::~Engine(void)
@@ -63,8 +68,8 @@ namespace Garosu
 			u32 numSchedulerThreads = ThreadUtils::GetConcurrencyCount();
 			numSchedulerThreads -= 2; // for main thread & window thread
 
-			auto scherr = Garosu::SchedulerFactory::MakeDefaultScheduler(&pImpl->scheduler, numSchedulerThreads);
-			if (pImpl->scheduler == nullptr)
+			auto scherr = Garosu::SchedulerFactory::MakeDefaultScheduler(&scheduler, numSchedulerThreads);
+			if (scheduler == nullptr)
 			{
 				LOGQC("Scheduler allocation failed.");
 				break;
@@ -76,7 +81,7 @@ namespace Garosu
 				break;
 			}
 
-			if (pImpl->scheduler->Initialize() != SchedulerError::OK)
+			if (scheduler->Initialize() != SchedulerError::OK)
 			{
 				LOGQE("Scheduler initialization failed.");
 				break;
@@ -85,14 +90,14 @@ namespace Garosu
 			LOGQN("Scheduler initialization success.");
 
 			///// Make Physics
-			pImpl->physics = Garosu::PhysicsFactory::MakeDefaultPhysics(pImpl->scheduler);
-			if (pImpl->physics == nullptr)
+			physics = Garosu::PhysicsFactory::MakeDefaultPhysics(scheduler);
+			if (physics == nullptr)
 			{
 				LOGQC("Physics allocation failed.");
 				break;
 			}
 
-			if (pImpl->physics->Initialize() != PhysicsError::OK)
+			if (physics->Initialize() != PhysicsError::OK)
 			{
 				LOGQE("Physics initialization failed.");
 				break;
@@ -101,14 +106,14 @@ namespace Garosu
 			LOGQN("Physics initialization success.");
 
 			///// Make Graphics
-			pImpl->graphics = Garosu::GraphicsFactory::MakeDefaultGraphics(pImpl->scheduler);
-			if (pImpl->graphics == nullptr)
+			graphics = Garosu::GraphicsFactory::MakeDefaultGraphics(scheduler);
+			if (graphics == nullptr)
 			{
 				LOGQC("Graphics allocation failed.");
 				break;
 			}
 
-			if (pImpl->graphics->Initialize() != GraphicsError::OK)
+			if (graphics->Initialize() != GraphicsError::OK)
 			{
 				LOGQE("Graphics initialization failed.");
 				break;
@@ -134,28 +139,25 @@ namespace Garosu
 
 	bool Engine::Finalize(void)
 	{
-		if (pImpl)
+		if (graphics)
 		{
-			if (pImpl->graphics)
-			{
-				pImpl->graphics->Finalize();
-				delete pImpl->graphics;
-				pImpl->graphics = nullptr;
-			}
+			graphics->Finalize();
+			delete graphics;
+			graphics = nullptr;
+		}
 
-			if (pImpl->physics)
-			{
-				pImpl->physics->Finalize();
-				delete pImpl->physics;
-				pImpl->physics = nullptr;
-			}
+		if (physics)
+		{
+			physics->Finalize();
+			delete physics;
+			physics = nullptr;
+		}
 
-			if (pImpl->scheduler)
-			{
-				pImpl->scheduler->Finalize();
-				delete pImpl->scheduler;
-				pImpl->scheduler = nullptr;
-			}
+		if (scheduler)
+		{
+			scheduler->Finalize();
+			delete scheduler;
+			scheduler = nullptr;
 		}
 
 		LOGSTOP();
@@ -176,4 +178,9 @@ namespace Garosu
 		return true;
 	}
 
+}
+
+__declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void)
+{
+	return new Garosu::Engine();
 }

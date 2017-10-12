@@ -8,25 +8,19 @@
 namespace Garosu
 {
 
-	class Engine final
+	class IEngine
 	{
 	public:
-		Engine(void);
-		Engine(const Engine&) = delete;
-		Engine& operator=(const Engine&) = delete;
+		virtual bool Initialize(void) = 0;
+		virtual bool Finalize(void) = 0;
 
-		virtual ~Engine(void);
-
-		bool Initialize(void);
-		bool Finalize(void);
-
-		bool SendMessage(BaseEngineMessage*);
-
-	private:
-		class impl;
-		uptr<impl> pImpl;
+		virtual bool SendMessage(BaseEngineMessage*) = 0;
 	};
 
+}
+
+extern "C" {
+	__declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void);
 }
 
 #endif

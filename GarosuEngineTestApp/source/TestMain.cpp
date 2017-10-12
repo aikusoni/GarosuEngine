@@ -7,11 +7,31 @@
 class EngineTestWindow
 {
 public:
-	EngineTestWindow(HINSTANCE);
-	EngineTestWindow(const EngineTestWindow&) = delete;
-	EngineTestWindow& operator=(const EngineTestWindow&) = delete;
+	bool Initialize(void);
+	bool Finalize(void);
+};
 
-	virtual ~EngineTestWindow(void);
+bool EngineTestWindow::Initialize(void)
+{
+
+
+	return true;
+}
+
+bool EngineTestWindow::Finalize(void)
+{
+
+	return true;
+}
+
+class EngineTestApp
+{
+public:
+	EngineTestApp(HINSTANCE);
+	EngineTestApp(const EngineTestApp&) = delete;
+	EngineTestApp& operator=(const EngineTestApp&) = delete;
+
+	virtual ~EngineTestApp(void);
 
 	bool Initialize(void);
 	bool Finalize(void);
@@ -20,21 +40,23 @@ public:
 
 private:
 	Garosu::Engine engine;
+	EngineTestWindow window;
 };
 
-EngineTestWindow::EngineTestWindow(HINSTANCE hInstance)
+EngineTestApp::EngineTestApp(HINSTANCE hInstance)
 {
 
 }
 
-EngineTestWindow::~EngineTestWindow(void)
+EngineTestApp::~EngineTestApp(void)
 {
 
 }
 
-bool EngineTestWindow::Initialize(void)
+bool EngineTestApp::Initialize(void)
 {
 	// initialize window
+	if (!window.Initialize()) return false;
 
 	// initialize engine
 	if (!engine.Initialize()) return false;
@@ -42,7 +64,7 @@ bool EngineTestWindow::Initialize(void)
 	return true;
 }
 
-bool EngineTestWindow::Finalize(void)
+bool EngineTestApp::Finalize(void)
 {
 	// finalize engine
 	bool ret = engine.Finalize();
@@ -52,18 +74,23 @@ bool EngineTestWindow::Finalize(void)
 	}
 
 	// finalize window
+	ret = window.Finalize();
+	if (!ret)
+	{
+
+	}
 
 	return true;
 }
 
-void EngineTestWindow::Run(void)
+void EngineTestApp::Run(void)
 {
-	// windowws message loop
+	// windows message loop
 }
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	EngineTestWindow win(hInstance);
+	EngineTestApp win(hInstance);
 	
 	bool ret = win.Initialize();
 	if (ret)
