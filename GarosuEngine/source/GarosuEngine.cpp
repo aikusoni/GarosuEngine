@@ -8,6 +8,9 @@
 #include <GarosuIPhysics.h>
 #include <GarosuIGraphics.h>
 
+// Garosu Common
+#include <GarosuSettings.h>
+
 // Garosu Utils
 #include <GarosuLog.h>
 #include <GarosuThread.h>
@@ -32,7 +35,7 @@ namespace Garosu
 		virtual bool Initialize(void);
 		virtual bool Finalize(void);
 
-		virtual bool SendMessage(BaseEngineMessage*);
+		virtual bool SendMessage(BaseMessage*);
 
 	private:
 		IScheduler* scheduler;
@@ -165,17 +168,23 @@ namespace Garosu
 		return true;
 	}
 
-	bool Engine::SendMessage(BaseEngineMessage* message)
+	bool Engine::SendMessage(BaseMessage* message)
 	{
 		switch (message->mMessageId)
 		{
 		case EngineMessageId::Default:
-			break;
+			return true;
 
+		case EngineMessageId::SetApplicationStoragePath:
+		{
+			auto& appPath = static_cast<StringMessage*>(message)->mStr;
+			Settings::SetAppPath(appPath);
+			return true;
+		}
 
 		}
 
-		return true;
+		return false;
 	}
 
 }

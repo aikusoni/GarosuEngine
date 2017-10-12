@@ -14,7 +14,7 @@ namespace Garosu
 		virtual bool Initialize(void) = 0;
 		virtual bool Finalize(void) = 0;
 
-		virtual bool SendMessage(BaseEngineMessage*) = 0;
+		virtual bool SendMessage(BaseMessage*) = 0;
 	};
 
 }

@@ -6,24 +6,26 @@ namespace Garosu
 {
 	enum class EngineMessageId
 	{
-		Default
+		Default,
+		SetApplicationStoragePath, // use StringMessage
 	};
 
-	class BaseEngineMessage
+	class BaseMessage
 	{
 	public:
-		BaseEngineMessage()
-			: mMessageId(EngineMessageId::Default)
-		{
-
-		}
-
-		virtual ~BaseEngineMessage(void)
-		{
-
-		}
+		BaseMessage(EngineMessageId msgId)
+			: mMessageId(msgId) {}
 
 		EngineMessageId mMessageId;
+	};
+
+	class StringMessage : public BaseMessage
+	{
+	public:
+		StringMessage(EngineMessageId msgId, const String& str)
+			: BaseMessage(msgId), mStr(str) {}
+
+		const String& mStr;
 	};
 }
 

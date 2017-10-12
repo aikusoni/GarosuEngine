@@ -8,7 +8,8 @@ namespace Garosu
 	class Settings
 	{
 	public:
-		static const String& GetLogPath(void);
+		static void SetAppPath(String);
+		static String GetLogPath(void);
 	};
 
 }

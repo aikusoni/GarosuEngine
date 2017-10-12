@@ -14,7 +14,6 @@ public:
 bool EngineTestWindow::Initialize(void)
 {
 
-
 	return true;
 }
 
@@ -39,7 +38,7 @@ public:
 	void Run(void);
 
 private:
-	Garosu::Engine engine;
+	Garosu::IEngine* engine;
 	EngineTestWindow window;
 };
 
@@ -59,15 +58,23 @@ bool EngineTestApp::Initialize(void)
 	if (!window.Initialize()) return false;
 
 	// initialize engine
-	if (!engine.Initialize()) return false;
+	if (engine != nullptr) return false;
+	engine = MakeGarosuEngine();
+	if (!engine->Initialize()) return false;
 
 	return true;
 }
 
 bool EngineTestApp::Finalize(void)
 {
+	bool ret = false;
 	// finalize engine
-	bool ret = engine.Finalize();
+	if (engine != nullptr)
+	{
+		ret = engine->Finalize();
+		delete engine;
+		engine = nullptr;
+	}
 	if (!ret)
 	{
 		// engine finalize failed

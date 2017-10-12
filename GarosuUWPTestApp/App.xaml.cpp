@@ -22,6 +22,8 @@ using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 
+using namespace Garosu;
+
 /// <summary>
 /// Singleton 응용 프로그램 개체를 초기화합니다. 이것은 실행되는 작성 코드의 첫 번째
 /// 줄이며 따라서 main() 또는 WinMain()과 논리적으로 동일합니다.
@@ -84,7 +86,14 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
         }
 
 		if (engine != nullptr)
+		{
+			Platform::String^ localfolder = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
+			std::wstring wpath(localfolder->Begin());
+			std::string path(wpath.begin(), wpath.end());
+
+			engine->SendMessage(&StringMessage(EngineMessageId::SetApplicationStoragePath, path + "\\"));
 			engine->Initialize();
+		}
     }
     else
     {

@@ -3,11 +3,17 @@
 
 namespace Garosu
 {
+	static String appPath = "";
+	static String logFileName = "garosu.log";
 
-	const String& Settings::GetLogPath(void)
+	void Settings::SetAppPath(String filePath)
 	{
-		const static String logPath = "garosu.log";
-		return logPath;
+		appPath = filePath;
+	}
+
+	String Settings::GetLogPath(void)
+	{
+		return appPath + logFileName;
 	}
 
 }
