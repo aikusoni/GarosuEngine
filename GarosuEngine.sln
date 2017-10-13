@@ -32,6 +32,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuAudio", "RootProjects
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarosuEngineEditor", "TrunkProjects\GarosuEngineEditor\GarosuEngineEditor.csproj", "{A8D60DA0-81F5-43D3-8AB4-F9901502E72A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{EC242D11-6757-40C4-A154-0422FE29DC87} = {EC242D11-6757-40C4-A154-0422FE29DC87}
 		{41AC7B7B-A53E-4586-851D-440197F0CFE3} = {41AC7B7B-A53E-4586-851D-440197F0CFE3}
 	EndProjectSection
 EndProject

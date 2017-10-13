@@ -6,9 +6,5 @@
              xmlns:local="clr-namespace:GarosuEngineEditor"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TextBlock x:Name="testText" FontSize="50">Win32View</TextBlock>
-        <Border>
-        </Border>
-    </Grid>
+    <Border x:Name="win32Border"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 </UserControl>

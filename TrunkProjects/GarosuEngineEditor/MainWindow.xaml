@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GarosuEngineEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <StackPanel Orientation="Horizontal">
-        <local:Win32View />
-    </StackPanel>
+    <Grid Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <local:Win32View Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+    </Grid>
 </Window>
