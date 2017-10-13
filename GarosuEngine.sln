@@ -3,50 +3,50 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngine", "GarosuEngine\GarosuEngine.vcxproj", "{41AC7B7B-A53E-4586-851D-440197F0CFE3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngine", "RootProjects\GarosuEngine\GarosuEngine.vcxproj", "{41AC7B7B-A53E-4586-851D-440197F0CFE3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuGraphics", "GarosuGraphics\GarosuGraphics.vcxproj", "{E78F61D9-9E6B-42AA-A049-A9314B39D4C7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuGraphics", "RootProjects\GarosuGraphics\GarosuGraphics.vcxproj", "{E78F61D9-9E6B-42AA-A049-A9314B39D4C7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuPhysics", "GarosuPhysics\GarosuPhysics.vcxproj", "{4EEE5445-1A40-4458-942B-A711A681778B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuPhysics", "RootProjects\GarosuPhysics\GarosuPhysics.vcxproj", "{4EEE5445-1A40-4458-942B-A711A681778B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuUtils", "GarosuUtils\GarosuUtils.vcxproj", "{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuUtils", "RootProjects\GarosuUtils\GarosuUtils.vcxproj", "{905585FD-C0E8-4FFC-9F7A-8B1107E2279B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuScheduler", "GarosuScheduler\GarosuScheduler.vcxproj", "{ECBE375E-7BE4-41FF-A204-228892BEED58}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuScheduler", "RootProjects\GarosuScheduler\GarosuScheduler.vcxproj", "{ECBE375E-7BE4-41FF-A204-228892BEED58}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngineTestApp", "GarosuEngineTestApp\GarosuEngineTestApp.vcxproj", "{3CCB63AC-A372-41FD-8D9D-A76C0974068C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngineTestApp", "TrunkProjects\GarosuEngineTestApp\GarosuEngineTestApp.vcxproj", "{3CCB63AC-A372-41FD-8D9D-A76C0974068C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuCommon", "GarosuCommon\GarosuCommon.vcxproj", "{5B223E71-9519-4F8B-AD9E-7177EFA64A76}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuCommon", "RootProjects\GarosuCommon\GarosuCommon.vcxproj", "{5B223E71-9519-4F8B-AD9E-7177EFA64A76}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuAudio", "GarosuAudio\GarosuAudio.vcxproj", "{F8281CDF-C3CA-446B-A99D-8CFF62250368}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuAudio", "RootProjects\GarosuAudio\GarosuAudio.vcxproj", "{F8281CDF-C3CA-446B-A99D-8CFF62250368}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B223E71-9519-4F8B-AD9E-7177EFA64A76} = {5B223E71-9519-4F8B-AD9E-7177EFA64A76}
 		{905585FD-C0E8-4FFC-9F7A-8B1107E2279B} = {905585FD-C0E8-4FFC-9F7A-8B1107E2279B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuUWPTestApp", "GarosuUWPTestApp\GarosuUWPTestApp.vcxproj", "{559AF0F4-6F1E-45A1-913A-3FFDCAC5FDB3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuUWPTestApp", "TrunkProjects\GarosuUWPTestApp\GarosuUWPTestApp.vcxproj", "{559AF0F4-6F1E-45A1-913A-3FFDCAC5FDB3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{41AC7B7B-A53E-4586-851D-440197F0CFE3} = {41AC7B7B-A53E-4586-851D-440197F0CFE3}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarosuEngineEditor", "GarosuEngineEditor\GarosuEngineEditor.csproj", "{A8D60DA0-81F5-43D3-8AB4-F9901502E72A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarosuEngineEditor", "TrunkProjects\GarosuEngineEditor\GarosuEngineEditor.csproj", "{A8D60DA0-81F5-43D3-8AB4-F9901502E72A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{41AC7B7B-A53E-4586-851D-440197F0CFE3} = {41AC7B7B-A53E-4586-851D-440197F0CFE3}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EngineProjects", "EngineProjects", "{C7D94DFB-47E4-4291-8989-F7E7517111F1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RootProjects", "RootProjects", "{C7D94DFB-47E4-4291-8989-F7E7517111F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPFProject", "WPFProject", "{92678989-C9DB-44C5-967C-19C725E915E7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuHwndHost", "GarosuHwndHost\GarosuHwndHost.vcxproj", "{EC242D11-6757-40C4-A154-0422FE29DC87}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuHwndHost", "TrunkProjects\GarosuHwndHost\GarosuHwndHost.vcxproj", "{EC242D11-6757-40C4-A154-0422FE29DC87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
