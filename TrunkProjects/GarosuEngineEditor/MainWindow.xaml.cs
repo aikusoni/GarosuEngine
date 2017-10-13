@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using GarosuEngineWrapper;
+
 namespace GarosuEngineEditor
 {
     /// <summary>
@@ -20,9 +22,18 @@ namespace GarosuEngineEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        EngineWrapper engine; 
+
         public MainWindow()
         {
             InitializeComponent();
+            engine = new EngineWrapper();
+            //if (engine != null)
+            //{
+            //    engine.SendMessage(new StringMessage(1, "d:\\"));
+            //    engine.InitializeEngine();
+            //    engine.FinalizeEngine();
+            //}
         }
     }
 }

@@ -54,7 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Win32View.xaml.cs">
+    <Compile Include="CustomControls\Win32View.xaml.cs">
       <DependentUpon>Win32View.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -69,7 +69,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Win32View.xaml">
+    <Page Include="CustomControls\Win32View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -99,6 +99,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\GarosuEngineWrapper\GarosuEngineWrapper.csproj">
+      <Project>{6a05a956-1439-4cf6-95e3-4f3db5255d24}</Project>
+      <Name>GarosuEngineWrapper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

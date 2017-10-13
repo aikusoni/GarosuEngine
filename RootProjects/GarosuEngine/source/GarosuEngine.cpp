@@ -193,3 +193,28 @@ __declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void)
 {
 	return new Garosu::Engine();
 }
+
+__declspec(dllexport) bool DeleteGarosuEngine(Garosu::IEngine* engine)
+{
+	if (engine != nullptr) {
+		delete engine;
+		return true;
+	}
+
+	return false;
+}
+
+__declspec(dllexport) bool Initialize(Garosu::IEngine* engine)
+{
+	return engine->Initialize();
+}
+
+__declspec(dllexport) bool Finalize(Garosu::IEngine* engine)
+{
+	return engine->Finalize();
+}
+
+__declspec(dllexport) bool SendMessage(Garosu::IEngine* engine, Garosu::BaseMessage* message)
+{
+	return engine->SendMessage(message);
+}

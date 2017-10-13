@@ -21,8 +21,3 @@ __declspec(dllexport) void DestroyWin32Window(void* hWnd)
 {
 	DestroyWindow((HWND)hWnd);
 }
-
-__declspec(dllexport) int TestVal(void)
-{
-	return 123;
-}

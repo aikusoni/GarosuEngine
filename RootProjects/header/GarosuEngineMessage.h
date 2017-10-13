@@ -4,7 +4,7 @@
 
 namespace Garosu
 {
-	enum class EngineMessageId
+	enum class EngineMessageId : unsigned int
 	{
 		Default,
 		SetApplicationStoragePath, // use StringMessage
@@ -22,11 +22,20 @@ namespace Garosu
 	class StringMessage : public BaseMessage
 	{
 	public:
-		StringMessage(EngineMessageId msgId, const std::string& str)
+		StringMessage(EngineMessageId msgId, const std::string&& str)
 			: BaseMessage(msgId), mStr(str) {}
 
-		const std::string& mStr;
+		const std::string mStr;
 	};
+}
+
+extern "C"
+{
+	__declspec(dllexport) Garosu::BaseMessage* MakeBaseMessage(Garosu::EngineMessageId);
+
+	__declspec(dllexport) Garosu::StringMessage* MakeStringMessage(Garosu::EngineMessageId, char* charArray);
+
+	__declspec(dllexport) bool DeleteMessage(Garosu::BaseMessage* message);
 }
 
 #endif

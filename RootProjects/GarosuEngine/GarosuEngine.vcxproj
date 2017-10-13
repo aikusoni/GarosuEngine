@@ -212,6 +212,7 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GarosuEngine.cpp" />
+    <ClCompile Include="source\GarosuEngineMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuEngine.h" />
