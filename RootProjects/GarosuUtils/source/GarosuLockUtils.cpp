@@ -3,6 +3,7 @@
 #include "GarosuLockUtils.h"
 
 #include <mutex>
+#include <chrono>
 #include <condition_variable>
 
 namespace Garosu
@@ -116,7 +117,19 @@ namespace Garosu
 		lck.unlock();
 	}
 
-	void Signal::notify(void)
+	void Signal::wait_for(u32 microSeconds)
+	{
+		auto lck = std::unique_lock<std::mutex>(pImpl->mt);
+		pImpl->cv.wait_for(lck, std::chrono::microseconds(microSeconds));
+		lck.unlock();
+	}
+
+	void Signal::notify_one(void)
+	{
+		pImpl->cv.notify_one();
+	}
+
+	void Signal::notify_all(void)
 	{
 		pImpl->cv.notify_all();
 	}

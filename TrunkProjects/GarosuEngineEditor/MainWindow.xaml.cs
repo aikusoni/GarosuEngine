@@ -22,18 +22,9 @@ namespace GarosuEngineEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        EngineWrapper engine; 
-
         public MainWindow()
         {
             InitializeComponent();
-            engine = new EngineWrapper();
-            //if (engine != null)
-            //{
-            //    engine.SendMessage(new StringMessage(1, "d:\\"));
-            //    engine.InitializeEngine();
-            //    engine.FinalizeEngine();
-            //}
         }
     }
 }

@@ -46,7 +46,9 @@ namespace Garosu
 		virtual ~Signal(void);
 
 		void wait(void);
-		void notify(void);
+		void wait_for(u32 microSeconds);
+		void notify_one(void);
+		void notify_all(void);
 
 	private:
 		class impl;

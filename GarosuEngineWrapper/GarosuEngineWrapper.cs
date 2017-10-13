@@ -111,7 +111,10 @@ namespace GarosuEngineWrapper
         ~EngineWrapper()
         {
             if (engine != null)
+            {
+                FinalizeEngine();
                 DeleteGarosuEngine(engine);
+            }
         }
 
         public bool InitializeEngine()

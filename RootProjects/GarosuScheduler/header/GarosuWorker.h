@@ -10,6 +10,7 @@ namespace Garosu
 	public:
 		// GetTask() should be thread-safe.
 		virtual BaseTask* GetTask(void) = 0;
+		virtual bool WaitForJob(void) = 0;
 	};
 
 	class WorkerGroup final

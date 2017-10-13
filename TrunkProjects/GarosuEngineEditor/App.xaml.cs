@@ -13,5 +13,13 @@ namespace GarosuEngineEditor
     /// </summary>
     public partial class App : Application
     {
+        GarosuEngineWrapper.EngineWrapper engine;
+
+        App()
+        {
+            engine = new GarosuEngineWrapper.EngineWrapper();
+            engine.SendMessage(new GarosuEngineWrapper.StringMessage(1, "d:\\"));
+            engine.InitializeEngine();
+        }
     }
 }

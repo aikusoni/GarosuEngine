@@ -35,7 +35,6 @@ namespace Garosu
 	private:
 		u32 mTryCnt = 0;
 		ITaskProvider* mTaskProvider;
-		Locker mLocker;
 	};
 
 	WorkerThread::WorkerThread(ITaskProvider* taskProvider)
@@ -58,7 +57,7 @@ namespace Garosu
 			if (mTryCnt > 10000u)
 			{
 				mTryCnt = 0;
-				ThreadUtils::SleepFor(1000u); // 1 ms
+				mTaskProvider->WaitForJob();
 			}
 			return true;
 		}

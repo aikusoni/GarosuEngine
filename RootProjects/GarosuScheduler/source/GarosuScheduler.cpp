@@ -7,6 +7,7 @@
 #include "GarosuWorker.h"
 
 #include <GarosuLog.h>
+#include <GarosuLockUtils.h>
 
 #include <unordered_map>
 #include <concurrent_queue.h>
@@ -98,9 +99,12 @@ namespace Garosu
 
 	public:
 		virtual BaseTask* GetTask(void);
+		virtual bool WaitForJob(void);
+
 		virtual bool Handover(TaskSource, BaseTask*);
 
 		TaskQueue mQueue;
+		Signal mSignal;
 	};
 
 	BaseTask* FIFOTaskManager::GetTask(void)
@@ -110,10 +114,17 @@ namespace Garosu
 		return nullptr;
 	}
 
+	bool FIFOTaskManager::WaitForJob(void)
+	{
+		mSignal.wait_for(1000000u); // 1000 * 1000 micro seconds (1sec)
+		return true;
+	}
+
 	bool FIFOTaskManager::Handover(TaskSource taskSource, BaseTask* newTask)
 	{
 		// FIFOTaskManager does not consider taskSource;
 		mQueue.push(newTask);
+		mSignal.notify_one();
 
 		return true;
 	}
@@ -129,6 +140,8 @@ namespace Garosu
 
 	public:
 		virtual BaseTask* GetTask(void);
+		virtual bool WaitForJob(void);
+
 		virtual bool Handover(TaskSource, BaseTask*);
 
 		std::unordered_map<TaskSource, TaskQueue> mQueues;
@@ -140,6 +153,11 @@ namespace Garosu
 		// TODO
 
 		return nullptr;
+	}
+
+	bool BalancingTaskManager::WaitForJob(void)
+	{
+		return true;
 	}
 
 	bool BalancingTaskManager::Handover(TaskSource taskSource, BaseTask* newTask)
