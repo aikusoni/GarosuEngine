@@ -102,7 +102,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(SolutionDir)RootProjects\DLLs\*.dll $(OutDir)
-copy /Y $(SolutionDir)TrunkProjects\DLLs\*.dll $(OutDir)</PostBuildEvent>
+    <PostBuildEvent>copy /Y $(SolutionDir)RootExports\DLLs\*.dll $(ProjectDir)$(OutDir)
+copy /Y $(SolutionDir)TrunkProjects\DLLs\*.dll $(ProjectDir)$(OutDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>
