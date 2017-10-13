@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBlock FontSize="50">Win32View</TextBlock>
+        <TextBlock x:Name="testText" FontSize="50">Win32View</TextBlock>
         <Border>
         </Border>
     </Grid>

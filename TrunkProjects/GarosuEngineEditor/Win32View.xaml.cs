@@ -18,6 +18,8 @@ namespace GarosuEngineEditor
         [DllImport("GarosuHwndHost.dll", EntryPoint = "DestroyWin32Window", CallingConvention = CallingConvention.Cdecl)]
         private static extern void DestroyWin32Window();
 
+        [DllImport("GarosuHwndHost.dll", EntryPoint = "TestVal", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TestVal();
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
         {
@@ -33,6 +35,11 @@ namespace GarosuEngineEditor
         {
             return base.WndProc(hwnd, msg, wParam, lParam, ref handled);
         }
+
+        public static int GetTestVal()
+        {
+            return TestVal();
+        }
     }
 
     public partial class Win32View : UserControl
@@ -40,6 +47,12 @@ namespace GarosuEngineEditor
         public Win32View()
         {
             InitializeComponent();
+            testText.Text = Win32ViewHwndHost.GetTestVal().ToString();
+        }
+
+        public override void BeginInit()
+        {
+            base.BeginInit();
         }
     }
 }

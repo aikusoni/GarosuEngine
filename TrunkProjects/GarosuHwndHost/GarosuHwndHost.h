@@ -6,6 +6,8 @@ extern "C" {
 	__declspec(dllexport) HWND CreateWin32Window(HINSTANCE hInstance, HWND parentHwnd, int width, int height);
 
 	__declspec(dllexport) void DestroyWin32Window(void);
+
+	__declspec(dllexport) int TestVal(void);
 }
 
 #endif
