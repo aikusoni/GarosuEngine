@@ -20,7 +20,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="header\GarosuAudio.cpp">
+    <ClCompile Include="source\GarosuAudio.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
