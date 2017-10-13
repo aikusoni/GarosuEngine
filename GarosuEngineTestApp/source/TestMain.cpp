@@ -1,5 +1,4 @@
 #include <GarosuTypedef.h>
-
 #include <GarosuEngine.h>
 
 #include <Windows.h>
