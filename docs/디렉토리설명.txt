@@ -1,0 +1,11 @@
+LandProjects
+: 엔진 핵심 기능과 연관 없는 부가 기능
+
+RootProjects
+: 엔진 핵심 기능
+
+RootExports
+: RootProjects의 출력파일
+
+TrunkProjects
+: 엔진 에디터 같은 엔진 부산물(게임)을 편집하기 위한 도구 모음
