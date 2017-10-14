@@ -69,6 +69,17 @@ namespace Garosu
 				STRING = 1 << 4,
 				CATBOX = 1 << 5
 			} type;
+
+		private:
+			void Clear(void);
+
+			void SetVal(void);
+			void SetVal(int i);
+			void SetVal(float f);
+			void SetVal(bool b);
+			void SetVal(std::string& str);
+			void SetVal(std::vector<Cat>& arr);
+			void SetVal(CatBox& box);
 		};
 
 	}
