@@ -1,4 +1,5 @@
-#include "GarosuTypedef.h"
+#include <GarosuTypedef.h>
+
 #include "GarosuSettings.h"
 
 namespace Garosu

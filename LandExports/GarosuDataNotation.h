@@ -80,6 +80,7 @@ namespace Garosu
 			void SetVal(std::string& str);
 			void SetVal(std::vector<Cat>& arr);
 			void SetVal(CatBox& box);
+			void SetVal(const Cat& cat);
 		};
 
 	}

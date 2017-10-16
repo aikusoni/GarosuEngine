@@ -14,7 +14,7 @@ namespace Garosu
 	{
 		void TestFunc(char* fncName)
 		{
-			cout << fncName << endl;
+			//cout << fncName << endl;
 		}
 
 		Cat::~Cat(void)
@@ -26,109 +26,106 @@ namespace Garosu
 		Cat::Cat(void)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal();
 		}
 		Cat::Cat(int i)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal(i);
 		}
 		Cat::Cat(float f)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal(f);
 		}
 		Cat::Cat(bool b)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal(b);
 		}
 		Cat::Cat(std::string& str)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal(str);
 		}
 		Cat::Cat(std::vector<Cat>& arr)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal(arr);
 		}
 		Cat::Cat(CatBox& box)
 		{
 			TestFunc(__FUNCSIG__);
+			Reset();
 			SetVal(box);
 		}
 		Cat::Cat(const Cat& rhs)
 		{
 			TestFunc(__FUNCSIG__);
-			if (type != rhs.type)
-				Clear();
-			type = rhs.type;
-			switch (type)
-			{
-			case CatType::EMPTY:
-				SetVal();
-				break;
-
-			case CatType::INTEGER:
-				SetVal(rhs.value.i);
-				break;
-
-			case CatType::FLOAT:
-				SetVal(rhs.value.f);
-				break;
-
-			case CatType::BOOL:
-				SetVal(rhs.value.b);
-				break;
-
-			case CatType::STRING:
-				SetVal(*rhs.value.s);
-				break;
-
-			case CatType::ARRAY:
-				SetVal(*rhs.value.a);
-				break;
-
-			case CatType::CATBOX:
-				SetVal(*rhs.value.c);
-				break;
-			}
+			Reset();
+			SetVal(rhs);
 		}
 
-		Cat& Cat::operator=(int n)
+		Cat& Cat::operator=(int i)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != CatType::INTEGER)
+				Clear();
+			SetVal(i);
 			return *this;
 		}
 		Cat& Cat::operator=(float f)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != CatType::FLOAT)
+				Clear();
+			SetVal(f);
 			return *this;
 		}
 		Cat& Cat::operator=(bool b)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != CatType::BOOL)
+				Clear();
+			SetVal(b);
 			return *this;
 		}
 		Cat& Cat::operator=(std::string& str)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != CatType::STRING)
+				Clear();
+			SetVal(str);
 			return *this;
 		}
 		Cat& Cat::operator=(std::vector<Cat>& arr)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != CatType::ARRAY)
+				Clear();
+			SetVal(arr);
 			return *this;
 		}
 		Cat& Cat::operator=(CatBox& c)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != CatType::CATBOX)
+				Clear();
+			SetVal(c);
 			return *this;
 		}
 		Cat& Cat::operator=(const Cat& rhs)
 		{
 			TestFunc(__FUNCSIG__);
+			if (type != rhs.type)
+				Clear();
+			SetVal(rhs);
 			return *this;
 		}
 
@@ -182,11 +179,61 @@ namespace Garosu
 			TestFunc(__FUNCSIG__);
 		}
 
+		std::ostream& operator<<(std::ostream& os, const Cat& cat)
+		{
+			switch (cat.type)
+			{
+			case Cat::CatType::EMPTY:
+				os << "{}";
+				break;
+
+			case Cat::CatType::INTEGER:
+				os << cat.value.i;
+				break;
+
+			case Cat::CatType::FLOAT:
+				os << cat.value.f;
+				break;
+
+			case Cat::CatType::BOOL:
+				os << cat.value.b;
+				break;
+
+			case Cat::CatType::STRING:
+				os << *cat.value.s;
+				break;
+
+			case Cat::CatType::ARRAY:
+			{
+				auto& arr = *cat.value.a;
+				os << "[";
+				for (size_t idx = 0; idx < arr.size(); ++idx)
+				{
+					os << arr[idx];
+					if (idx, arr.size() - 1) os << ",";
+				}
+				os << "]";
+			}
+			break;
+
+			case Cat::CatType::CATBOX:
+				// TODO
+				break;
+			}
+			return os;
+		}
+
+		void Cat::Reset(void)
+		{
+			memset(&value, 0x00, sizeof(value));
+		}
+
 		void Cat::Clear(void)
 		{
 			switch (type)
 			{
 			case CatType::EMPTY:
+				memset(&value, 0x00, sizeof(value));
 				break;
 
 			case CatType::INTEGER:
@@ -264,6 +311,39 @@ namespace Garosu
 			type = CatType::CATBOX;
 			if (value.c == nullptr) value.c = new CatBox;
 			*value.c = box;
+		}
+		void Cat::SetVal(const Cat& cat)
+		{
+			switch (cat.type)
+			{
+			case CatType::EMPTY:
+				SetVal();
+				break;
+
+			case CatType::INTEGER:
+				SetVal(cat.value.i);
+				break;
+
+			case CatType::FLOAT:
+				SetVal(cat.value.f);
+				break;
+
+			case CatType::BOOL:
+				SetVal(cat.value.b);
+				break;
+
+			case CatType::STRING:
+				SetVal(*cat.value.s);
+				break;
+
+			case CatType::ARRAY:
+				SetVal(*cat.value.a);
+				break;
+
+			case CatType::CATBOX:
+				SetVal(*cat.value.c);
+				break;
+			}
 		}
 
 	}

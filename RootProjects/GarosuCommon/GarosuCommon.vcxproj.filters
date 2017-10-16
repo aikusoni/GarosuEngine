@@ -18,9 +18,6 @@
     <ClInclude Include="header\GarosuTask.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="header\GarosuTypedef.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="header\GarosuIScheduler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
