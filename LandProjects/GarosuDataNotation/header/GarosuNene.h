@@ -113,6 +113,50 @@ namespace Garosu
 			Set(v);
 		}
 
+		friend std::ostream& operator<<(std::ostream& os, const Nene& nene)
+		{
+			switch (nene.type)
+			{
+			case Nene::NeneType::EMPTY:
+				os << "{}";
+				break;
+
+			case Nene::NeneType::INTEGER:
+				os << nene.value.i_value;
+				break;
+
+			case Nene::NeneType::FLOAT:
+				os << nene.value.f_value;
+				break;
+
+			case Nene::NeneType::BOOLEAN:
+				os << nene.value.b_value;
+				break;
+
+			case Nene::NeneType::STRING:
+				os << "\"" << *nene.value.s_pointer << "\"";
+				break;
+
+			case Nene::NeneType::VECTOR:
+			{
+				auto& vec = *nene.value.v_pointer;
+				os << "[";
+				for (size_t idx = 0; idx < vec.size(); ++idx)
+				{
+					os << vec[idx];
+					if (idx, vec.size() - 1) os << ",";
+				}
+				os << "]";
+			}
+			break;
+
+			case Nene::NeneType::MAP:
+				// TODO
+				break;
+			}
+			return os;
+		}
+
 	private:
 		void Reset(void)
 		{
