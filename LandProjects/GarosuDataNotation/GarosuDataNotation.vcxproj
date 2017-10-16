@@ -159,11 +159,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="header\GarosuDataNotation.h" />
+    <ClInclude Include="header\GarosuNene.h" />
     <ClInclude Include="header\GarosuTypedef.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\GarosuDataNotation.cpp" />
+    <ClCompile Include="source\GarosuNene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
