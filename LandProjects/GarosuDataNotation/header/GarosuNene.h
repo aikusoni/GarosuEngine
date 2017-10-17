@@ -141,18 +141,27 @@ namespace Garosu
 			{
 				auto& vec = *nene.value.v_pointer;
 				os << "[";
-				for (size_t idx = 0; idx < vec.size(); ++idx)
+				for (auto& it = vec.begin(); it != vec.end();)
 				{
-					os << vec[idx];
-					if (idx, vec.size() - 1) os << ",";
+					os << *it;
+					if (++it < vec.end()) os << ",";
 				}
 				os << "]";
 			}
 			break;
 
 			case Nene::NeneType::MAP:
-				// TODO
-				break;
+			{
+				auto& map = *nene.value.m_pointer;
+				os << "{";
+				for (auto& it = map.begin(); it != map.end();)
+				{
+					os << "\"" << (*it).first << "\":" << (*it).second;
+					if (++it != map.end()) os << ",";
+				}
+				os << "}";
+			}
+			break;
 			}
 			return os;
 		}
