@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <sstream>
 
 #include <ostream>
 #include <exception>
@@ -279,6 +280,21 @@ namespace Garosu
 			return false;
 		}
 
+		size_t size(void)
+		{
+			switch (type)
+			{
+			case NeneType::EMPTY: return (size_t)1; break;
+			case NeneType::INTEGER: return (size_t)1;  break;
+			case NeneType::FLOAT: return (size_t)1;  break;
+			case NeneType::BOOLEAN: return (size_t)1;  break;
+			case NeneType::STRING: return (*value.s_pointer).size();  break;
+			case NeneType::VECTOR: return (*value.v_pointer).size();  break;
+			case NeneType::MAP: return (*value.m_pointer).size();  break;
+			}
+			return (size_t)0;
+		}
+
 		friend std::ostream& operator<<(std::ostream& os, const Nene& nene)
 		{
 			switch (nene.type)
@@ -300,8 +316,17 @@ namespace Garosu
 				break;
 
 			case Nene::NeneType::STRING:
-				os << "\"" << *nene.value.s_pointer << "\"";
-				break;
+			{
+				os << "\"";
+				if (Nene::SafeString::IsUnsafe(*nene.value.s_pointer))
+				{
+					os << Nene::SafeString::GetSafe(*nene.value.s_pointer);
+				}
+				else
+					os << *nene.value.s_pointer;
+				os << "\"";
+			}
+			break;
 
 			case Nene::NeneType::VECTOR:
 			{
@@ -343,24 +368,12 @@ namespace Garosu
 			switch (rhs.type)
 			{
 			case NeneType::EMPTY:
-			case NeneType::INTEGER:
-				Set(rhs.value.i_value);
-				break;
-			case NeneType::FLOAT:
-				Set(rhs.value.f_value);
-				break;
-			case NeneType::BOOLEAN:
-				Set(rhs.value.b_value);
-				break;
-			case NeneType::STRING:
-				Set(*rhs.value.s_pointer);
-				break;
-			case NeneType::VECTOR:
-				Set(*rhs.value.v_pointer);
-				break;
-			case NeneType::MAP:
-				Set(*rhs.value.m_pointer);
-				break;
+			case NeneType::INTEGER:	Set(rhs.value.i_value);	break;
+			case NeneType::FLOAT: Set(rhs.value.f_value); break;
+			case NeneType::BOOLEAN: Set(rhs.value.b_value); break;
+			case NeneType::STRING: Set(*rhs.value.s_pointer); break;
+			case NeneType::VECTOR: Set(*rhs.value.v_pointer); break;
+			case NeneType::MAP: Set(*rhs.value.m_pointer); break;
 			}
 		}
 		template <typename T>
@@ -386,11 +399,6 @@ namespace Garosu
 			(*value.v_pointer).push_back(nene);
 		}
 
-		void AddToMap(const std::string& key, const Nene& nene)
-		{
-
-		}
-
 		void Clear(void)
 		{
 			switch (type)
@@ -413,7 +421,38 @@ namespace Garosu
 			}
 			memset(&value, 0x00, sizeof(value));
 		}
+
+		class SafeString
+		{
+		private:
+			static const std::unordered_map<char, STR> UnsafeCharacters;
+
+		public:
+			inline static bool IsUnsafe(const STR& str)
+			{
+				int cnt = 0;
+				for (auto it = str.begin(); it != str.end(); ++it)
+				{
+					if (UnsafeCharacters.find(*it) != UnsafeCharacters.end())
+						cnt++;
+				}
+				return cnt > 0 ? true : false;
+			}
+			inline static STR GetSafe(const STR& str)
+			{
+				std::stringstream ss;
+				for (auto it = str.begin(); it != str.end(); ++it)
+				{
+					auto& us = UnsafeCharacters.find(*it);
+					if (us != UnsafeCharacters.end()) ss << (*us).second;
+					else ss << *it;
+				}
+				return ss.str();
+			}
+		};
 	};
+
+	const std::unordered_map<char, std::string> Nene::SafeString::UnsafeCharacters = { { '\"', "\\\"" } };
 
 }
 
