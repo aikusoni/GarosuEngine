@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include <ostream>
+#include <istream>
 #include <exception>
 
 namespace Garosu
@@ -453,6 +454,20 @@ namespace Garosu
 	};
 
 	const std::unordered_map<char, std::string> Nene::SafeString::UnsafeCharacters = { { '\"', "\\\"" } };
+
+	// nene file TODO
+	class Nenechi
+	{
+	public:
+		bool MakeNenechis(Nene& nene, std::istream is)
+		{
+			while (is)
+			{
+				
+			}
+			return true;
+		}
+	};
 
 }
 
