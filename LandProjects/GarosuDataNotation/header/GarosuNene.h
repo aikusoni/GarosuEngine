@@ -48,21 +48,21 @@ namespace Garosu
 
 		template <typename T> struct pure_type : remove_const<typename remove_reference<T>::type> {};
 
-		template <typename T> struct is_supported : set_false { private: is_supported(); };
+		template <typename T, int N = 0> struct is_supported : set_false { private: is_supported(); };
 		template <> struct is_supported<int> : set_true {};
 		template <> struct is_supported<float> : set_true {};
 		template <> struct is_supported<bool> : set_true {};
-		template <> struct is_supported<char*> : set_true {};
+		template <int N> struct is_supported<char[N]> : set_true {};
 		template <> struct is_supported<STR> : set_true {};
 		template <> struct is_supported<VEC> : set_true {};
 		template <> struct is_supported<MAP> : set_true {};
 		// TODO 
 
-		template <typename T> struct nene_type { private: nene_type(); };
+		template <typename T, int N = 0> struct nene_type { private: nene_type(); };
 		template <> struct nene_type<int> { const static NeneType value = NeneType::INTEGER; using type = int; static void set(NeneValue& target, const int& v) { target.i_value = v; } };
 		template <> struct nene_type<float> { const static NeneType value = NeneType::FLOAT; using type = float; static void set(NeneValue& target, const float& v) { target.f_value = v; } };
 		template <> struct nene_type<bool> { const static NeneType value = NeneType::BOOLEAN; using type = bool; static void set(NeneValue& target, const bool& v) { target.b_value = v; } };
-		template <> struct nene_type<char*> { const static NeneType value = NeneType::STRING; using type = STR; static void set(NeneValue& target, const char*& v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
+		template <int N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; using type = STR; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
 		template <> struct nene_type<pure_type<STR>::type> { const static NeneType value = NeneType::STRING; using type = STR; static void set(NeneValue& target, const STR& v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
 		template <> struct nene_type<pure_type<VEC>::type> { const static NeneType value = NeneType::VECTOR; using type = VEC; static void set(NeneValue& target, const VEC& v) { if (target.v_pointer == nullptr) target.v_pointer = new VEC; *target.v_pointer = v; } };
 		template <> struct nene_type<pure_type<MAP>::type> { const static NeneType value = NeneType::MAP; using type = MAP; static void set(NeneValue& target, const MAP& v) { if (target.m_pointer == nullptr) target.m_pointer = new MAP; *target.m_pointer = v; } };
