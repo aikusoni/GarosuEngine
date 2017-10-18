@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\GarosuNene.h">
+    <ClInclude Include="header\GarosuTypedef.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

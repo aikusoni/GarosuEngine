@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
 #include <functional>
 
 #define _G_COUNT_OF(Arr) (sizeof(Arr) / sizeof(Arr[0]))  

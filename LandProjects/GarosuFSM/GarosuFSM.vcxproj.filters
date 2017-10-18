@@ -15,7 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\GarosuNene.h">
+    <ClCompile Include="source\GarosuFSM.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="header\GarosuFSM.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
