@@ -2,12 +2,16 @@
 #ifndef __GAROSU_NENE_H__
 #define __GAROSU_NENE_H__
 
+#include "GarosuTypedef.h"
+
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
+#include <sstream>
 
-#include <ostream>
 #include <exception>
+
+#include <iostream>
 
 namespace Garosu
 {
@@ -50,20 +54,20 @@ namespace Garosu
 		}
 	} nene_has_no_key;
 
-#define ASSERT_TYPE_NOT_SUPPORTED(T) static_assert(is_supported<T>::value, "This type is not supported")
-#define ASSERT_TYPE_NOT_MAP_KEY(T) static_assert(is_index_key<T>::value, "This type is not map key");
 	class Nene
 	{
 	public:
 		using INT = int;	// integer
-		using FLT = float;	// float
+		using FLT = double;	// floating
 		using BLN = bool;	// boolean
 
 		using STR = std::string;
 		using VEC = std::vector<Nene>;
-		using MAP = std::unordered_map<std::string, Nene>;
+		using MAP = std::map<std::string, Nene>;
 
-		using INIT_LIST = std::initializer_list<Nene>;
+		using INIT_LIST_NENE = std::initializer_list<Nene>;
+		using PAIR = std::pair<std::string, Nene>;
+		using INIT_LIST_PAIR = std::initializer_list<PAIR>;
 
 	private:
 		union NeneValue
@@ -82,7 +86,7 @@ namespace Garosu
 		{
 			EMPTY,
 			INTEGER,
-			FLOAT,
+			FLOATING,
 			BOOLEAN,
 			STRING,
 			VECTOR,
@@ -117,7 +121,7 @@ namespace Garosu
 
 		template <typename T, int N = 0> struct nene_type { private: nene_type(); };
 		template <> struct nene_type<INT> { const static NeneType value = NeneType::INTEGER; static void set(NeneValue& target, const INT& v) { target.i_value = v; } };
-		template <> struct nene_type<FLT> { const static NeneType value = NeneType::FLOAT; static void set(NeneValue& target, const FLT& v) { target.f_value = v; } };
+		template <> struct nene_type<FLT> { const static NeneType value = NeneType::FLOATING; static void set(NeneValue& target, const FLT& v) { target.f_value = v; } };
 		template <> struct nene_type<BLN> { const static NeneType value = NeneType::BOOLEAN; static void set(NeneValue& target, const BLN& v) { target.b_value = v; } };
 		template <> struct nene_type<const char*> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
 		template <int N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
@@ -130,6 +134,9 @@ namespace Garosu
 		template <> struct is_index_key<const char*> : set_true {};
 		template <int N> struct is_index_key<char[N]> : set_true {};
 		template <> struct is_index_key<STR> : set_true {};
+
+#define ASSERT_TYPE_NOT_SUPPORTED(T) static_assert(is_supported<T>::value, "The type is not supported")
+#define ASSERT_TYPE_NOT_MAP_KEY(T) static_assert(is_index_key<T>::value, "The type is not map key")
 
 	public:
 		virtual ~Nene(void)
@@ -151,15 +158,25 @@ namespace Garosu
 			Reset();
 			Set(rhs);
 		}
-		Nene(const INIT_LIST& neneList)
+		Nene(const INIT_LIST_NENE& neneList)
 		{
 			Reset();
 			Set(VEC(neneList));
 		}
-		Nene(const INIT_LIST&& neneList)
+		Nene(const INIT_LIST_NENE&& neneList)
 		{
 			Reset();
 			Set(VEC(neneList));
+		}
+		Nene(const INIT_LIST_PAIR& pairList)
+		{
+			Reset();
+			Set(MAP(pairList.begin(), pairList.end()));
+		}
+		Nene(const INIT_LIST_PAIR&& pairList)
+		{
+			Reset();
+			Set(MAP(pairList.begin(), pairList.end()));
 		}
 		template <typename T>
 		Nene(const T& v) {
@@ -239,6 +256,38 @@ namespace Garosu
 		}
 
 		template <typename TStr>
+		bool HasKey(const TStr& key)
+		{
+			ASSERT_TYPE_NOT_MAP_KEY(TStr);
+			if (type != NeneType::MAP)
+				throw nene_type_mismatch;
+			try {
+				return (*value.m_pointer)[key];
+			}
+			catch (std::out_of_range)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		template <typename TStr>
+		bool HasKey(const TStr&& key)
+		{
+			ASSERT_TYPE_NOT_MAP_KEY(TStr);
+			if (type != NeneType::MAP)
+				throw nene_type_mismatch;
+			try {
+				return (*value.m_pointer)[key];
+			}
+			catch (std::out_of_range)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		template <typename TStr>
 		Nene& GetMap(const TStr& key)
 		{
 			ASSERT_TYPE_NOT_MAP_KEY(TStr);
@@ -279,31 +328,68 @@ namespace Garosu
 			return false;
 		}
 
-		friend std::ostream& operator<<(std::ostream& os, const Nene& nene)
+		size_t size(void)
+		{
+			switch (type)
+			{
+			case NeneType::EMPTY: return (size_t)1; break;
+			case NeneType::INTEGER: return (size_t)1;  break;
+			case NeneType::FLOATING: return (size_t)1;  break;
+			case NeneType::BOOLEAN: return (size_t)1;  break;
+			case NeneType::STRING: return (*value.s_pointer).size();  break;
+			case NeneType::VECTOR: return (*value.v_pointer).size();  break;
+			case NeneType::MAP: return (*value.m_pointer).size();  break;
+			}
+			return (size_t)0;
+		}
+
+		bool Parse(std::istream& file)
+		{
+			char buf[256];
+			Clear();
+
+			while (!file.eof())
+			{
+				file.get(buf, _G_COUNT_OF(buf));
+			}
+
+			return true;
+		}
+
+		friend std::ostream& operator<<(std::ostream& os, const Garosu::Nene& nene)
 		{
 			switch (nene.type)
 			{
-			case Nene::NeneType::EMPTY:
+			case Garosu::Nene::NeneType::EMPTY:
 				os << "{}";
 				break;
 
-			case Nene::NeneType::INTEGER:
+			case Garosu::Nene::NeneType::INTEGER:
 				os << nene.value.i_value;
 				break;
 
-			case Nene::NeneType::FLOAT:
+			case Garosu::Nene::NeneType::FLOATING:
 				os << nene.value.f_value;
 				break;
 
-			case Nene::NeneType::BOOLEAN:
+			case Garosu::Nene::NeneType::BOOLEAN:
 				os << nene.value.b_value;
 				break;
 
-			case Nene::NeneType::STRING:
-				os << "\"" << *nene.value.s_pointer << "\"";
-				break;
+			case Garosu::Nene::NeneType::STRING:
+			{
+				os << "\"";
+				if (Garosu::Nene::SafeString::IsUnsafe(*nene.value.s_pointer))
+				{
+					os << Garosu::Nene::SafeString::GetSafe(*nene.value.s_pointer);
+				}
+				else
+					os << *nene.value.s_pointer;
+				os << "\"";
+			}
+			break;
 
-			case Nene::NeneType::VECTOR:
+			case Garosu::Nene::NeneType::VECTOR:
 			{
 				auto& vec = *nene.value.v_pointer;
 				os << "[";
@@ -316,7 +402,7 @@ namespace Garosu
 			}
 			break;
 
-			case Nene::NeneType::MAP:
+			case Garosu::Nene::NeneType::MAP:
 			{
 				auto& map = *nene.value.m_pointer;
 				os << "{";
@@ -338,29 +424,21 @@ namespace Garosu
 			memset(&value, 0x00, sizeof(value));
 		}
 
+		void Set(void)
+		{
+			type = NeneType::EMPTY;
+		}
 		void Set(const Nene& rhs)
 		{
 			switch (rhs.type)
 			{
-			case NeneType::EMPTY:
-			case NeneType::INTEGER:
-				Set(rhs.value.i_value);
-				break;
-			case NeneType::FLOAT:
-				Set(rhs.value.f_value);
-				break;
-			case NeneType::BOOLEAN:
-				Set(rhs.value.b_value);
-				break;
-			case NeneType::STRING:
-				Set(*rhs.value.s_pointer);
-				break;
-			case NeneType::VECTOR:
-				Set(*rhs.value.v_pointer);
-				break;
-			case NeneType::MAP:
-				Set(*rhs.value.m_pointer);
-				break;
+			case NeneType::EMPTY: Set(); break;
+			case NeneType::INTEGER:	Set(rhs.value.i_value);	break;
+			case NeneType::FLOATING: Set(rhs.value.f_value); break;
+			case NeneType::BOOLEAN: Set(rhs.value.b_value); break;
+			case NeneType::STRING: Set(*rhs.value.s_pointer); break;
+			case NeneType::VECTOR: Set(*rhs.value.v_pointer); break;
+			case NeneType::MAP: Set(*rhs.value.m_pointer); break;
 			}
 		}
 		template <typename T>
@@ -383,12 +461,7 @@ namespace Garosu
 				if (value.v_pointer == nullptr) value.v_pointer = new VEC;
 				if (beforeNene.type != NeneType::EMPTY) (*value.v_pointer).push_back(beforeNene);
 			}
-			(*value.v_pointer).push_back(nene);
-		}
-
-		void AddToMap(const std::string& key, const Nene& nene)
-		{
-
+			(*value.v_pointer).emplace_back(nene);
 		}
 
 		void Clear(void)
@@ -397,7 +470,7 @@ namespace Garosu
 			{
 			case NeneType::EMPTY:
 			case NeneType::INTEGER:
-			case NeneType::FLOAT:
+			case NeneType::FLOATING:
 			case NeneType::BOOLEAN:
 				break;
 
@@ -412,62 +485,87 @@ namespace Garosu
 				break;
 			}
 			memset(&value, 0x00, sizeof(value));
+			// type = NeneType::EMPTY;
+		}
+	public:
+		class SafeString
+		{
+			using STR = Nene::STR;
+		private:
+			static const std::map<char, STR> UnsafeCharacters;
+
+		public:
+			inline static bool IsUnsafe(const STR& str)
+			{
+				int cnt = 0;
+				for (auto it = str.begin(); it != str.end(); ++it)
+				{
+					if (UnsafeCharacters.find(*it) != UnsafeCharacters.end())
+						cnt++;
+				}
+				return cnt > 0 ? true : false;
+			}
+			inline static STR GetSafe(const STR& str)
+			{
+				std::stringstream ss;
+				for (auto it = str.begin(); it != str.end(); ++it)
+				{
+					auto& us = UnsafeCharacters.find(*it);
+					if (us != UnsafeCharacters.end()) ss << (*us).second;
+					else ss << *it;
+				}
+				return ss.str();
+			}
+		};
+	};
+
+	class Token
+	{
+	public:
+		enum class TokenType
+		{
+			NONE,	//
+		BEGIN_MAP,	// {
+		END_MAP,	// }
+		BEGIN_ARRAY,	// [
+		END_ARRAY,	// ]
+		COMMA,	// ,
+		COLON,	// :
+		STRING,	// "some string"
+		INTEGER, // 12345
+		FLOATING, // 1.414
+		BOOLEAN, // true, false
+		} type = TokenType::NONE;
+	};
+
+	class Parser
+	{
+	public:
+		static bool parse(Nene& target, std::istream& is)
+		{
+			target = {}; // clear
+
+			while (is)
+			{
+				auto token = GetToken(is);
+				switch (token.type)
+				{
+				case Token::TokenType::BEGIN_MAP:
+					break;
+				}
+			}
+
+			return true;
+		}
+
+		static Token GetToken(std::istream& is)
+		{
+			return Token();
 		}
 	};
 
+	const std::map<char, std::string> Nene::SafeString::UnsafeCharacters = { { '\"', "\\\"" } };
+
 }
 
-#endif#pragma once
-#ifndef __GAROSU_TYPEDEF_H__
-#define __GAROSU_TYPEDEF_H__
-
-#include <cstdint>
-
-#include <memory>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <functional>
-
-namespace Garosu
-{
-
-	using i8 = int8_t;
-	using i16 = int16_t;
-	using i32 = int32_t;
-	using i64 = int64_t;
-	
-	using u8 = uint8_t;
-	using u16 = uint16_t;
-	using u32 = uint32_t;
-	using u64 = uint64_t;
-
-	using f32 = float;
-	using f64 = double;
-
-	using String = std::string;
-	using WString = std::wstring;
-
-	using StringStream = std::stringstream;
-	using WStringStream = std::wstringstream;
-
-	template <typename T>
-	using uptr = std::unique_ptr<T>;
-
-	template <typename T, typename... Args>
-	inline uptr<T> mk_uptr(Args&&... args)
-	{
-		return std::make_unique<T>(args...);
-	}
-
-	template <typename T>
-	using shptr = std::shared_ptr<T>;
-
-	template <typename T, typename... Args>
-	inline shptr<T> mk_shptr(Args&&... args)
-	{
-		return std::make_shared<T>(args...);
-	}
-}
-
-#endif
+#endif

@@ -99,7 +99,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +115,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,7 +135,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,15 +155,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\header\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuNene.h" />
     <ClInclude Include="header\GarosuTypedef.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\GarosuNene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
