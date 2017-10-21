@@ -7,9 +7,14 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <stack>
 #include <vector>
 #include <map>
+#include <list>
+#include <unordered_map>
 #include <functional>
+
+#include <exception>
 
 #define _G_COUNT_OF(Arr) (sizeof(Arr) / sizeof(Arr[0]))  
 
@@ -20,7 +25,7 @@ namespace Garosu
 	using i16 = int16_t;
 	using i32 = int32_t;
 	using i64 = int64_t;
-	
+
 	using u8 = uint8_t;
 	using u16 = uint16_t;
 	using u32 = uint32_t;
@@ -28,6 +33,7 @@ namespace Garosu
 
 	using f32 = float;
 	using f64 = double;
+	using f128 = long double;
 
 	using String = std::string;
 	using WString = std::wstring;
