@@ -412,6 +412,78 @@ namespace Garosu
 			return os;
 		}
 
+		bool StyledWrite(std::ostream& os, int depth = 0)
+		{
+			auto indent = [](std::ostream& os, int depth)
+			{
+				for (int i = 0; i < depth; i++)
+					os << "  ";
+			};
+			switch (type)
+			{
+			case NeneType::EMPTY:
+				os << "null";
+				break;
+
+			case NeneType::INTEGER:
+				os << value.i_value;
+				break;
+
+			case NeneType::FLOATING:
+				os << value.f_value;
+				break;
+
+			case NeneType::BOOLEAN:
+				os << std::boolalpha << value.b_value;
+				break;
+
+			case NeneType::STRING:
+			{
+				os << "\"";
+				if (SafeString::IsUnsafe(*value.s_pointer))
+					os << SafeString::GetSafe(*value.s_pointer);
+				else
+					os << *value.s_pointer;
+				os << "\"";
+			}
+			break;
+
+			case NeneType::VECTOR:
+			{
+				auto& vec = *value.v_pointer;
+				os << "[" << std::endl;
+				for (auto& it = vec.begin(); it != vec.end();)
+				{
+					indent(os, depth + 1);
+					(*it).StyledWrite(os, depth + 1);
+					if (++it < vec.end()) os << ", ";
+					os << std::endl;
+				}
+				indent(os, depth);
+				os << "]";
+			}
+			break;
+
+			case NeneType::MAP:
+			{
+				auto& map = *value.m_pointer;
+				os << "{" << std::endl;
+				for (auto& it = map.begin(); it != map.end();)
+				{
+					indent(os, depth + 1);
+					os << "\"" << (*it).first << "\": ";
+					(*it).second.StyledWrite(os, depth + 1);
+					if (++it != map.end()) os << ", ";
+					os << std::endl;
+				}
+				indent(os, depth);
+				os << "}";
+			}
+			break;
+			}
+			return true;
+		}
+
 	private:
 		void Reset(void)
 		{
@@ -521,10 +593,18 @@ namespace Garosu
 		Nene& mNene;
 		NeneWriter(Nene& nene) : mNene(nene) {}
 
-		bool WriteUTf8(std::ostream& os)
+		bool WriteUTf8(std::ostream& os, bool styled = true)
 		{
-			os.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
-			os << mNene;
+			if (styled)
+			{
+				os.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+				mNene.StyledWrite(os);
+			}
+			else
+			{
+				os.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+				os << mNene;
+			}
 			return true;
 		}
 	};
