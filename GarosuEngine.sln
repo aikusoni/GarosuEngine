@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuEngine", "RootProjects\GarosuEngine\GarosuEngine.vcxproj", "{41AC7B7B-A53E-4586-851D-440197F0CFE3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -63,6 +63,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuPlatform", "LandProjects\GarosuPlatform\GarosuPlatform.vcxproj", "{B53DEC50-12A6-4B8C-8F30-A2C1095CB3A5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{9B583CD5-34A6-4F47-BFFE-7115B6E30E34}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GarosuDataNotation", "LandProjects\GarosuDataNotation\GarosuDataNotation.vcxproj", "{7145BF5C-492B-439E-90C0-44910342FFD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -216,6 +218,18 @@ Global
 		{B53DEC50-12A6-4B8C-8F30-A2C1095CB3A5}.Release|x64.Build.0 = Release|x64
 		{B53DEC50-12A6-4B8C-8F30-A2C1095CB3A5}.Release|x86.ActiveCfg = Release|Win32
 		{B53DEC50-12A6-4B8C-8F30-A2C1095CB3A5}.Release|x86.Build.0 = Release|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Debug|ARM.ActiveCfg = Debug|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Debug|x64.ActiveCfg = Debug|x64
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Debug|x64.Build.0 = Debug|x64
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Debug|x86.ActiveCfg = Debug|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Debug|x86.Build.0 = Debug|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Release|Any CPU.ActiveCfg = Release|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Release|ARM.ActiveCfg = Release|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Release|x64.ActiveCfg = Release|x64
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Release|x64.Build.0 = Release|x64
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Release|x86.ActiveCfg = Release|Win32
+		{7145BF5C-492B-439E-90C0-44910342FFD8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -232,6 +246,7 @@ Global
 		{EC242D11-6757-40C4-A154-0422FE29DC87} = {92678989-C9DB-44C5-967C-19C725E915E7}
 		{6A05A956-1439-4CF6-95E3-4F3DB5255D24} = {92678989-C9DB-44C5-967C-19C725E915E7}
 		{B53DEC50-12A6-4B8C-8F30-A2C1095CB3A5} = {E0D1C0F1-35BD-43D1-9C44-FCAB638859BF}
+		{7145BF5C-492B-439E-90C0-44910342FFD8} = {E0D1C0F1-35BD-43D1-9C44-FCAB638859BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE468202-451E-4C74-B8B2-6B1F750E2EC9}

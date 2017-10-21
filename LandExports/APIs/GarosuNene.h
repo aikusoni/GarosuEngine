@@ -3,7 +3,6 @@
 #define __GAROSU_NENE_H__
 
 #include "GarosuTypedef.h"
-#include "GarosuFSM.h"
 
 #include <iostream>
 #include <iomanip>
@@ -53,12 +52,12 @@ namespace Garosu
 	{
 	public:
 		using INT = i64;	// integer
-		using FLT = f128;	// floating
+		using FLT = f64;	// floating
 		using BLN = bool;	// boolean
 
 		using STR = String;
 		using VEC = std::vector<Nene>;
-		using MAP = std::map<String, Nene>;
+		using MAP = std::unordered_map<String, Nene>;
 
 		using INIT_LIST_NENE = std::initializer_list<Nene>;
 		using PAIR = std::pair<String, Nene>;
@@ -647,6 +646,7 @@ namespace Garosu
 				}
 				else if (Has(c, numberEnd, _G_COUNT_OF(numberEnd)))
 				{
+					ss << '0';
 					Nene::FLT f = std::stold(ss.str());
 					nene = f;
 					return true; // "key" :., -> 0

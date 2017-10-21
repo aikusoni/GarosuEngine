@@ -3,7 +3,6 @@
 #define __GAROSU_NENE_H__
 
 #include "GarosuTypedef.h"
-#include "GarosuFSM.h"
 
 #include <iostream>
 #include <iomanip>
