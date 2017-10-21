@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <iomanip>
+#include <codecvt>
+#include <locale>
 
 namespace Garosu
 {
@@ -102,23 +104,23 @@ namespace Garosu
 
 		template <typename T> struct pure_type : remove_const<typename remove_reference<T>::type> {};
 
-		template <typename T, i64 N = 0> struct is_supported : set_false { public: is_supported(void) = delete; };
+		template <typename T, int N = 0> struct is_supported : set_false { public: is_supported(void) = delete; };
 		template <> struct is_supported<INT> : set_true {};
 		template <> struct is_supported<FLT> : set_true {};
 		template <> struct is_supported<BLN> : set_true {};
 		template <> struct is_supported<const char*> : set_true {};
-		template <i64 N> struct is_supported<char[N]> : set_true {};
+		template <int N> struct is_supported<char[N]> : set_true {};
 		template <> struct is_supported<STR> : set_true {};
 		template <> struct is_supported<VEC> : set_true {};
 		template <> struct is_supported<MAP> : set_true {};
 		// TODO 
 
-		template <typename T, i64 N = 0> struct nene_type { public: nene_type(void) = delete; };
+		template <typename T, int N = 0> struct nene_type { public: nene_type(void) = delete; };
 		template <> struct nene_type<INT> { const static NeneType value = NeneType::INTEGER; static void set(NeneValue& target, const INT& v) { target.i_value = v; } };
 		template <> struct nene_type<FLT> { const static NeneType value = NeneType::FLOATING; static void set(NeneValue& target, const FLT& v) { target.f_value = v; } };
 		template <> struct nene_type<BLN> { const static NeneType value = NeneType::BOOLEAN; static void set(NeneValue& target, const BLN& v) { target.b_value = v; } };
 		template <> struct nene_type<const char*> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
-		template <i64 N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
+		template <int N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
 		template <> struct nene_type<STR> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const STR& v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
 		template <> struct nene_type<VEC> { const static NeneType value = NeneType::VECTOR; static void set(NeneValue& target, const VEC& v) { if (target.v_pointer == nullptr) target.v_pointer = new VEC; *target.v_pointer = v; } };
 		template <> struct nene_type<MAP> { const static NeneType value = NeneType::MAP; static void set(NeneValue& target, const MAP& v) { if (target.m_pointer == nullptr) target.m_pointer = new MAP; *target.m_pointer = v; } };
@@ -513,15 +515,29 @@ namespace Garosu
 
 	const std::map<char, String> Nene::SafeString::UnsafeCharacters = { { '\"', "\\\"" } };
 
-	class NeneParser
+	class NeneWriter
+	{
+	public:
+		Nene& mNene;
+		NeneWriter(Nene& nene) : mNene(nene) {}
+
+		bool WriteUTf8(std::ostream& os)
+		{
+			os.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+			os << mNene;
+			return true;
+		}
+	};
+
+	class NeneReader
 	{
 	public:
 		std::istream& mIS;
-		NeneParser(std::istream &is) : mIS(is) {}
+		NeneReader(std::istream& is) : mIS(is) {}
 
-		bool Parse(Nene& nene) {
-			GetNene(nene);
-			return true;
+		bool ReadUTF8(Nene& nene) {
+			mIS.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+			return GetNene(nene);
 		}
 
 	private:
