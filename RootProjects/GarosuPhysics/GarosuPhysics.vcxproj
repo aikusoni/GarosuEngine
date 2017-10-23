@@ -181,7 +181,7 @@
     <ClCompile Include="source\GarosuPhysics.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GarosuUtils\GarosuUtils.vcxproj">
+    <ProjectReference Include="..\..\LandProjects\GarosuUtils\GarosuUtils.vcxproj">
       <Project>{905585fd-c0e8-4ffc-9f7a-8b1107e2279b}</Project>
     </ProjectReference>
   </ItemGroup>

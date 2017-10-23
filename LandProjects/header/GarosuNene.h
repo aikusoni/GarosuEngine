@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <iomanip>
+#include <codecvt>
+#include <locale>
 
 namespace Garosu
 {
@@ -57,7 +59,7 @@ namespace Garosu
 
 		using STR = String;
 		using VEC = std::vector<Nene>;
-		using MAP = std::unordered_map<String, Nene>;
+		using MAP = std::map<String, Nene>;
 
 		using INIT_LIST_NENE = std::initializer_list<Nene>;
 		using PAIR = std::pair<String, Nene>;
@@ -102,23 +104,23 @@ namespace Garosu
 
 		template <typename T> struct pure_type : remove_const<typename remove_reference<T>::type> {};
 
-		template <typename T, i64 N = 0> struct is_supported : set_false { public: is_supported(void) = delete; };
+		template <typename T, int N = 0> struct is_supported : set_false { public: is_supported(void) = delete; };
 		template <> struct is_supported<INT> : set_true {};
 		template <> struct is_supported<FLT> : set_true {};
 		template <> struct is_supported<BLN> : set_true {};
 		template <> struct is_supported<const char*> : set_true {};
-		template <i64 N> struct is_supported<char[N]> : set_true {};
+		template <int N> struct is_supported<char[N]> : set_true {};
 		template <> struct is_supported<STR> : set_true {};
 		template <> struct is_supported<VEC> : set_true {};
 		template <> struct is_supported<MAP> : set_true {};
 		// TODO 
 
-		template <typename T, i64 N = 0> struct nene_type { public: nene_type(void) = delete; };
+		template <typename T, int N = 0> struct nene_type { public: nene_type(void) = delete; };
 		template <> struct nene_type<INT> { const static NeneType value = NeneType::INTEGER; static void set(NeneValue& target, const INT& v) { target.i_value = v; } };
 		template <> struct nene_type<FLT> { const static NeneType value = NeneType::FLOATING; static void set(NeneValue& target, const FLT& v) { target.f_value = v; } };
 		template <> struct nene_type<BLN> { const static NeneType value = NeneType::BOOLEAN; static void set(NeneValue& target, const BLN& v) { target.b_value = v; } };
 		template <> struct nene_type<const char*> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
-		template <i64 N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
+		template <int N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
 		template <> struct nene_type<STR> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const STR& v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
 		template <> struct nene_type<VEC> { const static NeneType value = NeneType::VECTOR; static void set(NeneValue& target, const VEC& v) { if (target.v_pointer == nullptr) target.v_pointer = new VEC; *target.v_pointer = v; } };
 		template <> struct nene_type<MAP> { const static NeneType value = NeneType::MAP; static void set(NeneValue& target, const MAP& v) { if (target.m_pointer == nullptr) target.m_pointer = new MAP; *target.m_pointer = v; } };
@@ -410,6 +412,78 @@ namespace Garosu
 			return os;
 		}
 
+		bool StyledWrite(std::ostream& os, int depth = 0)
+		{
+			auto indent = [](std::ostream& os, int depth)
+			{
+				for (int i = 0; i < depth; i++)
+					os << "  ";
+			};
+			switch (type)
+			{
+			case NeneType::EMPTY:
+				os << "null";
+				break;
+
+			case NeneType::INTEGER:
+				os << value.i_value;
+				break;
+
+			case NeneType::FLOATING:
+				os << value.f_value;
+				break;
+
+			case NeneType::BOOLEAN:
+				os << std::boolalpha << value.b_value;
+				break;
+
+			case NeneType::STRING:
+			{
+				os << "\"";
+				if (SafeString::IsUnsafe(*value.s_pointer))
+					os << SafeString::GetSafe(*value.s_pointer);
+				else
+					os << *value.s_pointer;
+				os << "\"";
+			}
+			break;
+
+			case NeneType::VECTOR:
+			{
+				auto& vec = *value.v_pointer;
+				os << "[" << std::endl;
+				for (auto& it = vec.begin(); it != vec.end();)
+				{
+					indent(os, depth + 1);
+					(*it).StyledWrite(os, depth + 1);
+					if (++it < vec.end()) os << ", ";
+					os << std::endl;
+				}
+				indent(os, depth);
+				os << "]";
+			}
+			break;
+
+			case NeneType::MAP:
+			{
+				auto& map = *value.m_pointer;
+				os << "{" << std::endl;
+				for (auto& it = map.begin(); it != map.end();)
+				{
+					indent(os, depth + 1);
+					os << "\"" << (*it).first << "\": ";
+					(*it).second.StyledWrite(os, depth + 1);
+					if (++it != map.end()) os << ", ";
+					os << std::endl;
+				}
+				indent(os, depth);
+				os << "}";
+			}
+			break;
+			}
+			return true;
+		}
+
 	private:
 		void Reset(void)
 		{
@@ -513,307 +587,405 @@ namespace Garosu
 
 	const std::map<char, String> Nene::SafeString::UnsafeCharacters = { { '\"', "\\\"" } };
 
+	class NeneWriter
+	{
+	public:
+		Nene& mNene;
+		NeneWriter(Nene& nene) : mNene(nene) {}
+
+		bool WriteUTF8(std::ostream& os, bool styled = true)
+		{
+			if (styled)
+			{
+				os.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+				mNene.StyledWrite(os);
+			}
+			else
+			{
+				os.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+				os << mNene;
+			}
+			return true;
+		}
+	};
+
 	class NeneParser
 	{
 	public:
 		std::istream& mIS;
-		NeneParser(std::istream &is) : mIS(is) {}
+		std::streampos begin;
 
-		bool Parse(Nene& nene) {
-			GetNene(nene);
+		NeneParser(std::istream& is) : mIS(is) {
+			begin = is.tellg();
+		}
+
+		bool ParseUTF8(Nene& nene)
+		{
+			mIS.seekg(begin);
+			mIS.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
+			if (!Parse(nene)) return false;
 			return true;
 		}
 
 	private:
-		bool Match(const char* str, u32 cnt, bool ignoreCase = false)
+		bool Parse(Nene& nene)
 		{
-			char caseBitmask = ignoreCase ? 0xDF : 0xFF;
-			u32 i = 0;
-			for (i = 0u; mIS && i < cnt; ++i)
+			auto Match = [&](char* str, size_t n, bool ignoreCase = true)
 			{
-				char c = mIS.get();
-				char maskss = (c >= 'a' && c <= 'z') ? caseBitmask : 0xFF;
-				char maskstr = (str[i] >= 'a' && str[i] <= 'z') ? caseBitmask : 0xFF;
-				if ((c & maskss) != (str[i] & maskstr))
+				char bitMask = ignoreCase ? 0xDF : 0xFF;
+				for (size_t i = 0; i < n; ++i)
 				{
-					for (u32 j = i + 1; j > 0u; j--) mIS.unget();
+					char c = mIS.get();
+					char bmc = (c >= 'a' && c <= 'z') ? bitMask : 0xFF;
+					char bmstr = (str[i] >= 'a' && str[i] <= 'z') ? bitMask : 0xFF;
+					if ((c & bmc) != (str[i] & bmstr))
+					{
+						for (size_t j = i + 1u; j > 0u; j--) mIS.unget();
+						return false;
+					}
+				}
+				return true;
+			};
+
+			auto Contains = [&](const char* str, size_t cnt, const char c)
+			{
+				for (size_t i = 0u; i < cnt; ++i)
+					if (str[i] == c) return true;
+				return false;
+			};
+
+			auto GetString = [&](std::ostream& os)
+			{
+				if (!mIS) return false;
+
+				char c = mIS.get();
+				if (c != '\"') {
+					mIS.unget(); return false;
+				}
+
+				bool escapeSeq = false;
+				while (mIS)
+				{
+					c = mIS.get();
+					if (escapeSeq)
+					{
+						os << c;
+						escapeSeq = false;
+					}
+					else if (c == '\\')
+					{
+						os << c;
+						escapeSeq = true;
+					}
+					else if (c == '\"') return true;
+					else os << c;
+				}
+				return false;
+			};
+
+			auto GetNumber = [&](Nene& nene)
+			{
+				const char numberEnd[] = ", \t]}\r\n";
+				if (!mIS) return false;
+
+				StringStream ss;
+
+				i32 cntSign = 0;
+				// natural
+				while (mIS)
+				{
+					char c = mIS.peek();
+
+					if (Contains("-+", 2, c)) {
+						if (cntSign > 0) return false;
+						++cntSign;
+						ss << (char)mIS.get();
+					}
+					else if (c >= '0' && c <= '9') ss << (char)mIS.get();
+					else if (c == '.') {
+						ss << (char)mIS.get();
+						break;
+					}
+					else if (Contains("eE", 2, c)) break;
+					else if (Contains(numberEnd, _G_COUNT_OF(numberEnd), c)) {
+						Nene::INT n = std::stoll(ss.str());
+						nene = n;
+						return true; // "key" :, -> 0
+					}
+					else return false;
+				}
+				// fraction
+				while (mIS)
+				{
+					char c = mIS.peek();
+
+					if (c >= '0' && c <= '9') ss << (char)mIS.get();
+					else if (Contains("eE", 2, c))
+					{
+						ss << (char)mIS.get();
+						break;
+					}
+					else if (Contains(numberEnd, _G_COUNT_OF(numberEnd), c))
+					{
+						ss << '0';
+						Nene::FLT f = std::stold(ss.str());
+						nene = f;
+						return true; // "key" :., -> 0
+					}
+					else return false;
+				}
+				// exponent
+				while (mIS)
+				{
+					char c = mIS.peek();
+					if (c >= '0' && c <= '9' || c == '-' || c == '+') ss << (char)mIS.get();
+					else if (Contains(numberEnd, _G_COUNT_OF(numberEnd), c))
+					{
+						Nene::FLT f = std::stold(ss.str());
+						nene = f;
+						return true;
+					}
+					else return false;
+				}
+
+				return true;
+			};
+
+			auto GetBool = [&](Nene& nene)
+			{
+				if (!mIS) return false;
+
+				char c = mIS.peek();
+				i32 i = 0;
+				switch (c)
+				{
+				case 'T':
+				case 't':
+				{
+					if (Match("true", 4, true))
+					{
+						nene = true;
+						return true;
+					}
+				}
+				break;
+
+				case 'F':
+				case 'f':
+					if (Match("false", 5, true))
+					{
+						nene = false;
+						return true;
+					}
+					break;
+				}
+
+				return false;
+			};
+
+			enum class State
+			{
+				Map,
+				Vec
+			};
+
+			class NeneInfo
+			{
+			private:
+				bool needDel;
+
+			public:
+				Nene* mNene;
+				State mState;
+
+				NeneInfo(Nene& nene, State state) : mNene(&nene), mState(state), needDel(false) {}
+				NeneInfo(State state) : mNene(new Nene()), mState(state), needDel(true) {}
+				virtual ~NeneInfo(void) { if (needDel && mNene) { delete mNene; } }
+			};
+
+			std::stack<shptr<NeneInfo>> neneStack;
+			std::stack<String> keyStack;
+			bool keyPhase = false;
+
+			auto NeneComplete = [&](const Nene& nene)
+			{
+				auto outerNene = neneStack.top();
+				switch (outerNene->mState)
+				{
+				case State::Map:
+				{
+					auto key = keyStack.top();
+					keyStack.pop();
+
+					outerNene->mNene->SetMap(key, nene);
+				}
+				break;
+
+				case State::Vec:
+				{
+					auto outerNene = neneStack.top();
+					outerNene->mNene->append(nene);
+				}
+				break;
+				}
+			};
+
+			while (mIS)
+			{
+				char c = mIS.peek();
+				if (keyPhase)
+				{
+					switch (c)
+					{
+					case '\"': // string
+					case ' ': // space
+					case '\t':
+					case '\r':
+					case '\n':
+						break;
+
+					default:
+						// if c has not string or space values at finding key phase,
+						// return false.
+						return false;
+					}
+				}
+				switch (c)
+				{
+				case ' ':
+				case '\t':
+				case '\r':
+				case '\n':
+					// skip space
+					mIS.get();
+					break;
+
+				case '/':
+				{
+					// skip comment
+					if (Match("//", 2))
+						while (mIS)
+						{
+							c = mIS.get();
+							if (Contains("\r\n", 2, c)) break;
+						}
+				}
+				break;
+
+				case '{':
+				{
+					// map
+					mIS.get();
+					keyPhase = true;
+					if (neneStack.size() > 0)
+						neneStack.push(mk_shptr<NeneInfo>(State::Map)); // new nene
+					else
+						neneStack.push(mk_shptr<NeneInfo>(nene, State::Map)); // first nene
+				}
+				break;
+
+				case '}':
+				{
+					mIS.get();
+					if (neneStack.size() == 1) return true; // nene complete
+
+					auto innerNene = neneStack.top();
+					neneStack.pop();
+
+					NeneComplete(*innerNene->mNene);
+				}
+				break;
+
+				case '[':
+				{
+					// vector
+					mIS.get();
+					if (neneStack.size() > 0)
+						neneStack.push(mk_shptr<NeneInfo>(State::Vec)); // new nene
+					else
+						neneStack.push(mk_shptr<NeneInfo>(nene, State::Vec)); // first nene
+				}
+				break;
+
+				case ']':
+				{
+					mIS.get();
+					if (neneStack.size() == 1) return true; // nene complete
+
+					auto innerNene = neneStack.top();
+					neneStack.pop();
+
+					NeneComplete(*innerNene->mNene);
+				}
+				break;
+
+				case ':':
+				{
+					mIS.get();
+				}
+				break;
+
+				case ',':
+				{
+					mIS.get();
+					if (neneStack.top()->mState == State::Map)
+						keyPhase = true;
+				}
+				break;
+
+				case '\"':
+				{
+					StringStream ss;
+					if (!GetString(ss)) return false;
+
+					if (keyPhase)
+					{
+						keyStack.emplace(ss.str());
+						keyPhase = false;
+					}
+					else
+						NeneComplete(ss.str());
+				}
+				break;
+
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case '.':
+				{
+					// number
+					Nene nene;
+					if (!GetNumber(nene)) return false;
+					NeneComplete(nene);
+				}
+				break;
+
+				case 't':
+				case 'T':
+				case 'f':
+				case 'F':
+				{
+					Nene nene;
+					if (!GetBool(nene)) return false;
+					NeneComplete(nene);
+				}
+				break;
+
+				default:
 					return false;
 				}
 			}
-			if (i < cnt) return false;
-			return true;
-		}
-		bool Has(const char c, const char* str, u32 cnt)
-		{
-			for (u32 i = 0u; i < cnt; ++i)
-				if (str[i] == c) return true;
-			return false;
-		}
-
-		bool SkipSpaceAndComment(void)
-		{
-			while (mIS)
-			{
-				char c = mIS.peek();
-				if (Match("//", 2))
-				{
-					while (mIS)
-					{
-						c = mIS.get();
-						if (Has(c, "\r\n", 2)) break;
-					}
-				}
-				else if (Has(c, " \t\r\n", 4))
-					mIS.get();
-				else break;
-			}
 
 			return true;
 		}
 
-		bool GetString(StringStream& ss)
-		{
-			SkipSpaceAndComment();
-			if (!mIS) return false;
-
-			char c = mIS.get();
-			if (c != '\"') {
-				mIS.unget(); return false;
-			}
-
-			bool escapeSeq = false;
-			while (mIS)
-			{
-				c = mIS.get();
-				if (escapeSeq)
-				{
-					ss << c;
-					escapeSeq = false;
-				}
-				else if (c == '\\')
-				{
-					ss << c;
-					escapeSeq = true;
-				}
-				else if (c == '\"') return true;
-				else ss << c;
-			}
-			return false;
-		}
-
-		bool GetNumber(Nene& nene)
-		{
-			const char numberEnd[] = ", \t]}\r\n";
-			SkipSpaceAndComment();
-			if (!mIS) return false;
-
-			StringStream ss;
-
-			i32 cntSign = 0;
-			// natural
-			while (mIS)
-			{
-				char c = mIS.peek();
-
-				if (Has(c, "-+", 2)) {
-					if (cntSign > 0) return false;
-					++cntSign;
-					ss << (char)mIS.get();
-				}
-				else if (c >= '0' && c <= '9') ss << (char)mIS.get();
-				else if (c == '.') {
-					ss << (char)mIS.get();
-					break;
-				}
-				else if (Has(c, "eE", 2)) break;
-				else if (Has(c, numberEnd, _G_COUNT_OF(numberEnd))) {
-					Nene::INT n = std::stoll(ss.str());
-					nene = n;
-					return true; // "key" :, -> 0
-				}
-				else return false;
-			}
-			// fraction
-			while (mIS)
-			{
-				char c = mIS.peek();
-
-				if (c >= '0' && c <= '9') ss << (char)mIS.get();
-				else if (Has(c, "eE", 2))
-				{
-					ss << (char)mIS.get();
-					break;
-				}
-				else if (Has(c, numberEnd, _G_COUNT_OF(numberEnd)))
-				{
-					ss << '0';
-					Nene::FLT f = std::stold(ss.str());
-					nene = f;
-					return true; // "key" :., -> 0
-				}
-				else return false;
-			}
-			// exponent
-			while (mIS)
-			{
-				char c = mIS.peek();
-				if (c >= '0' && c <= '9' || c == '-' || c == '+') ss << (char)mIS.get();
-				else if (Has(c, numberEnd, _G_COUNT_OF(numberEnd)))
-				{
-					Nene::FLT f = std::stold(ss.str());
-					nene = f;
-					return true;
-				}
-				else return false;
-			}
-
-			return true;
-		}
-
-		bool GetBool(Nene& nene)
-		{
-			SkipSpaceAndComment();
-			if (!mIS) return false;
-
-			char c = mIS.peek();
-			i32 i = 0;
-			switch (c)
-			{
-			case 'T':
-			case 't':
-			{
-				if (Match("true", 4, true))
-				{
-					nene = true;
-					return true;
-				}
-			}
-			break;
-
-			case 'F':
-			case 'f':
-				if (Match("false", 5, true))
-				{
-					nene = false;
-					return true;
-				}
-				break;
-			}
-
-			return false;
-		}
-
-		bool GetNene(Nene& nene)
-		{
-			SkipSpaceAndComment();
-			if (!mIS) return false;
-
-			char c = mIS.peek();
-			if (Match("NULL", 4, true))
-			{
-				nene = {};
-				return true;
-			}
-			else if (c == '\"')
-			{
-				StringStream ss;
-				if (GetString(ss) == false) return false;
-				nene = ss.str();
-				return true;
-			}
-			else if (Has(c, "tTfF", 4))
-			{
-				if (GetBool(nene) == false) return false;
-				return true;
-			}
-			else if (c == '{')
-			{
-				if (GetMap(nene) == false) return false;
-				return true;
-			}
-			else if (c == '[')
-			{
-				if (GetArray(nene) == false) return false;
-				return true;
-			}
-			else
-			{
-				if (GetNumber(nene) == false) return false;
-				return true;
-			}
-
-			return false;
-		}
-
-		bool GetMap(Nene& nene)
-		{
-			SkipSpaceAndComment();
-			if (!mIS) return false;
-
-			char c = mIS.get();
-			if (c != '{') { mIS.unget(); return false; }
-
-			nene = {};
-
-			while (mIS)
-			{
-				SkipSpaceAndComment();
-				StringStream keySS;
-				if (GetString(keySS) == false) break;
-				SkipSpaceAndComment();
-
-				if (!mIS) return false;
-				if (mIS.peek() != ':') break;
-				mIS.get();
-
-				SkipSpaceAndComment();
-				Nene valueNene;
-				if (GetNene(valueNene) == false) break;
-				SkipSpaceAndComment();
-
-				nene.SetMap(keySS.str(), valueNene);
-
-				if (!mIS) return false;
-				if (mIS.peek() != ',') break;
-				mIS.get();
-			}
-			SkipSpaceAndComment();
-			if (mIS.peek() != '}') return false;
-
-			mIS.get();
-			return true;
-		}
-
-		bool GetArray(Nene& nene)
-		{
-			SkipSpaceAndComment();
-			if (!mIS) return false;
-
-			char c = mIS.get();
-			if (c != '[') { mIS.unget(); return false; }
-
-			nene = {};
-
-			while (mIS)
-			{
-				SkipSpaceAndComment();
-				Nene elNene;
-				if (GetNene(elNene) == false) return false;
-				SkipSpaceAndComment();
-
-				nene.append(elNene);
-
-				if (!mIS) return false;
-				if (mIS.peek() != ',') break;
-				mIS.get();
-			}
-			SkipSpaceAndComment();
-			if (mIS.peek() != ']') return false;
-
-			mIS.get();
-
-			return true;
-		}
 	};
 
 }

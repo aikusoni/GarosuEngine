@@ -178,12 +178,8 @@
     <ClInclude Include="header\GarosuIAudio.h" />
     <ClInclude Include="header\GarosuIGraphics.h" />
     <ClInclude Include="header\GarosuIPhysics.h" />
-    <ClInclude Include="header\GarosuSettings.h" />
     <ClInclude Include="header\GarosuTask.h" />
     <ClInclude Include="header\GarosuIScheduler.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\GarosuSettings.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

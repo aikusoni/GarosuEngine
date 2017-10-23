@@ -76,19 +76,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)RootProjects\header;$(SolutionDir)LandExports\APIs</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)LandProjects\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)RootProjects\header;$(SolutionDir)LandExports\APIs</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)LandProjects\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)RootProjects\header;$(SolutionDir)LandExports\APIs</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)LandProjects\header</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)RootProjects\header;$(SolutionDir)LandExports\APIs</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)header;$(SolutionDir)LandProjects\header</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,8 +106,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandProjects\header\
+copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -125,8 +130,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandProjects\header\
+copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -148,8 +158,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandProjects\header\
+copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -171,8 +186,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandProjects\header\
+copy /Y $(ProjectDir)header\*.h $(SolutionDir)LandExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuLockUtils.h" />
@@ -191,8 +211,8 @@
     <ClCompile Include="source\GarosuTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GarosuCommon\GarosuCommon.vcxproj">
-      <Project>{5b223e71-9519-4f8b-ad9e-7177efa64a76}</Project>
+    <ProjectReference Include="..\GarosuPlatform\GarosuPlatform.vcxproj">
+      <Project>{b53dec50-12a6-4b8c-8f30-a2c1095cb3a5}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
