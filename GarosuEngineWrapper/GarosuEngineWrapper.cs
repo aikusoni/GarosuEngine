@@ -1,87 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 
 namespace GarosuEngineWrapper
 {
-    class Utils
-    {
-        public const string EngineDll = "GarosuEngine.dll";
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string GetCurrentMethod()
-        {
-            var st = new StackTrace();
-            var sf = st.GetFrame(1);
-            var m = sf.GetMethod();
-
-            return m.ReflectedType.Name + m.Name;
-        }
-    }
-
-    public class DummyMessage
-    {
-        protected IntPtr msgPtr;
-        public IntPtr MessagePtr {
-            get { return msgPtr; }
-        }
-    }
-
-    public class BaseMessage : DummyMessage
-    {
-        [DllImport(Utils.EngineDll, EntryPoint = "MakeBaseMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr MakeBaseMessage(uint msgId);
-        
-        [DllImport(Utils.EngineDll, EntryPoint = "DeleteMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool DeleteMessage(IntPtr msg);
-
-        public BaseMessage(uint msgId)
-        {
-            try
-            {
-                msgPtr = MakeBaseMessage(msgId);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                MessageBox.Show(Utils.GetCurrentMethod() + "(" + msgId + ") allocation failed. " + ex.ToString());
-            }
-        }
-
-        ~BaseMessage()
-        {
-            if (msgPtr != null)
-                DeleteMessage(msgPtr);
-        }
-    }
-
-    public class StringMessage : DummyMessage
-    {
-        [DllImport(Utils.EngineDll, EntryPoint = "MakeStringMessage", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr MakeStringMessage(uint msgId, [MarshalAs(UnmanagedType.LPStr)] String str);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "DeleteMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool DeleteMessage(IntPtr msg);
-
-        public StringMessage(uint msgId, String str)
-        {
-            try
-            {
-                msgPtr = MakeStringMessage(msgId, str);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                MessageBox.Show(Utils.GetCurrentMethod() + "(" + msgId + ") allocation failed. " + ex.ToString());
-            }
-        }
-
-        ~StringMessage()
-        {
-            if (msgPtr != null)
-                DeleteMessage(msgPtr);
-        }
-    }
 
     public class EngineWrapper
     {
@@ -99,6 +20,10 @@ namespace GarosuEngineWrapper
 
         [DllImport(Utils.EngineDll, EntryPoint = "SendMessage", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool SendMessage(IntPtr enginePtr, IntPtr garosuMessage);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "RegisterCallback", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool RegisterCallback(IntPtr enginePtr, GarosuEngineCallback callback);
+        delegate bool GarosuEngineCallback(int param1);
 
         // Garosu Engine Instance
         private IntPtr engine;
@@ -119,6 +44,7 @@ namespace GarosuEngineWrapper
 
         public bool InitializeEngine()
         {
+            RegisterCallback(engine, CallbackFnc);
             return InitializeEngine(engine);
         }
 
@@ -130,6 +56,23 @@ namespace GarosuEngineWrapper
         public bool SendMessage(DummyMessage msg)
         {
             return SendMessage(engine, msg.MessagePtr);
+        }
+
+        public bool CallbackFnc(int param1)
+        {
+            if (userCallbackFnc != null)
+                return userCallbackFnc(param1);
+
+            return true;
+        }
+
+        public delegate bool UserCallbackFnc(int param1);
+        UserCallbackFnc userCallbackFnc = null;
+
+        public bool RegisterCallback(UserCallbackFnc callbackFunction)
+        {
+            userCallbackFnc = callbackFunction;
+            return true;
         }
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Garosu
 {
+	using EngineCallback = bool(int param1);
 
 	class IEngine
 	{
@@ -15,6 +16,7 @@ namespace Garosu
 		virtual bool Finalize(void) = 0;
 
 		virtual bool SendMessage(BaseMessage*) = 0;
+		virtual bool RegisterCallback(EngineCallback* callback) = 0;
 	};
 
 	// TODO Make Callback
@@ -28,6 +30,7 @@ extern "C" {
 	__declspec(dllexport) bool Initialize(Garosu::IEngine*);
 	__declspec(dllexport) bool Finalize(Garosu::IEngine*);
 	__declspec(dllexport) bool SendMessage(Garosu::IEngine*, Garosu::BaseMessage*);
+	__declspec(dllexport) bool RegisterCallback(Garosu::IEngine*, Garosu::EngineCallback*);
 }
 
 #endif

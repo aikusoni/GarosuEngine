@@ -8,6 +8,7 @@ namespace Garosu
 	{
 		Default,
 		SetApplicationStoragePath, // use StringMessage
+		SetVideoOutputHandle,
 	};
 
 	class BaseMessage

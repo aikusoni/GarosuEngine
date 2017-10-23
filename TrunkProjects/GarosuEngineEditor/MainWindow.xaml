@@ -7,8 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <local:Win32View Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Grid x:Name="renderBorder" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <local:Win32View x:Name="renderView" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Grid>
+        <TextBlock x:Name="callbackText" />
     </DockPanel>
 </Window>

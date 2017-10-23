@@ -26,5 +26,18 @@ namespace GarosuEngineEditor
         {
             InitializeComponent();
         }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+
+            ((App)Application.Current).subscribers += Callback;
+        }
+
+        bool Callback(int param1)
+        {
+
+            return true;
+        }
     }
 }

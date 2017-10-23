@@ -63,6 +63,11 @@ namespace GarosuEngineEditor
         {
             base.BeginInit();
         }
+
+        public IntPtr GetHandle()
+        {
+            return hwndHost.Handle;
+        }
     }
 
     public enum WindowMessage : uint

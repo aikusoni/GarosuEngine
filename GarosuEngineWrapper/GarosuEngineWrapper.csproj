@@ -38,7 +38,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GarosuEngineMessage.cs" />
     <Compile Include="GarosuEngineWrapper.cs" />
+    <Compile Include="GarosuEngineWrapperUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />

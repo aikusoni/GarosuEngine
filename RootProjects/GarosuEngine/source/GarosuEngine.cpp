@@ -36,11 +36,16 @@ namespace Garosu
 		virtual bool Finalize(void);
 
 		virtual bool SendMessage(BaseMessage*);
+		virtual bool RegisterCallback(EngineCallback*);
+
+		bool CallCallback(int param1);
 
 	private:
 		IScheduler* scheduler;
 		IPhysics* physics;
 		IGraphics* graphics;
+
+		EngineCallback* callback;
 	};
 
 	Engine::Engine(void)
@@ -48,6 +53,7 @@ namespace Garosu
 		scheduler = nullptr;
 		physics = nullptr;
 		graphics = nullptr;
+		callback = nullptr;
 	}
 
 	Engine::~Engine(void)
@@ -58,8 +64,8 @@ namespace Garosu
 	bool Engine::Initialize(void)
 	{
 		///// Start Log Thread
-		SETLOGLEVEL_DEBUG();
-		//SETLOGLEVEL_INFO();
+		//SETLOGLEVEL_DEBUG();
+		SETLOGLEVEL_INFO();
 		LOGSTART();
 
 		LOGQD("Garosu Engine initializing");
@@ -137,6 +143,8 @@ namespace Garosu
 
 		LOGQD("Garosu Enigne initialization Success.");
 
+		CallCallback(123456);
+
 		return true;
 	}
 
@@ -187,6 +195,18 @@ namespace Garosu
 		return false;
 	}
 
+	bool Engine::RegisterCallback(EngineCallback* clientCallback)
+	{
+		callback = clientCallback;
+		return true;
+	}
+
+	bool Engine::CallCallback(int param1)
+	{
+		if (callback == nullptr) return false;
+		else return callback(param1);
+	}
+
 }
 
 __declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void)
@@ -217,4 +237,9 @@ __declspec(dllexport) bool Finalize(Garosu::IEngine* engine)
 __declspec(dllexport) bool SendMessage(Garosu::IEngine* engine, Garosu::BaseMessage* message)
 {
 	return engine->SendMessage(message);
+}
+
+__declspec(dllexport) bool RegisterCallback(Garosu::IEngine* engine, Garosu::EngineCallback* callback)
+{
+	return engine->RegisterCallback(callback);
 }
