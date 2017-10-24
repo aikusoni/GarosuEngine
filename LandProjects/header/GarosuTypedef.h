@@ -16,7 +16,7 @@
 
 #include <exception>
 
-#define _G_COUNT_OF(Arr) (sizeof(Arr) / sizeof(Arr[0]))  
+#define _G_COUNT_OF(Arr) (sizeof(Arr) / sizeof(Arr[0]))
 
 namespace Garosu
 {

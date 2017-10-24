@@ -96,7 +96,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <CompileAsWinRT>
       </CompileAsWinRT>
@@ -119,7 +119,7 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <CompileAsWinRT>
       </CompileAsWinRT>
@@ -144,7 +144,7 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <CompileAsWinRT>
       </CompileAsWinRT>
@@ -171,7 +171,7 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <CompileAsWinRT>
       </CompileAsWinRT>
@@ -208,10 +208,12 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\GarosuEngineEvent.cpp" />
     <ClCompile Include="source\GarosuEngine.cpp" />
     <ClCompile Include="source\GarosuEngineMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\GarosuEngineEvent.h" />
     <ClInclude Include="header\GarosuEngine.h" />
     <ClInclude Include="header\GarosuEngineMessage.h" />
   </ItemGroup>

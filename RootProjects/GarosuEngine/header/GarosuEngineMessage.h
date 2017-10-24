@@ -15,9 +15,9 @@ namespace Garosu
 	{
 	public:
 		BaseMessage(EngineMessageId msgId)
-			: mMessageId(msgId) {}
+			: mEventId(msgId) {}
 
-		EngineMessageId mMessageId;
+		EngineMessageId mEventId;
 	};
 
 	class StringMessage : public BaseMessage

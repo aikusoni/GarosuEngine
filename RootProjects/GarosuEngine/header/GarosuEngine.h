@@ -3,11 +3,12 @@
 #define __GAROSU_ENGINE_H__
 
 #include <memory>
-#include <GarosuEngineMessage.h>
+#include "GarosuEngineMessage.h"
+#include "GarosuEngineEvent.h"
 
 namespace Garosu
 {
-	using EngineCallback = bool(int param1);
+	using EngineCallback = bool(BaseEvent*);
 
 	class IEngine
 	{

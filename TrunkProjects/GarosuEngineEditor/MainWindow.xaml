@@ -10,6 +10,5 @@
         <Grid x:Name="renderBorder" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <local:Win32View x:Name="renderView" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Grid>
-        <TextBlock x:Name="callbackText" />
     </DockPanel>
 </Window>

@@ -23,7 +23,7 @@ namespace GarosuEngineEditor
         public delegate bool CallbackSubscriber(int param1);
         public CallbackSubscriber subscribers;
 
-        protected bool CallbackFromEngine(int param1)
+        protected bool HandleEngineCallback(int param1)
         {
             if (subscribers != null) 
                 subscribers(param1);
@@ -37,7 +37,7 @@ namespace GarosuEngineEditor
 
             engine = new GarosuEngineWrapper.EngineWrapper();
             engine.SendMessage(new GarosuEngineWrapper.StringMessage(1, "d:\\"));
-            engine.RegisterCallback(CallbackFromEngine);
+            engine.RegisterHandler(HandleEngineCallback);
             engine.InitializeEngine();
         }
 

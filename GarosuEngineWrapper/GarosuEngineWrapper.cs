@@ -23,7 +23,7 @@ namespace GarosuEngineWrapper
 
         [DllImport(Utils.EngineDll, EntryPoint = "RegisterCallback", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool RegisterCallback(IntPtr enginePtr, GarosuEngineCallback callback);
-        delegate bool GarosuEngineCallback(int param1);
+        delegate bool GarosuEngineCallback(IntPtr engineEvent);
 
         // Garosu Engine Instance
         private IntPtr engine;
@@ -58,20 +58,20 @@ namespace GarosuEngineWrapper
             return SendMessage(engine, msg.MessagePtr);
         }
 
-        public bool CallbackFnc(int param1)
+        public bool CallbackFnc(IntPtr engineEvent)
         {
-            if (userCallbackFnc != null)
-                return userCallbackFnc(param1);
+            if (engineCallbackHandler != null)
+                return engineCallbackHandler(param1);
 
             return true;
         }
 
-        public delegate bool UserCallbackFnc(int param1);
-        UserCallbackFnc userCallbackFnc = null;
+        public delegate bool handler(int param1);
+        handler engineCallbackHandler = null;
 
-        public bool RegisterCallback(UserCallbackFnc callbackFunction)
+        public bool RegisterHandler(handler engineCallbackHandler)
         {
-            userCallbackFnc = callbackFunction;
+            this.engineCallbackHandler = engineCallbackHandler;
             return true;
         }
     }

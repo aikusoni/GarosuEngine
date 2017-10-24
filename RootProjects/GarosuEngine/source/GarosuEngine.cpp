@@ -38,7 +38,7 @@ namespace Garosu
 		virtual bool SendMessage(BaseMessage*);
 		virtual bool RegisterCallback(EngineCallback*);
 
-		bool CallCallback(int param1);
+		bool CallCB(BaseEvent*);
 
 	private:
 		IScheduler* scheduler;
@@ -143,8 +143,6 @@ namespace Garosu
 
 		LOGQD("Garosu Enigne initialization Success.");
 
-		CallCallback(123456);
-
 		return true;
 	}
 
@@ -178,7 +176,7 @@ namespace Garosu
 
 	bool Engine::SendMessage(BaseMessage* message)
 	{
-		switch (message->mMessageId)
+		switch (message->mEventId)
 		{
 		case EngineMessageId::Default:
 			return true;
@@ -201,10 +199,10 @@ namespace Garosu
 		return true;
 	}
 
-	bool Engine::CallCallback(int param1)
+	bool Engine::CallCB(BaseEvent* eventInstance)
 	{
 		if (callback == nullptr) return false;
-		else return callback(param1);
+		else return callback(eventInstance);
 	}
 
 }
