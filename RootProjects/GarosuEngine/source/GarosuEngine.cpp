@@ -1,6 +1,6 @@
 #include <GarosuTypedef.h>
 
-#include "GarosuEngine.h"
+#include "GarosuEngineAPI.h"
 
 // common
 #include <GarosuTask.h>
@@ -176,15 +176,15 @@ namespace Garosu
 
 	bool Engine::SendMessage(BaseMessage* message)
 	{
-		switch (message->mEventId)
+		switch (message->mMsgId)
 		{
-		case EngineMessageId::Default:
+		case EngineMessageId::None:
 			return true;
 
 		case EngineMessageId::SetApplicationStoragePath:
 		{
-			auto& appPath = static_cast<StringMessage*>(message)->mStr;
-			Settings::SetAppPath(appPath);
+			//auto& appPath = static_cast<StringMessage*>(message)->mStr;
+			//Settings::SetAppPath(appPath);
 			return true;
 		}
 

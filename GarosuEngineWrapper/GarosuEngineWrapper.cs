@@ -60,8 +60,6 @@ namespace GarosuEngineWrapper
 
         public bool CallbackFnc(IntPtr engineEvent)
         {
-            if (engineCallbackHandler != null)
-                return engineCallbackHandler(param1);
 
             return true;
         }

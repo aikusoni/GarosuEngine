@@ -208,14 +208,10 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\GarosuEngineEvent.cpp" />
     <ClCompile Include="source\GarosuEngine.cpp" />
-    <ClCompile Include="source\GarosuEngineMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\GarosuEngineEvent.h" />
-    <ClInclude Include="header\GarosuEngine.h" />
-    <ClInclude Include="header\GarosuEngineMessage.h" />
+    <ClInclude Include="header\GarosuEngineAPI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
