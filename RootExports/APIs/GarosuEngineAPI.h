@@ -13,13 +13,17 @@ namespace Garosu
 		ParameterContainer(void);
 		virtual ~ParameterContainer(void);
 
-		bool Set(std::string paramName, void* paramValue);
-		bool Set(std::string paramName, unsigned long long paramValue);
-		bool Set(std::string paramName, std::string paramValue);
+		bool SetParam(std::string paramName, bool paramValue);
+		bool SetParam(std::string paramName, void* paramValue);
+		bool SetParam(std::string paramName, long long paramValue);
+		bool SetParam(std::string paramName, double paramValue);
+		bool SetParam(std::string paramName, std::string paramValue);
 
-		bool Get(std::string paramName, void*& paramValue);
-		bool Get(std::string paramName, unsigned long long& paramValue);
-		bool Get(std::string paramName, std::string& paramValue);
+		bool GetParam(std::string paramName, bool& paramValue);
+		bool GetParam(std::string paramName, void*& paramValue);
+		bool GetParam(std::string paramName, long long& paramValue);
+		bool GetParam(std::string paramName, double& paramValue);
+		bool GetParam(std::string paramName, std::string& paramValue);
 
 	private:
 		class impl;
@@ -29,7 +33,7 @@ namespace Garosu
 	/////
 	// Message (you can control engine with messages)
 	//
-	// if you want to command to an engine,
+	// if you want to send commands to the engine,
 	// call SendMessage function (of the engine).
 	/////
 	enum class EngineMessageId : unsigned int
@@ -50,8 +54,8 @@ namespace Garosu
 	/////
 	// Event (for Callback)
 	//
-	// engines call your registered callback function (registered by RegisterCallback).
-	// callback's Event arguments contain eventid(EngineEventId) and more information parameters.
+	// engine will call registered callback function if event occured.
+	// event arguments of callback contain eventid(EngineEventId) and more information parameters.
 	/////
 	enum class EngineEventId : unsigned int
 	{

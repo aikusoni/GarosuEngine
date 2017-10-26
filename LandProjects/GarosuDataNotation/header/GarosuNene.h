@@ -214,6 +214,13 @@ namespace Garosu
 			return *this;
 		}
 
+		template <typename T>
+		T As(void)
+		{
+			ASSERT_TYPE_NOT_SUPPORTED(T);
+			return static_cast<T>;
+		}
+
 		void append(const Nene& nene)
 		{
 			AddToArray(nene);
@@ -310,14 +317,14 @@ namespace Garosu
 		}
 
 		template <typename T>
-		bool hasType(void)
+		bool HasType(void)
 		{
 			if (type == nene_type<pure_type<T>::type>::value)
 				return true;
 			return false;
 		}
 
-		bool isSameType(const Nene& rhs)
+		bool IsSameType(const Nene& rhs)
 		{
 			if (type == rhs.type)
 				return true;

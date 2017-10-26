@@ -13,13 +13,17 @@ namespace Garosu
 		ParameterContainer(void);
 		virtual ~ParameterContainer(void);
 
-		bool Set(std::string paramName, void* paramValue);
-		bool Set(std::string paramName, unsigned long long paramValue);
-		bool Set(std::string paramName, std::string paramValue);
+		bool SetParam(std::string paramName, bool paramValue);
+		bool SetParam(std::string paramName, void* paramValue);
+		bool SetParam(std::string paramName, long long paramValue);
+		bool SetParam(std::string paramName, double paramValue);
+		bool SetParam(std::string paramName, std::string paramValue);
 
-		bool Get(std::string paramName, void*& paramValue);
-		bool Get(std::string paramName, unsigned long long& paramValue);
-		bool Get(std::string paramName, std::string& paramValue);
+		bool GetParam(std::string paramName, bool& paramValue);
+		bool GetParam(std::string paramName, void*& paramValue);
+		bool GetParam(std::string paramName, long long& paramValue);
+		bool GetParam(std::string paramName, double& paramValue);
+		bool GetParam(std::string paramName, std::string& paramValue);
 
 	private:
 		class impl;
@@ -29,7 +33,7 @@ namespace Garosu
 	/////
 	// Message (you can control engine with messages)
 	//
-	// if you want to command to an engine,
+	// if you want to send commands to the engine,
 	// call SendMessage function (of the engine).
 	/////
 	enum class EngineMessageId : unsigned int
@@ -50,8 +54,8 @@ namespace Garosu
 	/////
 	// Event (for Callback)
 	//
-	// engines call your registered callback function (registered by RegisterCallback).
-	// callback's Event arguments contain eventid(EngineEventId) and more information parameters.
+	// engine will call registered callback function if event occured.
+	// event arguments of callback contain eventid(EngineEventId) and more information parameters.
 	/////
 	enum class EngineEventId : unsigned int
 	{
@@ -89,18 +93,31 @@ namespace Garosu
 
 }
 
+#define G_EXPORT __declspec(dllexport)
+
 extern "C" {
 	///// Engine
-	__declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void);
-	__declspec(dllexport) bool DeleteGarosuEngine(Garosu::IEngine*);
+	G_EXPORT Garosu::IEngine* CreateEngine(void);
+	G_EXPORT bool DeleteEngine(Garosu::IEngine*);
 
 	// IEngine Functions
-	__declspec(dllexport) bool Initialize(Garosu::IEngine*);
-	__declspec(dllexport) bool Finalize(Garosu::IEngine*);
-	__declspec(dllexport) bool SendMessage(Garosu::IEngine*, Garosu::BaseMessage*);
-	__declspec(dllexport) bool RegisterCallback(Garosu::IEngine*, Garosu::EngineCallback*);
+	G_EXPORT bool Initialize(Garosu::IEngine*);
+	G_EXPORT bool Finalize(Garosu::IEngine*);
+	G_EXPORT bool SendMessage(Garosu::IEngine*, Garosu::BaseMessage*);
+	G_EXPORT bool RegisterCallback(Garosu::IEngine*, Garosu::EngineCallback*);
 
-	// 
+	// Message
+	G_EXPORT Garosu::BaseMessage* CreateMessage(unsigned int msgId);
+	G_EXPORT bool DeleteMessage(Garosu::BaseMessage*);
+
+	// Message Params
+	G_EXPORT bool SetParam(Garosu::BaseMessage*, std::string, bool);
+	G_EXPORT bool SetParam(Garosu::BaseMessage*, std::string, void*);
+	G_EXPORT bool SetParam(Garosu::BaseMessage*, std::string, long long);
+	G_EXPORT bool SetParam(Garosu::BaseMessage*, std::string, double);
+	G_EXPORT bool SetParam(Garosu::BaseMessage*, std::string, std::string);
+
+	// Event
 }
 
 #endif

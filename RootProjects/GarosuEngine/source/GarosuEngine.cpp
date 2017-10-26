@@ -20,8 +20,124 @@
 #include <GarosuGraphics.h>
 #include <GarosuScheduler.h>
 
+#include <GarosuNene.h>
+
 namespace Garosu
 {
+
+	class ParameterContainer::impl
+	{
+	public:
+		std::map<std::string, Nene> params;
+	};
+
+	ParameterContainer::ParameterContainer(void)
+		: pImpl(mk_uptr<impl>())
+	{
+
+	}
+
+	ParameterContainer::~ParameterContainer(void)
+	{
+
+	}
+
+	bool ParameterContainer::SetParam(std::string paramName, bool paramValue)
+	{
+		pImpl->params[paramName] = paramValue;
+		return true;
+	}
+
+	bool ParameterContainer::SetParam(std::string paramName, void* paramValue)
+	{
+		pImpl->params[paramName] = (i64)paramValue;
+		return true;
+	}
+
+	bool ParameterContainer::SetParam(std::string paramName, long long paramValue)
+	{
+		pImpl->params[paramName] = paramValue;
+		return true;
+	}
+
+	bool ParameterContainer::SetParam(std::string paramName, double paramValue)
+	{
+		pImpl->params[paramName] = paramValue;
+		return true;
+	}
+
+	bool ParameterContainer::SetParam(std::string paramName, std::string paramValue)
+	{
+		pImpl->params[paramName] = paramValue;
+		return true;
+	}
+
+	bool ParameterContainer::GetParam(std::string paramName, bool& paramValue)
+	{
+		auto& param = pImpl->params.find(paramName);
+		if (param == pImpl->params.end()) return false;
+		if ((*param).second.HasType<bool>() == false) return false;
+
+		(*param).second.As<bool>(paramValue);
+
+		return true;
+	}
+
+	bool ParameterContainer::GetParam(std::string paramName, void*& paramValue)
+	{
+		auto& param = pImpl->params.find(paramName);
+		if (param == pImpl->params.end()) return false;
+		if ((*param).second.HasType<i64>() == false) return false;
+
+		(*param).second.As<i64>((i64&)paramValue);
+
+		return true;
+	}
+
+	bool ParameterContainer::GetParam(std::string paramName, long long& paramValue)
+	{
+		auto& param = pImpl->params.find(paramName);
+		if (param == pImpl->params.end()) return false;
+		if ((*param).second.HasType<long long>() == false) return false;
+
+		(*param).second.As<long long>(paramValue);
+
+		return true;
+	}
+
+	bool ParameterContainer::GetParam(std::string paramName, double& paramValue)
+	{
+		auto& param = pImpl->params.find(paramName);
+		if (param == pImpl->params.end()) return false;
+		if ((*param).second.HasType<double>() == false) return false;
+
+		(*param).second.As<double>(paramValue);
+
+		return true;
+	}
+
+	bool ParameterContainer::GetParam(std::string paramName, std::string& paramValue)
+	{
+		auto& param = pImpl->params.find(paramName);
+		if (param == pImpl->params.end()) return false;
+		if ((*param).second.HasType<std::string>() == false) return false;
+
+		(*param).second.As<std::string>(paramValue);
+
+		return true;
+	}
+
+	BaseMessage::BaseMessage(EngineMessageId msgId)
+		: mMsgId(msgId)
+	{
+
+	}
+
+	BaseEvent::BaseEvent(EngineEventId evtId)
+		: mEvtId(evtId)
+	{
+
+	}
 
 	class Engine final : public IEngine
 	{
@@ -205,14 +321,14 @@ namespace Garosu
 		else return callback(eventInstance);
 	}
 
-}
+} // namespace Garosu
 
-__declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void)
+G_EXPORT Garosu::IEngine* CreateEngine(void)
 {
 	return new Garosu::Engine();
 }
 
-__declspec(dllexport) bool DeleteGarosuEngine(Garosu::IEngine* engine)
+G_EXPORT bool DeleteGarosuEngine(Garosu::IEngine* engine)
 {
 	if (engine != nullptr) {
 		delete engine;
@@ -222,22 +338,37 @@ __declspec(dllexport) bool DeleteGarosuEngine(Garosu::IEngine* engine)
 	return false;
 }
 
-__declspec(dllexport) bool Initialize(Garosu::IEngine* engine)
+G_EXPORT bool Initialize(Garosu::IEngine* engine)
 {
 	return engine->Initialize();
 }
 
-__declspec(dllexport) bool Finalize(Garosu::IEngine* engine)
+G_EXPORT bool Finalize(Garosu::IEngine* engine)
 {
 	return engine->Finalize();
 }
 
-__declspec(dllexport) bool SendMessage(Garosu::IEngine* engine, Garosu::BaseMessage* message)
+G_EXPORT bool SendMessage(Garosu::IEngine* engine, Garosu::BaseMessage* message)
 {
 	return engine->SendMessage(message);
 }
 
-__declspec(dllexport) bool RegisterCallback(Garosu::IEngine* engine, Garosu::EngineCallback* callback)
+G_EXPORT bool RegisterCallback(Garosu::IEngine* engine, Garosu::EngineCallback* callback)
 {
 	return engine->RegisterCallback(callback);
+}
+
+G_EXPORT Garosu::BaseMessage* CreateMessage(unsigned int msgId)
+{
+	return new Garosu::BaseMessage((Garosu::EngineMessageId)msgId);
+}
+
+G_EXPORT bool DeleteMessage(Garosu::BaseMessage* msg)
+{
+	if (msg != nullptr) {
+		delete msg;
+		return true;
+	}
+
+	return false;
 }
