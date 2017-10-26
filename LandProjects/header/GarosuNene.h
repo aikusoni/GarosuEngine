@@ -352,6 +352,11 @@ namespace Garosu
 			return false;
 		}
 
+		int GetType(void)
+		{
+			return (int)type;
+		}
+
 		bool IsSameType(const Nene& rhs)
 		{
 			if (type == rhs.type)

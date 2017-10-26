@@ -113,41 +113,41 @@ namespace Garosu
 
 #define SETLOGLEVEL(X) LOGINSTANCE.SetLogLevel(X)
 
-#define SETLOGLEVEL_CRITICAL() SETLOGLEVEL(LogLevel::CRITICAL)
-#define SETLOGLEVEL_ERROR() SETLOGLEVEL(LogLevel::ERROR)
-#define SETLOGLEVEL_DEBUG() SETLOGLEVEL(LogLevel::DEBUG)
-#define SETLOGLEVEL_WARNING() SETLOGLEVEL(LogLevel::WARNING)
-#define SETLOGLEVEL_NOTICE() SETLOGLEVEL(LogLevel::NOTICE)
-#define SETLOGLEVEL_INFO() SETLOGLEVEL(LogLevel::INFO)
+#define SETLOGLEVEL_CRITICAL() SETLOGLEVEL(Garosu::LogLevel::CRITICAL)
+#define SETLOGLEVEL_ERROR() SETLOGLEVEL(Garosu::LogLevel::ERROR)
+#define SETLOGLEVEL_DEBUG() SETLOGLEVEL(Garosu::LogLevel::DEBUG)
+#define SETLOGLEVEL_WARNING() SETLOGLEVEL(Garosu::LogLevel::WARNING)
+#define SETLOGLEVEL_NOTICE() SETLOGLEVEL(Garosu::LogLevel::NOTICE)
+#define SETLOGLEVEL_INFO() SETLOGLEVEL(Garosu::LogLevel::INFO)
 
 #define LOGSTART()	LOGINSTANCE.Start()
 #define LOGSTOP()	LOGINSTANCE.Stop()
 
 // stream style log macro
 // usage : LOGC << "blah blah " << 123 << ", " << 3.14f << 'c';
-#define LOGC LOGINSTANCE.S<LogLevel::CRITICAL>()
-#define LOGE LOGINSTANCE.S<LogLevel::ERROR>()
-#define LOGD LOGINSTANCE.S<LogLevel::DEBUG>()
-#define LOGW LOGINSTANCE.S<LogLevel::WARNING>()
-#define LOGN LOGINSTANCE.S<LogLevel::NOTICE>()
-#define LOGI LOGINSTANCE.S<LogLevel::INFO>()
+#define LOGC LOGINSTANCE.S<Garosu::LogLevel::CRITICAL>()
+#define LOGE LOGINSTANCE.S<Garosu::LogLevel::ERROR>()
+#define LOGD LOGINSTANCE.S<Garosu::LogLevel::DEBUG>()
+#define LOGW LOGINSTANCE.S<Garosu::LogLevel::WARNING>()
+#define LOGN LOGINSTANCE.S<Garosu::LogLevel::NOTICE>()
+#define LOGI LOGINSTANCE.S<Garosu::LogLevel::INFO>()
 
 // function style log macro (it may quick than the others)
 // usage : LOGFC("function style log");
-#define LOGQC(X) LOGINSTANCE.Q<LogLevel::CRITICAL>(X)
-#define LOGQE(X) LOGINSTANCE.Q<LogLevel::ERROR>(X)
-#define LOGQD(X) LOGINSTANCE.Q<LogLevel::DEBUG>(X)
-#define LOGQW(X) LOGINSTANCE.Q<LogLevel::WARNING>(X)
-#define LOGQN(X) LOGINSTANCE.Q<LogLevel::NOTICE>(X)
-#define LOGQI(X) LOGINSTANCE.Q<LogLevel::INFO>(X)
+#define LOGQC(X) LOGINSTANCE.Q<Garosu::LogLevel::CRITICAL>(X)
+#define LOGQE(X) LOGINSTANCE.Q<Garosu::LogLevel::ERROR>(X)
+#define LOGQD(X) LOGINSTANCE.Q<Garosu::LogLevel::DEBUG>(X)
+#define LOGQW(X) LOGINSTANCE.Q<Garosu::LogLevel::WARNING>(X)
+#define LOGQN(X) LOGINSTANCE.Q<Garosu::LogLevel::NOTICE>(X)
+#define LOGQI(X) LOGINSTANCE.Q<Garosu::LogLevel::INFO>(X)
 
 // formatting style log macro
 // usage : LOGFC("i-value : %, f-value : %", 123, 3.14f);
-#define LOGFC(FORMAT, ...) LOGINSTANCE.F<LogLevel::CRITICAL>(FORMAT, __VA_ARGS__)
-#define LOGFE(FORMAT, ...) LOGINSTANCE.F<LogLevel::ERROR>(FORMAT, __VA_ARGS__)
-#define LOGFD(FORMAT, ...) LOGINSTANCE.F<LogLevel::DEBUG>(FORMAT, __VA_ARGS__)
-#define LOGFW(FORMAT, ...) LOGINSTANCE.F<LogLevel::WARNING>(FORMAT, __VA_ARGS__)
-#define LOGFN(FORMAT, ...) LOGINSTANCE.F<LogLevel::NOTICE>(FORMAT, __VA_ARGS__)
-#define LOGFI(FORMAT, ...) LOGINSTANCE.F<LogLevel::INFO>(FORMAT, __VA_ARGS__)
+#define LOGFC(FORMAT, ...) LOGINSTANCE.F<Garosu::LogLevel::CRITICAL>(FORMAT, __VA_ARGS__)
+#define LOGFE(FORMAT, ...) LOGINSTANCE.F<Garosu::LogLevel::ERROR>(FORMAT, __VA_ARGS__)
+#define LOGFD(FORMAT, ...) LOGINSTANCE.F<Garosu::LogLevel::DEBUG>(FORMAT, __VA_ARGS__)
+#define LOGFW(FORMAT, ...) LOGINSTANCE.F<Garosu::LogLevel::WARNING>(FORMAT, __VA_ARGS__)
+#define LOGFN(FORMAT, ...) LOGINSTANCE.F<Garosu::LogLevel::NOTICE>(FORMAT, __VA_ARGS__)
+#define LOGFI(FORMAT, ...) LOGINSTANCE.F<Garosu::LogLevel::INFO>(FORMAT, __VA_ARGS__)
 
 #endif

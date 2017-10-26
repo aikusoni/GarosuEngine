@@ -6,7 +6,7 @@ namespace GarosuEngineWrapper
 {
     public enum EngineMessageId : uint
     {
-        None,
+        None = 0u,
         TestMessage,
         SetApplicationStoragePath,
         SetVideoOutputHandle, // "output_target" : (void*)
@@ -46,6 +46,11 @@ namespace GarosuEngineWrapper
                 SafeNativeMethods.DeleteMessage(msgPtr);
                 msgPtr = IntPtr.Zero;
             }
+        }
+
+        public EngineMessageId GetMessageId()
+        {
+            return (EngineMessageId)SafeNativeMethods.GetMessageId(msgPtr);
         }
     }
 }

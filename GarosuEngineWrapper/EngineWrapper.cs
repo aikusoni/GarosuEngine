@@ -52,11 +52,11 @@ namespace GarosuEngineWrapper
 
         public bool CallbackFnc(IntPtr engineEvent)
         {
-
+            engineCallbackHandler.Invoke(new BaseEvent(engineEvent));
             return true;
         }
 
-        public delegate bool handler(int param1);
+        public delegate bool handler(BaseEvent param1);
         handler engineCallbackHandler = null;
 
         public bool RegisterHandler(handler engineCallbackHandler)

@@ -4,10 +4,11 @@ namespace GarosuEngineWrapper
 {
     public enum EngineEventId : UInt32
     {
-
+        None = 0u,
+        InitializeComplete,
     }
 
-    class BaseEvent : Parameter
+    public class BaseEvent : Parameter
     {
         IntPtr evtPtr = IntPtr.Zero;
         protected override IntPtr GetParamPtr()
@@ -15,9 +16,14 @@ namespace GarosuEngineWrapper
             return evtPtr;
         }
 
-        BaseEvent(IntPtr evtPtr)
+        public BaseEvent(IntPtr evtPtr)
         {
             this.evtPtr = evtPtr;
+        }
+
+        public EngineEventId GetEventId()
+        {
+            return (EngineEventId)SafeNativeMethods.GetEventId(evtPtr);
         }
     }
 }

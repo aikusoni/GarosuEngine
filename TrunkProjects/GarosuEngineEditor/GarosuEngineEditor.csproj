@@ -111,11 +111,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(SolutionDir)RootExports\DLLs\*.dll $(ProjectDir)$(OutDir)
-copy /Y $(SolutionDir)TrunkProjects\DLLs\*.dll $(ProjectDir)$(OutDir)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>copy /Y $(SolutionDir)RootExports\DLLs\*.dll $(ProjectDir)$(OutDir)
+copy /Y $(SolutionDir)TrunkProjects\DLLs\*.dll $(ProjectDir)$(OutDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>

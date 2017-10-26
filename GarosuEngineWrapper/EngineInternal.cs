@@ -25,6 +25,7 @@ namespace GarosuEngineWrapper
         [DllImport(Utils.EngineDll, EntryPoint = "RegisterCallback", CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool RegisterCallback(IntPtr enginePtr, GarosuEngineCallback callback);
         internal delegate bool GarosuEngineCallback(IntPtr engineEvent);
+
   
         ///// Message
         [DllImport(Utils.EngineDll, EntryPoint = "CreateMessage", CallingConvention = CallingConvention.Cdecl)]
@@ -32,9 +33,17 @@ namespace GarosuEngineWrapper
 
         [DllImport(Utils.EngineDll, EntryPoint = "DeleteMessage", CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool DeleteMessage(IntPtr msgPtr);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "GetMessageId", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern UInt32 GetMessageId(IntPtr msgPtr);
+
+
+        ///// Event
+        [DllImport(Utils.EngineDll, EntryPoint = "GetEventId", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern UInt32 GetEventId(IntPtr evtptr);
   
 
-        ///// Parameter
+        ///// Set Parameter
         [DllImport(Utils.EngineDll, EntryPoint = "SetParam_Bool", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool SetParam_Bool(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, bool paramValue);
 
@@ -49,5 +58,22 @@ namespace GarosuEngineWrapper
 
         [DllImport(Utils.EngineDll, EntryPoint = "SetParam_String", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool SetParam_String(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramValue);
+
+        ///// Get Parameter
+        [DllImport(Utils.EngineDll, EntryPoint = "GetParam_Bool", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        unsafe internal static extern bool GetParam_Bool(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, bool* paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "GetParam_VoidPtr", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        unsafe internal static extern bool GetParam_VoidPtr(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, IntPtr* paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "GetParam_LongLongInt", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        unsafe internal static extern bool GetParam_LongLongInt(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, Int64* paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "GetParam_Double", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        unsafe internal static extern bool GetParam_Double(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, double* paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "GetParam_String", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            internal static extern bool GetParam_String(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramValue);
+
     }
 }

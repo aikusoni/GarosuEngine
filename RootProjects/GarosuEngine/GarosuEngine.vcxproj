@@ -212,6 +212,7 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\GarosuEngineAPI.h" />
+    <ClInclude Include="header\GarosuEngineInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

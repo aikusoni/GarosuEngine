@@ -34,5 +34,62 @@ namespace GarosuEngineWrapper
         {
             return SafeNativeMethods.SetParam_String(GetParamPtr(), new StringBuilder(paramName), new StringBuilder(str));
         }
+
+        public bool GetParam(String paramName, ref bool value)
+        {
+            bool ret = false;
+            unsafe
+            {
+                bool tmp = false;
+                ret = SafeNativeMethods.GetParam_Bool(GetParamPtr(), new StringBuilder(paramName), &tmp);
+                if (ret) value = tmp;
+            }
+            return ret;
+        }
+
+        public bool GetParam(String paramName, ref IntPtr handle)
+        {
+            bool ret = false;
+            unsafe
+            {
+                IntPtr tmp = IntPtr.Zero;
+                ret = SafeNativeMethods.GetParam_VoidPtr(GetParamPtr(), new StringBuilder(paramName), &tmp);
+                if (ret) handle = tmp;
+            }
+            return ret;
+        }
+
+        public bool GetParam(String paramName, ref Int64 value)
+        {
+            bool ret = false;
+            unsafe
+            {
+                Int64 tmp = 0;
+                ret = SafeNativeMethods.GetParam_LongLongInt(GetParamPtr(), new StringBuilder(paramName), &tmp);
+                if (ret) value = tmp;
+            }
+            return ret;
+        }
+
+        public bool GetParam(String paramName, ref double value)
+        {
+            bool ret = false;
+            unsafe
+            {
+                double tmp = 0;
+                ret = SafeNativeMethods.GetParam_Double(GetParamPtr(), new StringBuilder(paramName), &tmp);
+                if (ret) value = tmp;
+            }
+            return ret;
+        }
+
+        public bool GetParam(String paramName, ref String value)
+        {
+            bool ret = false;
+            StringBuilder tmp = new StringBuilder();
+            ret = SafeNativeMethods.GetParam_String(GetParamPtr(), new StringBuilder(paramName), tmp);
+            if (ret) value = tmp.ToString();
+            return ret;
+        }
     }
 }

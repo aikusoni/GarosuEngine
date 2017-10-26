@@ -1,6 +1,7 @@
 #include <GarosuTypedef.h>
 
 #include "GarosuEngineAPI.h"
+#include "GarosuEngineInfo.h"
 
 // common
 #include <GarosuTask.h>
@@ -42,31 +43,31 @@ namespace Garosu
 
 	}
 
-	bool ParameterContainer::SetParam(std::string paramName, bool paramValue)
+	bool ParameterContainer::SetParam(std::string paramName, const bool paramValue)
 	{
 		pImpl->params[paramName] = paramValue;
 		return true;
 	}
 
-	bool ParameterContainer::SetParam(std::string paramName, void* paramValue)
+	bool ParameterContainer::SetParam(std::string paramName, const void* paramValue)
 	{
 		pImpl->params[paramName] = (i64)paramValue;
 		return true;
 	}
 
-	bool ParameterContainer::SetParam(std::string paramName, long long paramValue)
+	bool ParameterContainer::SetParam(std::string paramName, const long long int paramValue)
 	{
 		pImpl->params[paramName] = paramValue;
 		return true;
 	}
 
-	bool ParameterContainer::SetParam(std::string paramName, double paramValue)
+	bool ParameterContainer::SetParam(std::string paramName, const double paramValue)
 	{
 		pImpl->params[paramName] = paramValue;
 		return true;
 	}
 
-	bool ParameterContainer::SetParam(std::string paramName, std::string paramValue)
+	bool ParameterContainer::SetParam(std::string paramName, const char* paramValue)
 	{
 		pImpl->params[paramName] = paramValue;
 		return true;
@@ -94,7 +95,7 @@ namespace Garosu
 		return true;
 	}
 
-	bool ParameterContainer::GetParam(std::string paramName, long long& paramValue)
+	bool ParameterContainer::GetParam(std::string paramName, long long int& paramValue)
 	{
 		auto& param = pImpl->params.find(paramName);
 		if (param == pImpl->params.end()) return false;
@@ -256,7 +257,20 @@ namespace Garosu
 			return false;
 		}
 
-		LOGQD("Garosu Enigne initialization Success.");
+		LOGQD("Garosu Engine initialization Success.");
+
+		// send complete event to callback
+		{
+			BaseEvent evt(EngineEventId::InitializeComplete);
+			evt.SetParam("Version", VersionNo);
+			evt.SetParam("BuildNo", BuildNo);
+			evt.SetParam("AuthorName", AuthorName);
+			evt.SetParam("Year", 2017ll);
+			evt.SetParam("True or ", false);
+			evt.SetParam("Pi", 3.1415926535897);
+			evt.SetParam("e", 2.71828182846);
+			CallCB(&evt);
+		}
 
 		return true;
 	}
@@ -301,22 +315,27 @@ namespace Garosu
 			bool boolParam = false;
 			if (message->GetParam("bool", boolParam))
 				LOGD << "TestMessage " << "bool param : " << boolParam;
+			message->SetParam("bool", false);
 
 			void* voidPtr = nullptr;
 			if (message->GetParam("voidptr", voidPtr))
 				LOGD << "TestMessage " << "voidptr param : " << voidPtr;
+			message->SetParam("voidptr", (void*)'T');
 
 			i64 integerVal = 0;
 			if (message->GetParam("integer", integerVal))
 				LOGD << "TestMessage " << "voidptr param : " << integerVal;
+			message->SetParam("integer", 987654321ll);
 
 			f64 doubleVal = 0.0;
 			if (message->GetParam("double", doubleVal))
 				LOGD << "TestMessage " << "double param : " << doubleVal;
+			message->SetParam("double", 2.71828182846);
 
 			String strVal = "";
 			if (message->GetParam("string", strVal))
 				LOGD << "TestMessage " << "string param : " << strVal;
+			message->SetParam("string", "test string from engine.");
 
 		}
 			return true;
@@ -403,6 +422,16 @@ G_EXPORT bool DeleteMessage(Garosu::BaseMessage* msg)
 	return false;
 }
 
+G_EXPORT Garosu::EngineMessageId GetMessageId(Garosu::BaseMessage* msg)
+{
+	return msg->mMsgId;
+}
+
+G_EXPORT Garosu::EngineEventId GetEventId(Garosu::BaseEvent* evt)
+{
+	return evt->mEvtId;
+}
+
 G_EXPORT bool SetParam_Bool(Garosu::ParameterContainer* paramCont, char* paramName, bool paramValue)
 {
 	if (paramCont == nullptr) return false;
@@ -430,7 +459,7 @@ G_EXPORT bool SetParam_Double(Garosu::ParameterContainer* paramCont, char* param
 G_EXPORT bool SetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* paramValue)
 {
 	if (paramCont == nullptr) return false;
-	return paramCont->SetParam(paramName, std::string(paramValue));
+	return paramCont->SetParam(paramName, paramValue);
 }
 
 G_EXPORT bool GetParam_Bool(Garosu::ParameterContainer* paramCont, char* paramName, bool* paramValue)
@@ -457,7 +486,16 @@ G_EXPORT bool GetParam_Double(Garosu::ParameterContainer* paramCont, char* param
 	return paramCont->GetParam(paramName, *paramValue);
 }
 
-G_EXPORT bool GetParam_StringSize(Garosu::ParameterContainer* paramCont, char* paramName, unsigned long long int* strSize)
+G_EXPORT bool GetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* paramVal)
+{
+	if (paramCont == nullptr) return false;
+	std::string str;
+	if (paramCont->GetParam(paramName, str) == false) return false;
+	strcpy(paramVal, str.c_str());
+	return true;
+}
+
+G_EXPORT bool GetParam_SizeOfString(Garosu::ParameterContainer* paramCont, char* paramName, unsigned long long int* strSize)
 {
 	if (paramCont == nullptr) return false;
 	std::string str;
@@ -466,7 +504,7 @@ G_EXPORT bool GetParam_StringSize(Garosu::ParameterContainer* paramCont, char* p
 	return true;
 }
 
-G_EXPORT bool GetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* strBuf, unsigned long long int strSize)
+G_EXPORT bool GetParam_StringWithSize(Garosu::ParameterContainer* paramCont, char* paramName, char* strBuf, unsigned long long int strSize)
 {
 	if (paramCont == nullptr) return false;
 	std::string str;

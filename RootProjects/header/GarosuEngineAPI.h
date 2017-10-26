@@ -13,11 +13,11 @@ namespace Garosu
 		ParameterContainer(void);
 		virtual ~ParameterContainer(void);
 
-		bool SetParam(std::string paramName, bool paramValue);
-		bool SetParam(std::string paramName, void* paramValue);
-		bool SetParam(std::string paramName, long long int paramValue);
-		bool SetParam(std::string paramName, double paramValue);
-		bool SetParam(std::string paramName, std::string paramValue);
+		bool SetParam(std::string paramName, const bool paramValue);
+		bool SetParam(std::string paramName, const void* paramValue);
+		bool SetParam(std::string paramName, const long long int paramValue);
+		bool SetParam(std::string paramName, const double paramValue);
+		bool SetParam(std::string paramName, const char* paramValue);
 
 		bool GetParam(std::string paramName, bool& paramValue);
 		bool GetParam(std::string paramName, void*& paramValue);
@@ -61,6 +61,7 @@ namespace Garosu
 	enum class EngineEventId : unsigned int
 	{
 		None = 0u,
+		InitializeComplete,
 	};
 
 	class BaseEvent : public ParameterContainer
@@ -110,6 +111,10 @@ extern "C" {
 	// Message
 	G_EXPORT Garosu::BaseMessage* CreateMessage(unsigned int msgId);
 	G_EXPORT bool DeleteMessage(Garosu::BaseMessage*);
+	G_EXPORT Garosu::EngineMessageId GetMessageId(Garosu::BaseMessage*);
+
+	// Event
+	G_EXPORT Garosu::EngineEventId GetEventId(Garosu::BaseEvent*);
 
 	// Params
 	G_EXPORT bool SetParam_Bool(Garosu::ParameterContainer*, char* paramName, bool paramValue);
@@ -122,8 +127,10 @@ extern "C" {
 	G_EXPORT bool GetParam_VoidPtr(Garosu::ParameterContainer*, char* paramName, void** paramValue);
 	G_EXPORT bool GetParam_LongLongInt(Garosu::ParameterContainer*, char* paramName, long long int* paramValue);
 	G_EXPORT bool GetParam_Double(Garosu::ParameterContainer*, char* paramName, double* paramValue);
-	G_EXPORT bool GetParam_StringSize(Garosu::ParameterContainer*, char* paramName, unsigned long long int* strSize);
-	G_EXPORT bool GetParam_String(Garosu::ParameterContainer*, char* paramName, char* strBuf, unsigned long long int strSize);
+	G_EXPORT bool GetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* paramVal);
+
+	G_EXPORT bool GetParam_SizeOfString(Garosu::ParameterContainer*, char* paramName, unsigned long long int* strSize);
+	G_EXPORT bool GetParam_StringWithSize(Garosu::ParameterContainer*, char* paramName, char* strBuf, unsigned long long int strSize);
 }
 
 #endif
