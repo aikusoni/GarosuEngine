@@ -28,7 +28,7 @@ namespace Garosu
 	class ParameterContainer::impl
 	{
 	public:
-		std::map<std::string, Nene> params;
+		std::map<String, Nene> params;
 	};
 
 	ParameterContainer::ParameterContainer(void)
@@ -371,4 +371,77 @@ G_EXPORT bool DeleteMessage(Garosu::BaseMessage* msg)
 	}
 
 	return false;
+}
+
+G_EXPORT bool SetParam_Bool(Garosu::ParameterContainer* paramCont, char* paramName, bool paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->SetParam(paramName, paramValue);
+}
+
+G_EXPORT bool SetParam_VoidPtr(Garosu::ParameterContainer* paramCont, char* paramName, void* paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->SetParam(paramName, paramValue);
+}
+
+G_EXPORT bool SetParam_LongLongInt(Garosu::ParameterContainer* paramCont, char* paramName, long long int paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->SetParam(paramName, paramValue);
+}
+
+G_EXPORT bool SetParam_Double(Garosu::ParameterContainer* paramCont, char* paramName, double paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->SetParam(paramName, paramValue);
+}
+
+G_EXPORT bool SetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->SetParam(paramName, paramValue);
+}
+
+G_EXPORT bool GetParam_Bool(Garosu::ParameterContainer* paramCont, char* paramName, bool* paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->GetParam(paramName, *paramValue);
+}
+
+G_EXPORT bool GetParam_VoidPtr(Garosu::ParameterContainer* paramCont, char* paramName, void** paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->GetParam(paramName, *paramValue);
+}
+
+G_EXPORT bool GetParam_LongLongInt(Garosu::ParameterContainer* paramCont, char* paramName, long long int* paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->GetParam(paramName, *paramValue);
+}
+
+G_EXPORT bool GetParam_Double(Garosu::ParameterContainer* paramCont, char* paramName, double* paramValue)
+{
+	if (paramCont == nullptr) return false;
+	return paramCont->GetParam(paramName, *paramValue);
+}
+
+G_EXPORT bool GetParam_StringSize(Garosu::ParameterContainer* paramCont, char* paramName, unsigned long long int* strSize)
+{
+	if (paramCont == nullptr) return false;
+	std::string str;
+	if (paramCont->GetParam(paramName, str) == false) return false;
+	*strSize = str.size();
+	return true;
+}
+
+G_EXPORT bool GetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* strBuf, unsigned long long int strSize)
+{
+	if (paramCont == nullptr) return false;
+	std::string str;
+	if (paramCont->GetParam(paramName, str) == false) return false;
+	strSize = strSize < str.size() ? strSize : str.size();
+	strncpy(strBuf, str.c_str(), strSize);
+	return true;
 }

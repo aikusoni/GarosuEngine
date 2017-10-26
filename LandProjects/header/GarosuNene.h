@@ -116,15 +116,42 @@ namespace Garosu
 		// TODO 
 
 		template <typename T, int N = 0> struct nene_type { public: nene_type(void) = delete; };
-		template <> struct nene_type<INT> { const static NeneType value = NeneType::INTEGER; static void set(NeneValue& target, const INT& v) { target.i_value = v; } };
-		template <> struct nene_type<FLT> { const static NeneType value = NeneType::FLOATING; static void set(NeneValue& target, const FLT& v) { target.f_value = v; } };
-		template <> struct nene_type<BLN> { const static NeneType value = NeneType::BOOLEAN; static void set(NeneValue& target, const BLN& v) { target.b_value = v; } };
-		template <> struct nene_type<const char*> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
-		template <int N> struct nene_type<char[N]> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } }; // char* : string
-		template <> struct nene_type<STR> { const static NeneType value = NeneType::STRING; static void set(NeneValue& target, const STR& v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; } };
-		template <> struct nene_type<VEC> { const static NeneType value = NeneType::VECTOR; static void set(NeneValue& target, const VEC& v) { if (target.v_pointer == nullptr) target.v_pointer = new VEC; *target.v_pointer = v; } };
-		template <> struct nene_type<MAP> { const static NeneType value = NeneType::MAP; static void set(NeneValue& target, const MAP& v) { if (target.m_pointer == nullptr) target.m_pointer = new MAP; *target.m_pointer = v; } };
-		// TODO
+		template <> struct nene_type<INT> {
+			const static NeneType value = NeneType::INTEGER;
+			static void set(NeneValue& target, const INT& v) { target.i_value = v; }
+			static void get(NeneValue& target, INT& v) { v = target.i_value; }
+		};
+		template <> struct nene_type<FLT> {
+			const static NeneType value = NeneType::FLOATING;
+			static void set(NeneValue& target, const FLT& v) { target.f_value = v; }
+			static void get(NeneValue& target, FLT& v) { v = target.f_value; }
+		};
+		template <> struct nene_type<BLN> {
+			const static NeneType value = NeneType::BOOLEAN;
+			static void set(NeneValue& target, const BLN& v) { target.b_value = v; }
+			static void get(NeneValue& target, BLN& v) { v = target.b_value; }
+		};
+		template <> struct nene_type<const char*> {
+			const static NeneType value = NeneType::STRING;
+			static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; }
+		};
+		template <int N> struct nene_type<char[N]> {
+			const static NeneType value = NeneType::STRING;
+			static void set(NeneValue& target, const char* v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; }
+		};
+		template <> struct nene_type<STR> {
+			const static NeneType value = NeneType::STRING;
+			static void set(NeneValue& target, const STR& v) { if (target.s_pointer == nullptr) target.s_pointer = new STR; *target.s_pointer = v; }
+			static void get(NeneValue& target, STR& v) { v = *target.s_pointer; }
+		};
+		template <> struct nene_type<VEC> {
+			const static NeneType value = NeneType::VECTOR;
+			static void set(NeneValue& target, const VEC& v) { if (target.v_pointer == nullptr) target.v_pointer = new VEC; *target.v_pointer = v; }
+		};
+		template <> struct nene_type<MAP> {
+			const static NeneType value = NeneType::MAP;
+			static void set(NeneValue& target, const MAP& v) { if (target.m_pointer == nullptr) target.m_pointer = new MAP; *target.m_pointer = v; }
+		};
 
 		template <typename T, i64 N = 0> struct is_index_key : set_false { public: is_index_key() = delete; };
 		template <> struct is_index_key<const char*> : set_true {};
@@ -215,10 +242,11 @@ namespace Garosu
 		}
 
 		template <typename T>
-		T As(void)
+		void As(T& ret)
 		{
 			ASSERT_TYPE_NOT_SUPPORTED(T);
-			return static_cast<T>;
+
+			nene_type<pure_type<T>::type>::get(value, ret);
 		}
 
 		void append(const Nene& nene)

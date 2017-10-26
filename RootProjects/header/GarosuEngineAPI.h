@@ -15,13 +15,13 @@ namespace Garosu
 
 		bool SetParam(std::string paramName, bool paramValue);
 		bool SetParam(std::string paramName, void* paramValue);
-		bool SetParam(std::string paramName, long long paramValue);
+		bool SetParam(std::string paramName, long long int paramValue);
 		bool SetParam(std::string paramName, double paramValue);
 		bool SetParam(std::string paramName, std::string paramValue);
 
 		bool GetParam(std::string paramName, bool& paramValue);
 		bool GetParam(std::string paramName, void*& paramValue);
-		bool GetParam(std::string paramName, long long& paramValue);
+		bool GetParam(std::string paramName, long long int& paramValue);
 		bool GetParam(std::string paramName, double& paramValue);
 		bool GetParam(std::string paramName, std::string& paramValue);
 
@@ -42,13 +42,12 @@ namespace Garosu
 		SetApplicationStoragePath,
 	};
 
-	class BaseMessage
+	class BaseMessage : public ParameterContainer
 	{
 	public:
 		BaseMessage(EngineMessageId msgId);
 
 		EngineMessageId mMsgId;
-		ParameterContainer mParams;
 	};
 
 	/////
@@ -62,7 +61,7 @@ namespace Garosu
 		None = 0u,
 	};
 
-	class BaseEvent
+	class BaseEvent : public ParameterContainer
 	{
 	public:
 		BaseEvent(EngineEventId eventId);
@@ -93,18 +92,36 @@ namespace Garosu
 
 }
 
+#define G_EXPORT __declspec(dllexport)
+
 extern "C" {
 	///// Engine
-	__declspec(dllexport) Garosu::IEngine* MakeGarosuEngine(void);
-	__declspec(dllexport) bool DeleteGarosuEngine(Garosu::IEngine*);
+	G_EXPORT Garosu::IEngine* CreateEngine(void);
+	G_EXPORT bool DeleteEngine(Garosu::IEngine*);
 
 	// IEngine Functions
-	__declspec(dllexport) bool Initialize(Garosu::IEngine*);
-	__declspec(dllexport) bool Finalize(Garosu::IEngine*);
-	__declspec(dllexport) bool SendMessage(Garosu::IEngine*, Garosu::BaseMessage*);
-	__declspec(dllexport) bool RegisterCallback(Garosu::IEngine*, Garosu::EngineCallback*);
+	G_EXPORT bool Initialize(Garosu::IEngine*);
+	G_EXPORT bool Finalize(Garosu::IEngine*);
+	G_EXPORT bool SendMessage(Garosu::IEngine*, Garosu::BaseMessage*);
+	G_EXPORT bool RegisterCallback(Garosu::IEngine*, Garosu::EngineCallback*);
 
-	// 
+	// Message
+	G_EXPORT Garosu::BaseMessage* CreateMessage(unsigned int msgId);
+	G_EXPORT bool DeleteMessage(Garosu::BaseMessage*);
+
+	// Params
+	G_EXPORT bool SetParam_Bool(Garosu::ParameterContainer*, char* paramName, bool paramValue);
+	G_EXPORT bool SetParam_VoidPtr(Garosu::ParameterContainer*, char* paramName, void* paramValue);
+	G_EXPORT bool SetParam_LongLongInt(Garosu::ParameterContainer*, char* paramName, long long int paramValue);
+	G_EXPORT bool SetParam_Double(Garosu::ParameterContainer*, char* paramName, double paramValue);
+	G_EXPORT bool SetParam_String(Garosu::ParameterContainer*, char* paramName, char* paramValue);
+
+	G_EXPORT bool GetParam_Bool(Garosu::ParameterContainer*, char* paramName, bool* paramValue);
+	G_EXPORT bool GetParam_VoidPtr(Garosu::ParameterContainer*, char* paramName, void** paramValue);
+	G_EXPORT bool GetParam_LongLongInt(Garosu::ParameterContainer*, char* paramName, long long int* paramValue);
+	G_EXPORT bool GetParam_Double(Garosu::ParameterContainer*, char* paramName, double* paramValue);
+	G_EXPORT bool GetParam_StringSize(Garosu::ParameterContainer*, char* paramName, unsigned long long int* strSize);
+	G_EXPORT bool GetParam_String(Garosu::ParameterContainer*, char* paramName, char* strBuf, unsigned long long int strSize);
 }
 
 #endif
