@@ -4,58 +4,50 @@ using System.Runtime.InteropServices;
 namespace GarosuEngineWrapper
 {
 
-    public class EngineWrapper
+    public sealed class EngineWrapper : IDisposable
     {
-        [DllImport(Utils.EngineDll, EntryPoint = "MakeGarosuEngine", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr MakeGarosuEngine();
-
-        [DllImport(Utils.EngineDll, EntryPoint = "DeleteGarosuEngine", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr DeleteGarosuEngine(IntPtr enginePtr);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "Initialize", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool InitializeEngine(IntPtr enginePtr);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "Finalize", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool FinalizeEngine(IntPtr enginePtr);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "SendMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool SendMessage(IntPtr enginePtr, IntPtr garosuMessage);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "RegisterCallback", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool RegisterCallback(IntPtr enginePtr, GarosuEngineCallback callback);
-        delegate bool GarosuEngineCallback(IntPtr engineEvent);
-
         // Garosu Engine Instance
-        private IntPtr engine;
+        private IntPtr engine = IntPtr.Zero;
 
         public EngineWrapper()
         {
-            engine = MakeGarosuEngine();
+            engine = SafeNativeMethods.CreateEngine();
         }
 
         ~EngineWrapper()
         {
-            if (engine != null)
+            if (engine != IntPtr.Zero)
             {
                 FinalizeEngine();
-                DeleteGarosuEngine(engine);
+                SafeNativeMethods.DeleteEngine(engine);
+                engine = IntPtr.Zero;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (engine != IntPtr.Zero)
+            {
+                FinalizeEngine();
+                SafeNativeMethods.DeleteEngine(engine);
+                engine = IntPtr.Zero;
             }
         }
 
         public bool InitializeEngine()
         {
-            RegisterCallback(engine, CallbackFnc);
-            return InitializeEngine(engine);
+            SafeNativeMethods.RegisterCallback(engine, CallbackFnc);
+            return SafeNativeMethods.InitializeEngine(engine);
         }
 
         public bool FinalizeEngine()
         {
-            return FinalizeEngine(engine);
+            return SafeNativeMethods.FinalizeEngine(engine);
         }
 
-        public bool SendMessage(DummyMessage msg)
+        public bool SendMessage(BaseMessage msg)
         {
-            return SendMessage(engine, msg.MessagePtr);
+            return SafeNativeMethods.SendMessage(engine, msg.MessagePtr);
         }
 
         public bool CallbackFnc(IntPtr engineEvent)

@@ -39,7 +39,9 @@ namespace Garosu
 	enum class EngineMessageId : unsigned int
 	{
 		None = 0u,
+		TestMessage,
 		SetApplicationStoragePath,
+		SetVideoOutputHandle, // "output_target" : (void*)
 	};
 
 	class BaseMessage : public ParameterContainer
@@ -95,7 +97,7 @@ namespace Garosu
 #define G_EXPORT __declspec(dllexport)
 
 extern "C" {
-	///// Engine
+	// Engine
 	G_EXPORT Garosu::IEngine* CreateEngine(void);
 	G_EXPORT bool DeleteEngine(Garosu::IEngine*);
 

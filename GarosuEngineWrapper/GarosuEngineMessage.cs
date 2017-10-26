@@ -1,69 +1,56 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using System.Text;
 
 namespace GarosuEngineWrapper
 {
-    public class DummyMessage
+    public enum EngineMessageId : uint
     {
-        protected IntPtr msgPtr;
+        None,
+        TestMessage,
+        SetApplicationStoragePath,
+        SetVideoOutputHandle, // "output_target" : (void*)
+    }
+
+    public sealed class BaseMessage : IDisposable
+    {
+        private IntPtr msgPtr = IntPtr.Zero;
         public IntPtr MessagePtr
         {
             get { return msgPtr; }
         }
-    }
 
-    public class BaseMessage : DummyMessage
-    {
-        [DllImport(Utils.EngineDll, EntryPoint = "MakeBaseMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr MakeBaseMessage(uint msgId);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "DeleteMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool DeleteMessage(IntPtr msg);
-
-        public BaseMessage(uint msgId)
+        public BaseMessage(EngineMessageId msgId)
         {
-            try
-            {
-                msgPtr = MakeBaseMessage(msgId);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                MessageBox.Show(Utils.GetCurrentMethod() + "(" + msgId + ") allocation failed. " + ex.ToString());
-            }
+            msgPtr = SafeNativeMethods.CreateMessage((UInt32)msgId);
         }
 
         ~BaseMessage()
         {
-            if (msgPtr != null)
-                DeleteMessage(msgPtr);
-        }
-    }
-
-    public class StringMessage : DummyMessage
-    {
-        [DllImport(Utils.EngineDll, EntryPoint = "MakeStringMessage", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr MakeStringMessage(uint msgId, [MarshalAs(UnmanagedType.LPStr)] String str);
-
-        [DllImport(Utils.EngineDll, EntryPoint = "DeleteMessage", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool DeleteMessage(IntPtr msg);
-
-        public StringMessage(uint msgId, String str)
-        {
-            try
+            if (msgPtr != IntPtr.Zero)
             {
-                msgPtr = MakeStringMessage(msgId, str);
-            }
-            catch (OutOfMemoryException ex)
-            {
-                MessageBox.Show(Utils.GetCurrentMethod() + "(" + msgId + ") allocation failed. " + ex.ToString());
+                SafeNativeMethods.DeleteMessage(msgPtr);
+                msgPtr = IntPtr.Zero;
             }
         }
 
-        ~StringMessage()
+        public void Dispose()
         {
-            if (msgPtr != null)
-                DeleteMessage(msgPtr);
+            if (msgPtr != IntPtr.Zero)
+            {
+                SafeNativeMethods.DeleteMessage(msgPtr);
+                msgPtr = IntPtr.Zero;
+            }
+        }
+
+        public bool SetParam(String paramName, bool value)
+        {
+            return SafeNativeMethods.SetParam_Bool(msgPtr, new StringBuilder(paramName), value);
+        }
+
+        public bool SetParam(String paramName, IntPtr handle)
+        {
+            return SafeNativeMethods.SetParam_VoidPtr(msgPtr, new StringBuilder(paramName), handle);
         }
     }
 }

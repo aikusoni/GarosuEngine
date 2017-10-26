@@ -38,11 +38,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GarosuEngineInternal.cs" />
     <Compile Include="GarosuEngineMessage.cs" />
     <Compile Include="GarosuEngineWrapper.cs" />
     <Compile Include="GarosuEngineWrapperUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>

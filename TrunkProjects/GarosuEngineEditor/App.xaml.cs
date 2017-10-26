@@ -36,9 +36,12 @@ namespace GarosuEngineEditor
             base.OnStartup(e);
 
             engine = new GarosuEngineWrapper.EngineWrapper();
-            engine.SendMessage(new GarosuEngineWrapper.StringMessage(1, "d:\\"));
+            BaseMessage testMsg = new BaseMessage(EngineMessageId.TestMessage);
+
             engine.RegisterHandler(HandleEngineCallback);
             engine.InitializeEngine();
+
+            engine.SendMessage(new BaseMessage(EngineMessageId.None));
         }
 
         protected override void OnExit(ExitEventArgs e)

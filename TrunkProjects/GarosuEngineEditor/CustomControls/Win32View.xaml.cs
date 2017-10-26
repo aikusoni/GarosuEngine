@@ -9,25 +9,28 @@ namespace GarosuEngineEditor
     /// <summary>
     /// Win32View.xaml에 대한 상호 작용 논리
     /// </summary>
+   
+    internal class SafeNativeMethods
+    {
+        [DllImport("GarosuHwndHost.dll", EntryPoint = "CreateWin32Window", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr CreateWin32Window(IntPtr applicationInstance, IntPtr hwndParent, int screenWidth, int screenHeight);
+
+        [DllImport("GarosuHwndHost.dll", EntryPoint = "DestroyWin32Window", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void DestroyWin32Window(IntPtr hWnd);
+    }
 
     public class Win32ViewHwndHost : HwndHost
     {
-        [DllImport("GarosuHwndHost.dll", EntryPoint = "CreateWin32Window", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr CreateWin32Window(IntPtr applicationInstance, IntPtr hwndParent, int screenWidth, int screenHeight);
-
-        [DllImport("GarosuHwndHost.dll", EntryPoint = "DestroyWin32Window", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void DestroyWin32Window(IntPtr hWnd);
-
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
         {
             IntPtr instanceHandle = System.Runtime.InteropServices.Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]);
-            IntPtr win32Hwnd = CreateWin32Window(instanceHandle, hwndParent.Handle, 100, 100);
+            IntPtr win32Hwnd = SafeNativeMethods.CreateWin32Window(instanceHandle, hwndParent.Handle, 100, 100);
             return new HandleRef(this, win32Hwnd);
         }
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
-            DestroyWin32Window(hwnd.Handle);
+            SafeNativeMethods.DestroyWin32Window(hwnd.Handle);
         }
 
         protected override IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -48,7 +51,7 @@ namespace GarosuEngineEditor
         }
     }
 
-    public partial class Win32View : UserControl
+    public partial class Win32View : UserControl, IDisposable
     {
         private Win32ViewHwndHost hwndHost;
 
@@ -57,6 +60,12 @@ namespace GarosuEngineEditor
             InitializeComponent();
             hwndHost = new Win32ViewHwndHost();
             win32Border.Child = hwndHost;
+        }
+
+        public void Dispose()
+        {
+            if (hwndHost != null)
+                hwndHost.Dispose();
         }
 
         public override void BeginInit()

@@ -174,7 +174,6 @@ namespace Garosu
 
 	Engine::~Engine(void)
 	{
-
 	}
 
 	bool Engine::Initialize(void)
@@ -297,14 +296,31 @@ namespace Garosu
 		case EngineMessageId::None:
 			return true;
 
+		case EngineMessageId::TestMessage:
+		{
+			bool boolParam = false;
+			if (message->GetParam("bool", boolParam))
+				LOGD << "TestMessage" << "bool param : " << boolParam;
+		}
+			return true;
+
 		case EngineMessageId::SetApplicationStoragePath:
 		{
-			//auto& appPath = static_cast<StringMessage*>(message)->mStr;
-			//Settings::SetAppPath(appPath);
+			String appPath;
+			if (message->GetParam("AppPath", appPath) == false)
+			{
+				LOGQD("[SetApplicationStoragePath] message must contain AppPath parameter.");
+				return false;
+			}
+
+			Settings::SetAppPath(appPath);
+				
 			return true;
 		}
 
 		}
+
+		LOGFD("Engine::SendMessage has no routine to process this message(msg Id:%)", (u32)message->mMsgId);
 
 		return false;
 	}
@@ -328,7 +344,7 @@ G_EXPORT Garosu::IEngine* CreateEngine(void)
 	return new Garosu::Engine();
 }
 
-G_EXPORT bool DeleteGarosuEngine(Garosu::IEngine* engine)
+G_EXPORT bool DeleteEngine(Garosu::IEngine* engine)
 {
 	if (engine != nullptr) {
 		delete engine;
