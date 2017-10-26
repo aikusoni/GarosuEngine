@@ -12,12 +12,17 @@ namespace GarosuEngineEditor
     /// <summary>
     /// App.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, IDisposable
     {
-        EngineWrapper engine;
+        EngineWrapper engine = null;
 
         App()
         {
+        }
+
+        ~App()
+        {
+            this.Dispose(false);
         }
 
         public delegate bool CallbackSubscriber(int param1);
@@ -36,20 +41,47 @@ namespace GarosuEngineEditor
             base.OnStartup(e);
 
             engine = new GarosuEngineWrapper.EngineWrapper();
-            BaseMessage testMsg = new BaseMessage(EngineMessageId.TestMessage);
 
             engine.RegisterHandler(HandleEngineCallback);
             engine.InitializeEngine();
 
-            engine.SendMessage(new BaseMessage(EngineMessageId.None));
+            var testMsg = new BaseMessage(EngineMessageId.TestMessage);
+            testMsg.SetParam("bool", true);
+            testMsg.SetParam("voidptr", IntPtr.Zero);
+            testMsg.SetParam("integer", 1234567891234567);
+            testMsg.SetParam("double", 3.1415926535897);
+            testMsg.SetParam("string", "Hello, I am c# program. 혹시 한글도 읽을 수 있나요?");
+
+            engine.SendMessage(testMsg);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (engine != null)
-                engine.FinalizeEngine();
+            Dispose();
 
             base.OnExit(e);
+        }
+
+        private bool disposed;
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed) return;
+            if (disposing)
+            {
+                if (engine != null)
+                {
+                    engine.FinalizeEngine();
+                    engine.Dispose();
+                }
+            }
+
+            this.disposed = true;
         }
     }
 }

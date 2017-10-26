@@ -62,10 +62,22 @@ namespace GarosuEngineEditor
             win32Border.Child = hwndHost;
         }
 
+        private bool disposed;
         public void Dispose()
         {
-            if (hwndHost != null)
-                hwndHost.Dispose();
+            this.Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed) return;
+            if (disposing)
+            {
+                if (hwndHost != null)
+                    hwndHost.Dispose();
+            }
+
+            this.disposed = true;
         }
 
         public override void BeginInit()

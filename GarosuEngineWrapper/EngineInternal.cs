@@ -35,10 +35,19 @@ namespace GarosuEngineWrapper
   
 
         ///// Parameter
-        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_Bool", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern bool SetParam_Bool(IntPtr msgPtr, StringBuilder paramName, bool paramValue);
+        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_Bool", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool SetParam_Bool(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, bool paramValue);
 
-        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_VoidPtr", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern bool SetParam_VoidPtr(IntPtr msgPtr, StringBuilder paramName, IntPtr paramValue);
+        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_VoidPtr", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool SetParam_VoidPtr(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, IntPtr paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_LongLongInt", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool SetParam_LongLongInt(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, Int64 paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_Double", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool SetParam_Double(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, double paramValue);
+
+        [DllImport(Utils.EngineDll, EntryPoint = "SetParam_String", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool SetParam_String(IntPtr msgPtr, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramName, [MarshalAs(UnmanagedType.LPStr)]StringBuilder paramValue);
     }
 }

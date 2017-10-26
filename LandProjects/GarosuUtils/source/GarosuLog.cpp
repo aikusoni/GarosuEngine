@@ -7,6 +7,7 @@
 #include <sstream>
 #include <fstream>
 #include <concurrent_priority_queue.h>
+#include <codecvt>
 
 #include <chrono>
 
@@ -147,6 +148,9 @@ namespace Garosu
 	{
 		// open file
 		fs.open(Settings::GetLogPath().c_str(), std::fstream::out);
+
+		// utf-8
+		fs.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
 		if (!fs.is_open()) return false;
 
 		output = [&](LogData* logData) { fs << *logData << std::endl; };

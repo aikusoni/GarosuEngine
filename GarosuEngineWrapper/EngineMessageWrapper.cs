@@ -12,12 +12,17 @@ namespace GarosuEngineWrapper
         SetVideoOutputHandle, // "output_target" : (void*)
     }
 
-    public sealed class BaseMessage : IDisposable
+    public sealed class BaseMessage : Parameter, IDisposable
     {
         private IntPtr msgPtr = IntPtr.Zero;
         public IntPtr MessagePtr
         {
             get { return msgPtr; }
+        }
+
+        protected override IntPtr GetParamPtr()
+        {
+            return msgPtr;
         }
 
         public BaseMessage(EngineMessageId msgId)
@@ -41,16 +46,6 @@ namespace GarosuEngineWrapper
                 SafeNativeMethods.DeleteMessage(msgPtr);
                 msgPtr = IntPtr.Zero;
             }
-        }
-
-        public bool SetParam(String paramName, bool value)
-        {
-            return SafeNativeMethods.SetParam_Bool(msgPtr, new StringBuilder(paramName), value);
-        }
-
-        public bool SetParam(String paramName, IntPtr handle)
-        {
-            return SafeNativeMethods.SetParam_VoidPtr(msgPtr, new StringBuilder(paramName), handle);
         }
     }
 }

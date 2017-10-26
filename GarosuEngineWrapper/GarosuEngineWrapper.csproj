@@ -38,10 +38,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GarosuEngineInternal.cs" />
-    <Compile Include="GarosuEngineMessage.cs" />
-    <Compile Include="GarosuEngineWrapper.cs" />
-    <Compile Include="GarosuEngineWrapperUtils.cs" />
+    <Compile Include="EngineEventWrapper.cs" />
+    <Compile Include="EngineInternal.cs" />
+    <Compile Include="EngineMessageWrapper.cs" />
+    <Compile Include="EngineParameterWrapper.cs" />
+    <Compile Include="EngineWrapper.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -300,7 +300,24 @@ namespace Garosu
 		{
 			bool boolParam = false;
 			if (message->GetParam("bool", boolParam))
-				LOGD << "TestMessage" << "bool param : " << boolParam;
+				LOGD << "TestMessage " << "bool param : " << boolParam;
+
+			void* voidPtr = nullptr;
+			if (message->GetParam("voidptr", voidPtr))
+				LOGD << "TestMessage " << "voidptr param : " << voidPtr;
+
+			i64 integerVal = 0;
+			if (message->GetParam("integer", integerVal))
+				LOGD << "TestMessage " << "voidptr param : " << integerVal;
+
+			f64 doubleVal = 0.0;
+			if (message->GetParam("double", doubleVal))
+				LOGD << "TestMessage " << "double param : " << doubleVal;
+
+			String strVal = "";
+			if (message->GetParam("string", strVal))
+				LOGD << "TestMessage " << "string param : " << strVal;
+
 		}
 			return true;
 
@@ -308,10 +325,7 @@ namespace Garosu
 		{
 			String appPath;
 			if (message->GetParam("AppPath", appPath) == false)
-			{
-				LOGQD("[SetApplicationStoragePath] message must contain AppPath parameter.");
 				return false;
-			}
 
 			Settings::SetAppPath(appPath);
 				
@@ -416,7 +430,7 @@ G_EXPORT bool SetParam_Double(Garosu::ParameterContainer* paramCont, char* param
 G_EXPORT bool SetParam_String(Garosu::ParameterContainer* paramCont, char* paramName, char* paramValue)
 {
 	if (paramCont == nullptr) return false;
-	return paramCont->SetParam(paramName, paramValue);
+	return paramCont->SetParam(paramName, std::string(paramValue));
 }
 
 G_EXPORT bool GetParam_Bool(Garosu::ParameterContainer* paramCont, char* paramName, bool* paramValue)
