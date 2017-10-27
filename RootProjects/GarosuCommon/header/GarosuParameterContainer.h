@@ -3,6 +3,7 @@
 #define __GAROSU_PARAMETER_CONTAINER_H__
 
 #include <memory>
+#include <string>
 
 namespace Garosu
 {

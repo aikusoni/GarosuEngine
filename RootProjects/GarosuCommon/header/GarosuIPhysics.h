@@ -24,9 +24,9 @@ namespace Garosu
 	class PhysicsMessage
 	{
 	public:
-		PhysicsMessage(PhysicsMessageId msgId) : mMsgId(msgId) {}
+		PhysicsMessage(PhysicsMessageId msgId) : mEvtId(msgId) {}
 
-		PhysicsMessageId mMsgId;
+		PhysicsMessageId mEvtId;
 	};
 
 	class IPhysicsCallback

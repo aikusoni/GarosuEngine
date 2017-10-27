@@ -25,7 +25,7 @@ namespace Garosu
 {
 
 	BaseMessage::BaseMessage(EngineMessageId msgId)
-		: mMsgId(msgId)
+		: mEvtId(msgId)
 	{
 
 	}
@@ -201,7 +201,7 @@ namespace Garosu
 
 	bool Engine::SendMessage(BaseMessage* message)
 	{
-		switch (message->mMsgId)
+		switch (message->mEvtId)
 		{
 		case EngineMessageId::None:
 			return true;
@@ -247,9 +247,27 @@ namespace Garosu
 			return true;
 		}
 
+		case EngineMessageId::SetRenderTarget:
+		{
+			void* renderTarget = nullptr;
+			if (message->GetParam("RenderTarget", renderTarget) == false)
+				return false;
+
+			if (graphics == nullptr)
+			{
+				LOGQD("graphics is nullptr");
+				return false;
+			}
+
+			GraphicsMessage setVideoMsg(GraphicsMessageId::SetVideoHandle);
+			if (graphics->SendMessage(&setVideoMsg) == GraphicsError::OK) return true;
+
+			return false;
 		}
 
-		LOGFD("Engine::SendMessage has no routine to process this message(msg Id:%)", (u32)message->mMsgId);
+		}
+
+		LOGFD("Engine::SendMessage has no routine to process this message(msg Id:%)", (u32)message->mEvtId);
 
 		return false;
 	}
@@ -320,7 +338,7 @@ G_EXPORT bool DeleteMessage(Garosu::BaseMessage* msg)
 
 G_EXPORT Garosu::EngineMessageId GetMessageId(Garosu::BaseMessage* msg)
 {
-	return msg->mMsgId;
+	return msg->mEvtId;
 }
 
 G_EXPORT Garosu::EngineEventId GetEventId(Garosu::BaseEvent* evt)

@@ -21,7 +21,7 @@ namespace Garosu {
 		virtual GraphicsError Finalize(void);
 
 		virtual GraphicsError SendMessage(GraphicsMessage* message);
-		virtual GraphicsError RegisterCallback(IGraphicsCallback* callback);
+		virtual GraphicsError RegisterCallback(GraphicsCallback* callback);
 
 		IScheduler* mScheduler;
 	};
@@ -51,11 +51,23 @@ namespace Garosu {
 
 	GraphicsError Graphics::SendMessage(GraphicsMessage* message)
 	{
+		switch (message->mEvtId)
+		{
+		case GraphicsMessageId::None:
+			return GraphicsError::OK;
+			
+		case GraphicsMessageId::SetVideoHandle:
+		{
+			// TODO
+		}
+			return GraphicsError::OK;
+			
+		}
 
-		return GraphicsError::OK;
+		return GraphicsError::ERROR_MESSAGE_NOT_HANDLED;
 	}
 
-	GraphicsError Graphics::RegisterCallback(IGraphicsCallback* callback)
+	GraphicsError Graphics::RegisterCallback(GraphicsCallback* callback)
 	{
 
 		return GraphicsError::OK;

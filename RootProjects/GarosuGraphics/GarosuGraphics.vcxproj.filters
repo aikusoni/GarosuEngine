@@ -18,6 +18,9 @@
     <ClInclude Include="header\GarosuGraphics.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="glcore\interfaces\GarosuIDevice.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GarosuGraphics.cpp">

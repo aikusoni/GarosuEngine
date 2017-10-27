@@ -17,8 +17,8 @@ namespace Garosu
 	{
 		None = 0u,
 		TestMessage,
-		SetApplicationStoragePath,
-		SetVideoOutputHandle, // "output_target" : (void*)
+		SetApplicationStoragePath, // "AppPath" : (string)<storage path for application>
+		SetRenderTarget, // "RenderTarget" : (void*)<rendering target>
 	};
 
 	class BaseMessage : public ParameterContainer
@@ -26,7 +26,7 @@ namespace Garosu
 	public:
 		BaseMessage(EngineMessageId msgId);
 
-		EngineMessageId mMsgId;
+		EngineMessageId mEvtId;
 	};
 
 	/////
@@ -93,7 +93,7 @@ extern "C" {
 	// Event
 	G_EXPORT Garosu::EngineEventId GetEventId(Garosu::BaseEvent*);
 
-	// Params
+	// Params (message or event)
 	G_EXPORT bool SetParam_Bool(Garosu::ParameterContainer*, char* paramName, bool paramValue);
 	G_EXPORT bool SetParam_VoidPtr(Garosu::ParameterContainer*, char* paramName, void* paramValue);
 	G_EXPORT bool SetParam_LongLongInt(Garosu::ParameterContainer*, char* paramName, long long int paramValue);

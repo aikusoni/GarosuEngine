@@ -26,7 +26,7 @@ namespace Garosu
 	public:
 		BaseMessage(EngineMessageId msgId);
 
-		EngineMessageId mMsgId;
+		EngineMessageId mEvtId;
 	};
 
 	/////
@@ -93,7 +93,7 @@ extern "C" {
 	// Event
 	G_EXPORT Garosu::EngineEventId GetEventId(Garosu::BaseEvent*);
 
-	// Params
+	// Params (message or event)
 	G_EXPORT bool SetParam_Bool(Garosu::ParameterContainer*, char* paramName, bool paramValue);
 	G_EXPORT bool SetParam_VoidPtr(Garosu::ParameterContainer*, char* paramName, void* paramValue);
 	G_EXPORT bool SetParam_LongLongInt(Garosu::ParameterContainer*, char* paramName, long long int paramValue);

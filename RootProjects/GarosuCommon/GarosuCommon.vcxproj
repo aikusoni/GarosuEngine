@@ -109,7 +109,7 @@
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+      <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -131,7 +131,7 @@
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+      <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -157,7 +157,7 @@
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+      <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -183,7 +183,7 @@
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+      <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -176,6 +176,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="glcore\interfaces\GarosuIDevice.h" />
     <ClInclude Include="header\GarosuGraphics.h" />
   </ItemGroup>
   <ItemGroup>

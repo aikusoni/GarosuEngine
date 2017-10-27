@@ -2,6 +2,8 @@
 #ifndef __GAROSU_I_GRAPHICS_H__
 #define __GAROSU_I_GRAPHICS_H__
 
+#include <GarosuParameterContainer.h>
+
 namespace Garosu
 {
 
@@ -11,29 +13,34 @@ namespace Garosu
 		ERROR,
 	};
 
-	enum class GraphicsMessageId
+	enum class GraphicsMessageId : unsigned int
 	{
-
+		None = 0u,
+		SetVideoHandle
 	};
 
-	enum class GraphicsCallbackMessageId
-	{
-
-	};
-
-	class GraphicsMessage
+	class GraphicsMessage : public ParameterContainer
 	{
 	public:
-		GraphicsMessage(GraphicsMessageId msgId) : mMsgId(msgId) {}
+		GraphicsMessage(GraphicsMessageId msgId) : mEvtId(msgId) {}
 
-		GraphicsMessageId mMsgId;
+		GraphicsMessageId mEvtId;
+	};
+
+	enum class GraphicsEventId : unsigned int
+	{
+
+	};
+
+	class GraphicsEvent : public ParameterContainer
+	{
+	public:
+		GraphicsEvent(GraphicsEventId evtId) : mEvtId(evtId) {}
+
+		GraphicsEventId mEvtId;
 	};
 	
-	class IGraphicsCallback
-	{
-	public:
-		virtual void operator()(GraphicsCallbackMessageId) = 0;
-	};
+	using GraphicsCallback = bool(GraphicsEvent*);
 
 	class IGraphics
 	{
@@ -42,7 +49,7 @@ namespace Garosu
 		virtual GraphicsError Finalize(void) = 0;
 
 		virtual GraphicsError SendMessage(GraphicsMessage*) = 0;
-		virtual GraphicsError RegisterCallback(IGraphicsCallback* callback) = 0;
+		virtual GraphicsError RegisterCallback(GraphicsCallback* callback) = 0;
 	};
 
 }
