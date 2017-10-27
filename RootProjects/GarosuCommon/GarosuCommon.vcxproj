@@ -108,6 +108,9 @@
     <PreBuildEvent>
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,6 +130,9 @@
     <PreBuildEvent>
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -150,6 +156,9 @@
     <PreBuildEvent>
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -173,13 +182,20 @@
     <PreBuildEvent>
       <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\GarosuParameterContainer.h" />
     <ClInclude Include="header\GarosuIAudio.h" />
     <ClInclude Include="header\GarosuIGraphics.h" />
     <ClInclude Include="header\GarosuIPhysics.h" />
     <ClInclude Include="header\GarosuTask.h" />
     <ClInclude Include="header\GarosuIScheduler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\GarosuParameterContainer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

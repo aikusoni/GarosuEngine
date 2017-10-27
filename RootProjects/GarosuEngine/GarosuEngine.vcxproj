@@ -197,6 +197,9 @@ copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootExports\APIs</Command>
     <ProjectReference Include="..\GarosuAudio\GarosuAudio.vcxproj">
       <Project>{f8281cdf-c3ca-446b-a99d-8cff62250368}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\GarosuCommon\GarosuCommon.vcxproj">
+      <Project>{5b223e71-9519-4f8b-ad9e-7177efa64a76}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\GarosuGraphics\GarosuGraphics.vcxproj">
       <Project>{e78f61d9-9e6b-42aa-a049-a9314b39d4c7}</Project>
     </ProjectReference>

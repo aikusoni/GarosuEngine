@@ -2,33 +2,10 @@
 #ifndef __GAROSU_ENGINE_H__
 #define __GAROSU_ENGINE_H__
 
-#include <memory>
+#include <GarosuParameterContainer.h>
 
 namespace Garosu
 {
-
-	class ParameterContainer
-	{
-	public:
-		ParameterContainer(void);
-		virtual ~ParameterContainer(void);
-
-		bool SetParam(std::string paramName, const bool paramValue);
-		bool SetParam(std::string paramName, const void* paramValue);
-		bool SetParam(std::string paramName, const long long int paramValue);
-		bool SetParam(std::string paramName, const double paramValue);
-		bool SetParam(std::string paramName, const char* paramValue);
-
-		bool GetParam(std::string paramName, bool& paramValue);
-		bool GetParam(std::string paramName, void*& paramValue);
-		bool GetParam(std::string paramName, long long int& paramValue);
-		bool GetParam(std::string paramName, double& paramValue);
-		bool GetParam(std::string paramName, std::string& paramValue);
-
-	private:
-		class impl;
-		std::unique_ptr<impl> pImpl;
-	};
 
 	/////
 	// Message (you can control engine with messages)
