@@ -335,7 +335,7 @@ namespace Garosu
 			String strVal = "";
 			if (message->GetParam("string", strVal))
 				LOGD << "TestMessage " << "string param : " << strVal;
-			message->SetParam("string", "test string from engine.");
+			message->SetParam("string", "test string from engine. ÇÑ±Û");
 
 		}
 			return true;
