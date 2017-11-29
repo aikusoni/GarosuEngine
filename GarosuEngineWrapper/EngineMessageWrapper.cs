@@ -9,7 +9,7 @@ namespace GarosuEngineWrapper
         None = 0u,
         TestMessage,
         SetApplicationStoragePath,
-        SetVideoOutputHandle, // "output_target" : (void*)
+        SetRenderTarget, // "RenderTarget" : (void*)
     }
 
     public sealed class BaseMessage : Parameter, IDisposable

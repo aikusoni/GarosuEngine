@@ -220,7 +220,7 @@ namespace Garosu
 
 			i64 integerVal = 0;
 			if (message->GetParam("integer", integerVal))
-				LOGD << "TestMessage " << "voidptr param : " << integerVal;
+				LOGD << "TestMessage " << "integer param : " << integerVal;
 			message->SetParam("integer", 987654321ll);
 
 			f64 doubleVal = 0.0;
