@@ -17,8 +17,8 @@ namespace Garosu
 	{
 		None = 0u,
 		TestMessage,
-		SetApplicationStoragePath,
-		SetVideoOutputHandle, // "output_target" : (void*)
+		SetApplicationStoragePath, // "AppPath" : (string)<storage path for application>
+		SetRenderTarget, // "RenderTarget" : (void*)<rendering target>
 	};
 
 	class BaseMessage : public ParameterContainer

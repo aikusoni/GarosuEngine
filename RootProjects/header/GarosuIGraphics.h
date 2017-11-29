@@ -11,7 +11,7 @@ namespace Garosu
 	{
 		OK,
 		ERROR,
-		ERROR_MESSAGE_NOT_HANDLED
+		ERROR_MESSAGE_NOT_HANDLED,
 	};
 
 	enum class GraphicsMessageId : unsigned int
