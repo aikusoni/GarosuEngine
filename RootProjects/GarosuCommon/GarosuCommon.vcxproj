@@ -106,7 +106,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header\</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
@@ -128,7 +128,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header\</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
@@ -154,7 +154,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header\</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
@@ -180,7 +180,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header</Command>
+      <Command>copy /Y $(ProjectDir)header\*.h $(SolutionDir)RootProjects\header\</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy /Y $(ProjectDir)header\GarosuParameterContainer.h $(SolutionDir)RootExports\APIs\</Command>
