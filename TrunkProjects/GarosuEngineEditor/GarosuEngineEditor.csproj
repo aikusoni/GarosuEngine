@@ -101,13 +101,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GarosuEngineWrapper\GarosuEngineWrapper.csproj">
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GarosuEngineWrapper\GarosuEngineWrapper.csproj">
       <Project>{6a05a956-1439-4cf6-95e3-4f3db5255d24}</Project>
       <Name>GarosuEngineWrapper</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
